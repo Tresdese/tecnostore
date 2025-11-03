@@ -1,4 +1,4 @@
-package com.example.tecnostore.dto;
+package com.example.tecnostore.logic.dto;
 
 public class RolDTO {
     private int id;

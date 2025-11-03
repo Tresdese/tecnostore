@@ -1,28 +1,30 @@
-package com.example.tecnostore.dao;
+package com.example.tecnostore.logic.dao;
+
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.sql.Timestamp;
 
-import com.example.tecnostore.dto.UsuarioDTO;
+import com.example.tecnostore.data_access.ConexionBD;
+import com.example.tecnostore.logic.dto.UsuarioDTO;
 
 public class UsuarioDAO extends ConexionBD {
     private final static String SQL_INSERT = "INSERT INTO usuarios(nombre, usuario, contraseña_hash, rol_id, activo) VALUES (?, ?, ?, ?, ?)";
     private final static String SQL_UPDATE = "UPDATE usuarios SET nombre=?, usuario=?, contraseña_hash=?, rol_id=?, activo=? WHERE id=?";
     private final static String SQL_DELETE = "DELETE FROM usuarios WHERE id=?";
-    private final static String SQL_SELECT = "SELECT id, nombre, usuario, contraseña_hash, rol_id, activo, fecha_creacion FROM usuarios WHERE id=?";
-    private final static String SQL_SELECT_BY_ID = "SELECT id, nombre, usuario, contraseña_hash, rol_id, activo, fecha_creacion FROM usuarios WHERE id=?";
-    private final static String SQL_SELECT_BY_USERNAME = "SELECT id, nombre, usuario, contraseña_hash, rol_id, activo, fecha_creacion FROM usuarios WHERE usuario=?";
-    private final static String SQL_SELECTALL = "SELECT id, nombre, usuario, contraseña_hash, rol_id, activo, fecha_creacion FROM usuarios";
+    private final static String SQL_SELECT_BY_ID = "SELECT * FROM usuarios WHERE id=?";
+    private final static String SQL_SELECT_ID = "SELECT id, usuario FROM usuarios WHERE id=?";
+    private final static String SQL_SELECT_BY_USERNAME = "SELECT * FROM usuarios WHERE usuario=?";
+    private final static String SQL_SELECT_BY_USERNAME_AND_PASSWORD = "SELECT * FROM usuarios WHERE usuario=? AND contraseña_hash=?";
+    private final static String SQL_SELECT_ALL = "SELECT * FROM usuarios";
 
     public UsuarioDAO() throws Exception {
         super();
     }
 
     public void agregar(UsuarioDTO dto) throws Exception {
-        try (PreparedStatement ps = conn.prepareStatement(SQL_INSERT, Statement.RETURN_GENERATED_KEYS)) {
+        try (PreparedStatement ps = getConnection().prepareStatement(SQL_INSERT, Statement.RETURN_GENERATED_KEYS)) {
 
             ps.setString(1, dto.getNombre());
             ps.setString(2, dto.getUsuario());
@@ -44,7 +46,7 @@ public class UsuarioDAO extends ConexionBD {
     }
 
     public void actualizar(UsuarioDTO dto) throws Exception {
-        try (PreparedStatement ps = conn.prepareStatement(SQL_UPDATE)) {
+        try (PreparedStatement ps = getConnection().prepareStatement(SQL_UPDATE)) {
             ps.setString(1, dto.getNombre());
             ps.setString(2, dto.getUsuario());
             ps.setString(3, dto.getContrasenaHash());
@@ -58,7 +60,7 @@ public class UsuarioDAO extends ConexionBD {
     }
 
     public void eliminar(UsuarioDTO dto) throws Exception {
-        try (PreparedStatement ps = conn.prepareStatement(SQL_DELETE)) {
+        try (PreparedStatement ps = getConnection().prepareStatement(SQL_DELETE)) {
             ps.setInt(1, dto.getId());
             ps.executeUpdate();
         } catch (SQLException e) {
@@ -66,8 +68,8 @@ public class UsuarioDAO extends ConexionBD {
         }
     }
 
-    public UsuarioDTO buscar(UsuarioDTO dto) throws Exception {
-        try (PreparedStatement ps = conn.prepareStatement(SQL_SELECT_BY_ID)) {
+    public UsuarioDTO buscarPorId(UsuarioDTO dto) throws Exception {
+        try (PreparedStatement ps = getConnection().prepareStatement(SQL_SELECT_BY_ID)) {
             ps.setInt(1, dto.getId());
             
             try (ResultSet rs = ps.executeQuery()) {
@@ -91,9 +93,21 @@ public class UsuarioDAO extends ConexionBD {
         }
     }
 
+    public boolean buscarIdRepetido(UsuarioDTO dto) throws Exception {
+        try (PreparedStatement ps = getConnection().prepareStatement(SQL_SELECT_BY_ID)) {
+            ps.setInt(1, dto.getId());
+            
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next();
+            }
+        } catch (SQLException e) {
+            throw new Exception("Error al buscar ID: " + e.getMessage());
+        }
+    }
+
     public UsuarioDTO buscarPorUsername(String username) throws Exception {
         UsuarioDTO usuario = null;
-        try (PreparedStatement ps = conn.prepareStatement(SQL_SELECT_BY_USERNAME)) {
+        try (PreparedStatement ps = getConnection().prepareStatement(SQL_SELECT_BY_USERNAME)) {
             ps.setString(1, username);
             
             try (ResultSet rs = ps.executeQuery()) {
@@ -112,6 +126,33 @@ public class UsuarioDAO extends ConexionBD {
             }
         } catch (SQLException e) {
             throw new Exception("Error al buscar usuario por nombre de usuario: " + e.getMessage());
+        }
+        return usuario;
+    }
+
+    public UsuarioDTO buscarPorUsernameYContrasena(String username, String contrasenaHash) throws Exception {
+        UsuarioDTO usuario = null;
+        try (PreparedStatement ps = getConnection().prepareStatement(SQL_SELECT_BY_USERNAME_AND_PASSWORD))
+        {
+            ps.setString(1, username);
+            ps.setString(2, contrasenaHash);
+            
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    usuario = new UsuarioDTO();
+                    usuario.setId(rs.getInt("id"));
+                    usuario.setNombre(rs.getString("nombre"));
+                    usuario.setUsuario(rs.getString("usuario"));
+                    usuario.setContrasenaHash(rs.getString("contraseña_hash"));
+                    usuario.setRol_id(rs.getInt("rol_id"));
+                    usuario.setActivo(rs.getBoolean("activo"));
+                    
+                    Timestamp fechaCreacionSql = rs.getTimestamp("fecha_creacion");
+                    usuario.setFechaCreacion(fechaCreacionSql != null ? fechaCreacionSql.toLocalDateTime() : null);
+                }
+            }
+        } catch (SQLException e) {
+            throw new Exception("Error al buscar usuario por nombre de usuario y contraseña: " + e.getMessage());
         }
         return usuario;
     }

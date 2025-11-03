@@ -1,4 +1,4 @@
-package com.example.tecnostore.dto;
+package com.example.tecnostore.logic.dto;
 
 import java.time.LocalDateTime;
 
@@ -11,14 +11,12 @@ public class UsuarioDTO {
     private boolean activo;
     private LocalDateTime fechaCreacion;
 
-    public UsuarioDTO(int id, String nombre, String usuario, String contrasenaHash, int rol_id, boolean activo, LocalDateTime fechaCreacion) {
-        this.id = id;
+    public UsuarioDTO(String nombre, String usuario, String contrasenaHash, int rol_id, boolean activo) {
         this.nombre = nombre;
         this.usuario = usuario;
         this.contrasenaHash = contrasenaHash;
         this.rol_id = rol_id;
         this.activo = activo;
-        this.fechaCreacion = fechaCreacion;
     }
 
     public UsuarioDTO() {

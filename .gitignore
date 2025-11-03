@@ -40,7 +40,7 @@ build/
 
 logs/
 
-main/resources/config.properties
+src/main/resources/config.properties
 
 .github/
 .idea/

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8">
+   <children>
+      <Label layoutX="251.0" layoutY="61.0" text="Nuevo registro" />
+      <Button layoutX="254.0" layoutY="305.0" mnemonicParsing="false" style="-fx-background-color: #84F527;" text="Registrarse" />
+      <Label layoutX="78.0" layoutY="136.0" text="ingrese nuevo nombre de usuario" />
+      <Label layoutX="78.0" layoutY="226.0" text="ingrese nueva contraseña" />
+      <TextField layoutX="321.0" layoutY="131.0" promptText="abcdario123" />
+      <TextField layoutX="321.0" layoutY="221.0" promptText="**********" />
+   </children>
+</AnchorPane>

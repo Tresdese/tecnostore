@@ -5,6 +5,15 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class PasswordHasher {
+    /*
+     * SECCIÓN CRÍTICA DE SEGURIDAD:
+     * - Aquí se calcula el 'hash' de la contraseña.
+     * - Riesgo: usar solo SHA-256 + Base64 no es lo ideal para contraseñas porque
+     *   es rápido de calcular y eso facilita ataques por fuerza bruta.
+     * - Recomendación (no técnica): usar una librería especializada como BCrypt o Argon2
+     *   que protege mejor las contraseñas y maneja 'salt' automáticamente.
+     */
+    
     public static String hashPassword(String password) {
     try {
         MessageDigest digest = MessageDigest.getInstance("SHA-256");

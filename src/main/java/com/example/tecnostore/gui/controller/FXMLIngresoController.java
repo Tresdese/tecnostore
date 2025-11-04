@@ -3,18 +3,26 @@ package com.example.tecnostore.gui.controller;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
 import com.example.App;
+import com.example.tecnostore.logic.dto.UsuarioDTO;
 import com.example.tecnostore.logic.servicios.ServicioDeAutenticacion;
 
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+
 public class FXMLIngresoController implements Initializable {
-    
+    @FXML
+    private Button loginButton;
     @FXML
     private TextField textFieldUsername;
     @FXML
@@ -42,13 +50,20 @@ public class FXMLIngresoController implements Initializable {
             }
             boolean ok = authService.autenticarUsuario(username, password);
             if (ok) {
+                UsuarioDTO usuario = authService.buscarUsuarioPorUsernameYContrasena(username, password);
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Autenticación");
                 alert.setHeaderText(null);
                 alert.setContentText("Inicio de sesión exitoso.");
                 alert.showAndWait();
                 // cargar la vista principal
-                App.setRoot("/com/example/tecnostore/gui/views/FXMLPrincipal.fxml");
+                // App.setRoot("/com/example/tecnostore/gui/views/FXMLPrincipal.fxml");
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/tecnostore/gui/views/FXMLPrincipal.fxml"));
+                Stage stage = (Stage) loginButton.getScene().getWindow();
+                stage.setScene(new Scene(loader.load()));
+
+                FXMLPrincipalController principalController = loader.getController();
+                principalController.setUsuarioDTO(usuario);
             } else {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Autenticación");

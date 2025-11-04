@@ -9,7 +9,7 @@
 <AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.tecnostore.gui.controller.FXMLRegistroController">
    <children>
       <Label layoutX="252.0" layoutY="14.0" text="Nuevo registro" />
-      <Button layoutX="254.0" layoutY="305.0" mnemonicParsing="false" onAction="#registerUser" style="-fx-background-color: #84F527;" text="Registrarse" />
+      <Button layoutX="338.0" layoutY="318.0" mnemonicParsing="false" onAction="#registerUserButton" style="-fx-background-color: #84F527;" text="Registrarse" />
       <Label layoutX="27.0" layoutY="128.0" text="Nombre de usuario" />
       <Label layoutX="49.0" layoutY="179.0" text="Contraseña" />
       <TextField fx:id="textFieldUsername" layoutX="157.0" layoutY="124.0" promptText="abcdario123" />
@@ -18,5 +18,6 @@
       <TextField fx:id="textFieldName" layoutX="157.0" layoutY="72.0" promptText="Jhon Doe" />
       <Label layoutX="70.0" layoutY="232.0" text="Rol" />
       <ComboBox fx:id="comboBoxRole" layoutX="157.0" layoutY="228.0" prefWidth="150.0" />
+      <Button layoutX="219.0" layoutY="318.0" mnemonicParsing="false" onAction="#returnBackButton" text="Volver" />
    </children>
 </AnchorPane>

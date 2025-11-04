@@ -10,6 +10,9 @@ import com.example.tecnostore.data_access.ConexionBD;
 import com.example.tecnostore.logic.dto.UsuarioDTO;
 
 public class UsuarioDAO extends ConexionBD {
+    // SECCIÓN CRÍTICA: manejo de datos sensibles (hash de contraseña)
+    // - No loguear el hash ni la contraseña en ningún momento.
+    // - Asegurarse de que el formato del hash (hex o base64) sea consistente entre la BD y la app.
     private final static String SQL_INSERT = "INSERT INTO usuarios(nombre, usuario, contraseña_hash, rol_id, activo) VALUES (?, ?, ?, ?, ?)";
     private final static String SQL_UPDATE = "UPDATE usuarios SET nombre=?, usuario=?, contraseña_hash=?, rol_id=?, activo=? WHERE id=?";
     private final static String SQL_DELETE = "DELETE FROM usuarios WHERE id=?";
@@ -116,6 +119,8 @@ public class UsuarioDAO extends ConexionBD {
                     usuario.setId(rs.getInt("id"));
                     usuario.setNombre(rs.getString("nombre"));
                     usuario.setUsuario(rs.getString("usuario"));
+                    // aquí se lee el hash almacenado en la base de datos
+                    // IMPORTANTE: no imprimir ni exponer este valor en logs
                     usuario.setContrasenaHash(rs.getString("contraseña_hash"));
                     usuario.setRol_id(rs.getInt("rol_id"));
                     usuario.setActivo(rs.getBoolean("activo"));
@@ -143,6 +148,7 @@ public class UsuarioDAO extends ConexionBD {
                     usuario.setId(rs.getInt("id"));
                     usuario.setNombre(rs.getString("nombre"));
                     usuario.setUsuario(rs.getString("usuario"));
+                    // leer hash desde la base de datos (verificar formato antes de comparar)
                     usuario.setContrasenaHash(rs.getString("contraseña_hash"));
                     usuario.setRol_id(rs.getInt("rol_id"));
                     usuario.setActivo(rs.getBoolean("activo"));

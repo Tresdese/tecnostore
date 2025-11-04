@@ -9,6 +9,15 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/*
+ * SECCIÓN CRÍTICA DE SEGURIDAD:
+ * - Aquí se leen y usan las credenciales de la base de datos (URL, usuario, password).
+ * - Riesgo: si este archivo o el archivo de configuración ('config.properties') está en el
+ *   repositorio o en un artefacto distribuido, las credenciales quedarían expuestas.
+ * - Recomendación (no técnica): mover las credenciales fuera del código (variables de entorno
+ *   o gestor de secretos) y usar un pool de conexiones para evitar fugas.
+ */
+
 public class ConexionBD implements AutoCloseable {
 
     private static final Logger LOGGER = Logger.getLogger(ConexionBD.class.getName());
@@ -35,6 +44,7 @@ public class ConexionBD implements AutoCloseable {
             }
 
             try {
+                // Abre la conexión usando las credenciales. Atención: no imprimir ni loggear la contraseña.
                 this.connection = DriverManager.getConnection(URL, USER, PASSWORD);
             } catch (SQLException ex) {
                 LOGGER.log(Level.SEVERE, "No se pudo establecer la conexión con la base de datos", ex);

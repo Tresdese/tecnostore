@@ -5,6 +5,13 @@ import com.example.tecnostore.logic.dto.UsuarioDTO;
 import com.example.tecnostore.logic.utils.PasswordHasher;
 
 public class ServicioDeAutenticacion {
+    /*
+     * SECCIÓN CRÍTICA DE SEGURIDAD:
+     * - Aquí se decide cómo se guardan y comparan las contraseñas.
+     * - Riesgos: comparar hashes en texto plano o usar un hasher débil puede permitir accesos no autorizados.
+     * - Recomendación (no técnica): usar un método probado (BCrypt/Argon2) para guardar y verificar
+     *   contraseñas; nunca comparar contraseñas en texto plano ni mostrar detalles en mensajes al usuario.
+     */
     private final UsuarioDAO usuarioDAO;
 
     public ServicioDeAutenticacion() throws Exception{
@@ -28,11 +35,18 @@ public class ServicioDeAutenticacion {
             throw new Exception("El nombre de usuario ya está en uso.");
         }
 
-        String contrasenaHasheada = PasswordHasher.hashPassword(nuevoUsuario.getContrasenaHash());
-        nuevoUsuario.setContrasenaHash(contrasenaHasheada);
+    // Aquí se transforma la contraseña del usuario antes de guardarla.
+    // Nota: el hasher actual es rápido; recomendable usar BCrypt/Argon2 para mayor seguridad.
+    String contrasenaHasheada = PasswordHasher.hashPassword(nuevoUsuario.getContrasenaHash());
+    nuevoUsuario.setContrasenaHash(contrasenaHasheada);
         usuarioDAO.agregar(nuevoUsuario);
         resultado = true;
         return resultado;
+    }
+
+    public UsuarioDTO buscarUsuarioPorUsernameYContrasena(String username, String contrasena) throws Exception {
+        String contrasenaHasheada = PasswordHasher.hashPassword(contrasena);
+        return usuarioDAO.buscarPorUsernameYContrasena(username, contrasenaHasheada);
     }
 
     public boolean autenticarUsuario(String username, String contrasena) throws Exception{
@@ -46,6 +60,10 @@ public class ServicioDeAutenticacion {
             resultado = false;
         }
 
+        // Comparación final: asegurarse de no causar NullPointerException.
+        if (usuario == null || usuario.getContrasenaHash() == null) {
+            return false;
+        }
         resultado = usuario.getContrasenaHash().equals(contrasenaHasheada);
 
         return resultado;

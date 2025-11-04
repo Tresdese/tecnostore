@@ -4,8 +4,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import com.example.tecnostore.logic.dao.RolDAO;
-import com.example.tecnostore.logic.dto.RolDTO;
+import com.example.App;
 import com.example.tecnostore.logic.dto.UsuarioDTO;
 import com.example.tecnostore.logic.servicios.ServicioDeAutenticacion;
 import com.example.tecnostore.logic.servicios.ServicioRoles;
@@ -17,6 +16,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 
 public class FXMLRegistroController implements Initializable {
+
     @FXML
     private TextField textFieldName;
 
@@ -31,11 +31,9 @@ public class FXMLRegistroController implements Initializable {
 
     private ServicioRoles servicioRoles;
 
-    @FXML
-    private void registerUser(ActionEvent event) {
-        if (!textFieldName.getText().isBlank() || !textFieldUsername.getText().isBlank() || !textFieldPassword.getText().isBlank()) {
-            register();
-        }
+    @Override
+    public void initialize(URL url, ResourceBundle rb) {
+        loadRoles();
     }
 
     private void register() {
@@ -68,10 +66,21 @@ public class FXMLRegistroController implements Initializable {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }  
+
+    @FXML
+    private void registerUserButton(ActionEvent event) {
+        if (!textFieldName.getText().isBlank() || !textFieldUsername.getText().isBlank() || !textFieldPassword.getText().isBlank()) {
+            register();
+        }
     }
 
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        loadRoles();
-    }    
+    @FXML
+    private void returnBackButton(ActionEvent event) {
+        try {
+            App.setRoot("/com/example/tecnostore/gui/views/FXMLIngreso.fxml");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

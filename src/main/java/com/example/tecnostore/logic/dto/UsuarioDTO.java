@@ -78,8 +78,4 @@ public class UsuarioDTO {
         this.fechaCreacion = fechaCreacion;
     }
 
-    
-
-
-
 }

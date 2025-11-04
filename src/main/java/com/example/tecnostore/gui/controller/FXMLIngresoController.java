@@ -81,21 +81,6 @@ public class FXMLIngresoController implements Initializable {
         }
     }
     
-    @FXML
-    private void register(ActionEvent event) {
-        try {
-            // cargar la vista de registro
-            App.setRoot("/com/example/tecnostore/gui/views/FXMLRegistro.fxml");
-        } catch (IOException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error");
-            alert.setHeaderText(null);
-            alert.setContentText("No se pudo abrir el formulario de registro: " + e.getMessage());
-            alert.showAndWait();
-            e.printStackTrace();
-        }
-    }
-    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         try {

@@ -1,5 +1,6 @@
 package com.example.tecnostore.gui.controller;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -13,6 +14,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
@@ -113,6 +115,22 @@ public class FXMLPrincipalController implements Initializable {
     @FXML
     private void handleRegisterButton(ActionEvent event) {
         setUserRole(usuarioDTO.getRol_id());
+
+        try {
+            FXMLLoader loader = new FXMLLoader(App.class.getResource("/com/example/tecnostore/gui/views/FXMLRegistro.fxml"));
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            stage.setTitle("Registro de Usuario");
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText(null);
+            alert.setContentText("No se pudo abrir el formulario de registro: " + e.getMessage());
+            alert.showAndWait();
+            e.printStackTrace();
+        }
     }
 
     @FXML

@@ -12,10 +12,18 @@ import com.example.tecnostore.logic.servicios.ServicioRoles;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 
 public class FXMLRegistroController implements Initializable {
+    @FXML
+    private Button returnBackButton;
 
     @FXML
     private TextField textFieldName;
@@ -30,6 +38,13 @@ public class FXMLRegistroController implements Initializable {
     private ComboBox comboBoxRole;
 
     private ServicioRoles servicioRoles;
+    // Si el registro es exitoso, se almacena aquí el usuario creado para que el invocador modal
+    // pueda leerlo después de cerrar el diálogo.
+    private UsuarioDTO createdUser;
+
+    public UsuarioDTO getCreatedUser() {
+        return createdUser;
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -51,7 +66,22 @@ public class FXMLRegistroController implements Initializable {
             usuario.setRol_id(idRol);
 
             ServicioDeAutenticacion servicio = new ServicioDeAutenticacion();
-            servicio.guardarUsuario(usuario);
+            boolean ok = servicio.guardarUsuario(usuario);
+            if (ok) {
+                // indicar éxito y cerrar el diálogo modal
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Registro");
+                alert.setHeaderText(null);
+                alert.setContentText("Registro exitoso.");
+                alert.showAndWait();
+
+                // guardar el usuario creado para quien abrió el modal
+                this.createdUser = usuario;
+
+                // cerrar solo la ventana actual (el diálogo modal)
+                Stage currentStage = (Stage) returnBackButton.getScene().getWindow();
+                currentStage.close();
+            }
             
         } catch (Exception e) {
             e.printStackTrace();
@@ -72,13 +102,20 @@ public class FXMLRegistroController implements Initializable {
     private void registerUserButton(ActionEvent event) {
         if (!textFieldName.getText().isBlank() || !textFieldUsername.getText().isBlank() || !textFieldPassword.getText().isBlank()) {
             register();
+        } else {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Campos vacíos");
+            alert.setHeaderText(null);
+            alert.setContentText("Por favor, complete todos los campos.");
+            alert.showAndWait();
         }
     }
 
     @FXML
-    private void returnBackButton(ActionEvent event) {
+    private void handleReturnBackButton(ActionEvent event) {
         try {
-            App.setRoot("/com/example/tecnostore/gui/views/FXMLIngreso.fxml");
+            Stage stage = (Stage) returnBackButton.getScene().getWindow();
+            stage.close();
         } catch (Exception e) {
             e.printStackTrace();
         }

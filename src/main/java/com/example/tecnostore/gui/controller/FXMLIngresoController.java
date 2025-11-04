@@ -12,12 +12,13 @@ import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
-import com.example.App;
 import com.example.tecnostore.logic.dto.UsuarioDTO;
 import com.example.tecnostore.logic.servicios.ServicioDeAutenticacion;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.Parent;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class FXMLIngresoController implements Initializable {
@@ -56,8 +57,7 @@ public class FXMLIngresoController implements Initializable {
                 alert.setHeaderText(null);
                 alert.setContentText("Inicio de sesión exitoso.");
                 alert.showAndWait();
-                // cargar la vista principal
-                // App.setRoot("/com/example/tecnostore/gui/views/FXMLPrincipal.fxml");
+                
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/tecnostore/gui/views/FXMLPrincipal.fxml"));
                 Stage stage = (Stage) loginButton.getScene().getWindow();
                 stage.setScene(new Scene(loader.load()));
@@ -94,4 +94,42 @@ public class FXMLIngresoController implements Initializable {
             e.printStackTrace();
         }
     }    
+
+    @FXML
+    private void register(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/tecnostore/gui/views/FXMLRegistro.fxml"));
+            Parent root = loader.load();
+
+            Stage owner = (Stage) loginButton.getScene().getWindow();
+            Stage dialog = new Stage();
+            dialog.setTitle("Registro");
+            dialog.initOwner(owner);
+            dialog.initModality(Modality.APPLICATION_MODAL);
+            dialog.setResizable(false);
+            dialog.setScene(new Scene(root));
+
+            dialog.showAndWait();
+
+            Object controller = loader.getController();
+            if (controller instanceof FXMLRegistroController) {
+                FXMLRegistroController regCtrl = (FXMLRegistroController) controller;
+                UsuarioDTO nuevo = regCtrl.getCreatedUser();
+                if (nuevo != null) {
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Registro");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Usuario registrado: " + nuevo.getUsuario());
+                    alert.showAndWait();
+                }
+            }
+        } catch (Exception e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText(null);
+            alert.setContentText("No se pudo abrir el formulario de registro: " + e.getMessage());
+            alert.showAndWait();
+            e.printStackTrace();
+        }
+    }
 }

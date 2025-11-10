@@ -162,4 +162,16 @@ public class UsuarioDAO extends ConexionBD {
         }
         return usuario;
     }
+
+    public boolean cambiarStatusActivo(UsuarioDTO dto, boolean nuevoEstado) throws Exception {
+        String sql = "UPDATE usuarios SET activo=? WHERE id=?";
+        try (PreparedStatement ps = getConnection().prepareStatement(sql)) {
+            ps.setBoolean(1, nuevoEstado);
+            ps.setInt(2, dto.getId());
+            int filasAfectadas = ps.executeUpdate();
+            return filasAfectadas > 0;
+        } catch (SQLException e) {
+            throw new Exception("Error al cambiar el estado activo del usuario: " + e.getMessage());
+        }
+    }
 }

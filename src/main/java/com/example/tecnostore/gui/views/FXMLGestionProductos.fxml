@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.tecnostore.gui.controller.FXMLGestionProductosController">
+   <children>
+      <TableView fx:id="productTable" layoutX="20.0" layoutY="80.0" prefHeight="297.0" prefWidth="557.0">
+        <columns>
+          <TableColumn fx:id="idColumn" prefWidth="75.0" text="ID" />
+          <TableColumn fx:id="nameColumn" prefWidth="111.0" text="Nombre" />
+            <TableColumn fx:id="priceColumn" prefWidth="81.0" text="Precio" />
+            <TableColumn fx:id="stockColumn" prefWidth="81.0" text="Stock" />
+            <TableColumn fx:id="statusColumn" prefWidth="51.0" text="Activo" />
+            <TableColumn fx:id="descriptionColumn" prefWidth="156.0" text="Descripcion" />
+        </columns>
+      </TableView>
+      <Button fx:id="insertProductButton" layoutX="289.0" layoutY="23.0" mnemonicParsing="false" onAction="#handleInsertProductButton" text="Dar de alta" />
+      <Button fx:id="editProductButton" layoutX="371.0" layoutY="23.0" mnemonicParsing="false" onAction="#handleEditProductButton" text="Editar" />
+      <Button fx:id="deleteProductButton" layoutX="427.0" layoutY="23.0" mnemonicParsing="false" onAction="#handleDeleteProductButton" text="Dar de baja" />
+   </children>
+</AnchorPane>

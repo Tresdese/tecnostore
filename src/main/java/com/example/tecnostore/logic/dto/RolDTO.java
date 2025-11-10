@@ -5,6 +5,15 @@ public class RolDTO {
     private String nombre;
     private String descripcion;
 
+    public RolDTO() {
+    }
+
+    public RolDTO(int id, String nombre, String descripcion) {
+        this.id = id;
+        this.nombre = nombre;
+        this.descripcion = descripcion;
+    }
+
     public int getId() {
         return id;
     }
@@ -29,10 +38,13 @@ public class RolDTO {
         this.descripcion = descripcion;
     }
 
-    public RolDTO(int id, String nombre, String descripcion) {
-        this.id = id;
-        this.nombre = nombre;
-        this.descripcion = descripcion;
+    @Override
+    public String toString() {
+        return "RolDTO{" +
+                "id=" + id +
+                ", nombre='" + nombre + '\'' +
+                ", descripcion='" + descripcion + '\'' +
+                '}';
     }
     
 }

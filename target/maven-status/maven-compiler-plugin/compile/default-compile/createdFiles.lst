@@ -2,8 +2,8 @@ com\example\tecnostore\logic\dao\UsuarioDAO.class
 com\example\tecnostore\data_access\ConexionBD.class
 module-info.class
 com\example\App.class
+com\example\tecnostore\logic\dto\UsuarioDTO.class
 com\example\tecnostore\gui\controller\FXMLIngresoController.class
 com\example\tecnostore\gui\controller\FXMLRegistroController.class
 com\example\tecnostore\logic\dto\RolDTO.class
-com\example\tecnostore\logic\dto\UsuarioDTO.class
 com\example\tecnostore\logic\servicios\ServicioDeAutenticacion.class

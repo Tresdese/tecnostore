@@ -35,10 +35,10 @@ public class ServicioDeAutenticacion {
             throw new Exception("El nombre de usuario ya está en uso.");
         }
 
-    // Aquí se transforma la contraseña del usuario antes de guardarla.
-    // Nota: el hasher actual es rápido; recomendable usar BCrypt/Argon2 para mayor seguridad.
-    String contrasenaHasheada = PasswordHasher.hashPassword(nuevoUsuario.getContrasenaHash());
-    nuevoUsuario.setContrasenaHash(contrasenaHasheada);
+        // Aquí se transforma la contraseña del usuario antes de guardarla.
+        // Nota: el hasher actual es rápido; recomendable usar BCrypt/Argon2 para mayor seguridad.
+        String contrasenaHasheada = PasswordHasher.hashPassword(nuevoUsuario.getContrasenaHash());
+        nuevoUsuario.setContrasenaHash(contrasenaHasheada);
         usuarioDAO.agregar(nuevoUsuario);
         resultado = true;
         return resultado;

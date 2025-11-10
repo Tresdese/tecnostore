@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.tecnostore.gui.controller.FXMLInsercionProductoController">
+	<children>
+		<VBox alignment="TOP_LEFT" layoutX="14.0" layoutY="14.0" spacing="8.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0" AnchorPane.bottomAnchor="10.0">
+			<children>
+				<Label text="Alta de producto" />
+
+				<HBox spacing="8.0" alignment="CENTER_LEFT">
+					<children>
+						<Label text="Nombre:" />
+						<TextField fx:id="tfNombre" promptText="Nombre" HBox.hgrow="ALWAYS" />
+					</children>
+				</HBox>
+
+				<HBox spacing="8.0" alignment="CENTER_LEFT">
+					<children>
+						<Label text="Descripción:" />
+						<TextField fx:id="tfDescripcion" promptText="Descripción" HBox.hgrow="ALWAYS" />
+					</children>
+				</HBox>
+
+				<HBox spacing="8.0" alignment="CENTER_LEFT">
+					<children>
+						<Label text="Precio:" />
+						<TextField fx:id="tfPrecio" promptText="Precio" />
+					</children>
+				</HBox>
+
+				<HBox spacing="8.0" alignment="CENTER_LEFT">
+					<children>
+						<Label text="Stock:" />
+						<TextField fx:id="tfStock" promptText="Stock" />
+					</children>
+				</HBox>
+
+				<HBox spacing="8.0" alignment="CENTER_LEFT">
+					<children>
+						<Label text="Sucursal ID:" />
+						<TextField fx:id="tfSucursal" promptText="Sucursal ID" />
+					</children>
+				</HBox>
+
+				<HBox spacing="8.0" alignment="CENTER_LEFT">
+					<children>
+						<Label text="Estado:" />
+						<ComboBox fx:id="comboEstado" prefWidth="150.0" />
+					</children>
+				</HBox>
+
+				<HBox spacing="10.0" alignment="CENTER_RIGHT">
+					<children>
+						<Button fx:id="btnCancelar" text="Cancelar" />
+						<Button fx:id="btnGuardar" text="Guardar" />
+					</children>
+				</HBox>
+			</children>
+		</VBox>
+	</children>
+</AnchorPane>

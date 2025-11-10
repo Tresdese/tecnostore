@@ -78,4 +78,17 @@ public class UsuarioDTO {
         this.fechaCreacion = fechaCreacion;
     }
 
+    @Override
+    public String toString() {
+        return "UsuarioDTO{" +
+                "id=" + id +
+                ", nombre='" + nombre + '\'' +
+                ", usuario='" + usuario + '\'' +
+                ", contrasenaHash='" + contrasenaHash + '\'' +
+                ", rol_id=" + rol_id +
+                ", activo=" + activo +
+                ", fechaCreacion=" + fechaCreacion +
+                '}';
+    }
+
 }

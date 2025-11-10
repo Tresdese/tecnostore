@@ -18,6 +18,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
+import javafx.stage.Modality;
 
 public class FXMLPrincipalController implements Initializable {
     @FXML
@@ -35,6 +36,8 @@ public class FXMLPrincipalController implements Initializable {
     private Button employeeListButton;
 
     private UsuarioDTO usuarioDTO;
+    @FXML
+    private Button manageProductsButton;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -146,6 +149,26 @@ public class FXMLPrincipalController implements Initializable {
     @FXML
     private void handleEmployeeListButton(ActionEvent event) {
         setUserRole(usuarioDTO.getRol_id());
+    }
+
+    @FXML
+    private void handleManageProductsButton(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/tecnostore/gui/views/FXMLGestionProductos.fxml"));
+            Parent root = loader.load();
+
+            Stage modalStage = new Stage();
+            modalStage.setTitle("Gestión de productos");
+            modalStage.initModality(Modality.WINDOW_MODAL);
+
+            Stage owner = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            modalStage.initOwner(owner);
+
+            modalStage.setScene(new Scene(root));
+            modalStage.showAndWait();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
     
 }

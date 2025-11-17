@@ -11,5 +11,6 @@ module com.example {
     opens com.example.tecnostore.logic.dto to javafx.base, javafx.fxml;
     exports com.example;
     exports com.example.tecnostore.logic.dao;
+    exports com.example.tecnostore.logic.dto;
 
 }

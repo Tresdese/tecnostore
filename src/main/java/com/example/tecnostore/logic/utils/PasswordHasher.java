@@ -5,6 +5,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class PasswordHasher {
+    
     /*
      * SECCIÓN CRÍTICA DE SEGURIDAD:
      * - Aquí se calcula el 'hash' de la contraseña.
@@ -23,10 +24,10 @@ public class PasswordHasher {
             sb.append(String.format("%02x", b));
         }
         return sb.toString();
-    } catch (NoSuchAlgorithmException e) {
-        throw new RuntimeException("Error al cifrar la contraseña", e);
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("Error al cifrar la contraseña", e);
+        }
     }
-}
 
     public static boolean verifyPassword(String plainPassword, String hashedPassword) {
         String hashedInput = hashPassword(plainPassword);

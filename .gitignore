@@ -46,3 +46,4 @@ src/main/resources/config.properties
 .idea/
 .mvn/
 .vscode/
+.out/

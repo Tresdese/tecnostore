@@ -6,10 +6,16 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.example.tecnostore.data_access.ConexionBD;
 import com.example.tecnostore.logic.dto.RolDTO;
 
 public class RolDAO extends ConexionBD {
+
+    private static final Logger LOGGER = LogManager.getLogger(RolDAO.class);
+
     private final static String SQL_SELECT_BY_ID = "SELECT id, nombre, descripcion FROM roles WHERE id=?";
     private final static String SQL_SELECT_ALL = "SELECT id, nombre, descripcion FROM roles";
     
@@ -30,6 +36,7 @@ public class RolDAO extends ConexionBD {
                 roles.add(rol);
             }
         } catch (SQLException e) {
+            LOGGER.error("Error al buscar todos los roles: {}", e.getMessage(), e);
             throw new Exception("Error al buscar todos los roles: " + e.getMessage());
         }
         return roles;
@@ -49,6 +56,7 @@ public class RolDAO extends ConexionBD {
                 }
             }
         } catch (SQLException e) {
+            LOGGER.error("Error al buscar rol por ID: {}", e.getMessage(), e);
             throw new Exception("Error al buscar rol por ID: " + e.getMessage());
         }
         return rol;

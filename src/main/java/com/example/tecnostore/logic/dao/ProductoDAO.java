@@ -8,10 +8,15 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.example.tecnostore.data_access.ConexionBD;
 import com.example.tecnostore.logic.dto.ProductoDTO;
 
 public class ProductoDAO extends ConexionBD {
+
+    private static final Logger LOGGER = LogManager.getLogger(ProductoDAO.class);
 
     private final static String SQL_INSERT = "INSERT INTO productos(nombre, descripcion, precio, stock, sucursal_id, activo, fecha_creacion) VALUES (?, ?, ?, ?, ?, ?, ?)";
     private final static String SQL_UPDATE = "UPDATE productos SET nombre=?, descripcion=?, precio=?, stock=?, sucursal_id=?, activo=? WHERE id=?";
@@ -42,10 +47,14 @@ public class ProductoDAO extends ConexionBD {
             try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
                     dto.setId(generatedKeys.getInt(1));
+                    LOGGER.info("Producto agregado con ID: {}", dto.getId());
+                } else {
+                    throw new SQLException("No se pudo obtener el ID generado para el producto.");
                 }
+
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.error("Error al agregar producto: {}", e.getMessage(), e);
             throw new Exception("Error al agregar producto: " + e.getMessage());
         }
     }
@@ -60,7 +69,9 @@ public class ProductoDAO extends ConexionBD {
             ps.setBoolean(6, dto.isActivo());
             ps.setInt(7, dto.getId());
             ps.executeUpdate();
+            LOGGER.info("Producto actualizado con ID: {}", dto.getId());
         } catch (SQLException e) {
+            LOGGER.error("Error al actualizar producto: {}", e.getMessage(), e);
             throw new Exception("Error al actualizar producto: " + e.getMessage());
         }
     }
@@ -70,7 +81,9 @@ public class ProductoDAO extends ConexionBD {
             ps.setInt(1, nuevoStock);
             ps.setInt(2, productoId);
             ps.executeUpdate();
+            LOGGER.info("Stock actualizado para el producto con ID: {}", productoId);
         } catch (SQLException e) {
+            LOGGER.error("Error al actualizar stock del producto: {}", e.getMessage(), e);
             throw new Exception("Error al actualizar stock del producto: " + e.getMessage());
         }
     }
@@ -79,7 +92,9 @@ public class ProductoDAO extends ConexionBD {
         try (PreparedStatement ps = getConnection().prepareStatement(SQL_DELETE)) {
             ps.setInt(1, producto.getId());
             ps.executeUpdate();
+            LOGGER.info("Producto eliminado con ID: {}", producto.getId());
         } catch (SQLException e) {
+            LOGGER.error("Error al actualizar stock del producto: {}", e.getMessage(), e);
             throw new Exception("Error al eliminar producto: " + e.getMessage());
         }
     }
@@ -88,7 +103,9 @@ public class ProductoDAO extends ConexionBD {
         try (PreparedStatement ps = getConnection().prepareStatement(SQL_LOGIC_DELETE)) {
             ps.setInt(1, producto.getId());
             ps.executeUpdate();
+            LOGGER.info("Producto eliminado lógicamente con ID: {}", producto.getId());
         } catch (SQLException e) {
+            LOGGER.error("Error al actualizar stock del producto: {}", e.getMessage(), e);
             throw new Exception("Error al eliminar lógicamente el producto: " + e.getMessage());
         }
         return true;
@@ -108,9 +125,11 @@ public class ProductoDAO extends ConexionBD {
                     producto.setSucursal_id(rs.getInt("sucursal_id"));
                     producto.setActivo(rs.getBoolean("activo"));
                     producto.setFechaCreacion(rs.getTimestamp("fecha_creacion"));
+                    LOGGER.info("Producto encontrado con ID: {}", producto.getId());
                 }
             }
         } catch (SQLException e) {
+            LOGGER.error("Error al actualizar stock del producto: {}", e.getMessage(), e);
             throw new Exception("Error al buscar producto por ID: " + e.getMessage());
         }
         return producto;
@@ -119,11 +138,13 @@ public class ProductoDAO extends ConexionBD {
     public boolean obtenerPorNombre(String nombreProducto) throws Exception {
         try (PreparedStatement ps = getConnection().prepareStatement(SQL_SELECT_BY_NAME)) {
             ps.setString(1, nombreProducto);
+            LOGGER.info("Buscando producto por nombre: {}", nombreProducto);
             
             try (ResultSet rs = ps.executeQuery()) {
                 return rs.next();
             }
         } catch (SQLException e) {
+            LOGGER.error("Error al actualizar stock del producto: {}", e.getMessage(), e);
             throw new Exception("Error al buscar nombre: " + e.getMessage());
         }
     }
@@ -145,8 +166,10 @@ public class ProductoDAO extends ConexionBD {
                 dto.setFechaCreacion(rs.getTimestamp("fecha_creacion"));
                 productos.add(dto);
             }
+            LOGGER.info("Productos obtenidos: {}", productos.size());
 
         } catch (SQLException e) {
+            LOGGER.error("Error al actualizar stock del producto: {}", e.getMessage(), e);
             throw new Exception("Error al obtener productos: " + e.getMessage());
         }
 

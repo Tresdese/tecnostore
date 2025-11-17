@@ -30,9 +30,31 @@ public class ClienteServiceTest {
                 st.execute("DROP TABLE IF EXISTS clientes");
             st.execute("CREATE TABLE clientes (id INT AUTO_INCREMENT PRIMARY KEY, nombre VARCHAR(255), email VARCHAR(255), telefono VARCHAR(50), activo BOOLEAN DEFAULT TRUE)");
 
-            st.execute("SET FOREIGN_KEY_CHECKS = 0;");
-            st.execute("TRUNCATE TABLE clientes;");
-            st.execute("SET FOREIGN_KEY_CHECKS = 1;");
+            String product = conn.getMetaData().getDatabaseProductName().toLowerCase();
+            boolean isMySql = product.contains("mysql");
+            boolean isH2 = product.contains("h2");
+
+            try {
+                if (isMySql) {
+                    st.execute("SET FOREIGN_KEY_CHECKS = 0");
+                } else if (isH2) {
+                    st.execute("SET REFERENTIAL_INTEGRITY FALSE");
+                }
+            } catch (SQLException ignore) {
+                // Si la sentencia no es compatible, continuar
+            }
+
+            st.execute("TRUNCATE TABLE clientes");
+
+            try {
+                if (isMySql) {
+                    st.execute("SET FOREIGN_KEY_CHECKS = 1");
+                } else if (isH2) {
+                    st.execute("SET REFERENTIAL_INTEGRITY TRUE");
+                }
+            } catch (SQLException ignore) {
+                // Ignorar si no es compatible
+            }
             System.out.println("--- Base de datos limpiada para pruebas ---");
 
         } catch (SQLException e) {

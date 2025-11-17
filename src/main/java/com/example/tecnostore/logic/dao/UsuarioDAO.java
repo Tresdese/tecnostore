@@ -6,10 +6,16 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.sql.Timestamp;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.example.tecnostore.data_access.ConexionBD;
 import com.example.tecnostore.logic.dto.UsuarioDTO;
 
 public class UsuarioDAO extends ConexionBD {
+
+    private static final Logger LOGGER = LogManager.getLogger(UsuarioDAO.class);
+
     // SECCIÓN CRÍTICA: manejo de datos sensibles (hash de contraseña)
     // - No loguear el hash ni la contraseña en ningún momento.
     // - Asegurarse de que el formato del hash (hex o base64) sea consistente entre la BD y la app.
@@ -40,10 +46,13 @@ public class UsuarioDAO extends ConexionBD {
             try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
                     dto.setId(generatedKeys.getInt(1));
+                    LOGGER.info("Usuario agregado con ID: {}", dto.getId());
+                } else {
+                    throw new SQLException("No se pudo obtener el ID generado para el usuario.");
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.error("Error al agregar usuario: {}", e.getMessage(), e);
             throw new Exception("Error al agregar usuario: " + e.getMessage());
         }
     }
@@ -57,7 +66,9 @@ public class UsuarioDAO extends ConexionBD {
             ps.setBoolean(5, dto.isActivo());
             ps.setInt(6, dto.getId());
             ps.executeUpdate();
+            LOGGER.info("Usuario actualizado con ID: {}", dto.getId());
         } catch (SQLException e) {
+            LOGGER.error("Error al actualizar usuario: {}", e.getMessage(), e);
             throw new Exception("Error al actualizar usuario: " + e.getMessage());
         }
     }
@@ -66,7 +77,9 @@ public class UsuarioDAO extends ConexionBD {
         try (PreparedStatement ps = getConnection().prepareStatement(SQL_DELETE)) {
             ps.setInt(1, dto.getId());
             ps.executeUpdate();
+            LOGGER.info("Usuario eliminado con ID: {}", dto.getId());
         } catch (SQLException e) {
+            LOGGER.error("Error al actualizar usuario: {}", e.getMessage(), e);
             throw new Exception("Error al eliminar usuario: " + e.getMessage());
         }
     }
@@ -86,12 +99,14 @@ public class UsuarioDAO extends ConexionBD {
                     
                     Timestamp fechaCreacionSql = rs.getTimestamp("fecha_creacion");
                     dto.setFechaCreacion(fechaCreacionSql != null ? fechaCreacionSql.toLocalDateTime() : null);
+                    LOGGER.info("Usuario encontrado con ID: {}", dto.getId());
                     return dto;
                 } else {
                     return null;
                 }
             }
         } catch (SQLException e) {
+            LOGGER.error("Error al actualizar usuario: {}", e.getMessage(), e);
             throw new Exception("Error al buscar usuario por ID: " + e.getMessage());
         }
     }
@@ -101,9 +116,11 @@ public class UsuarioDAO extends ConexionBD {
             ps.setInt(1, dto.getId());
             
             try (ResultSet rs = ps.executeQuery()) {
+                LOGGER.info("Buscando ID repetido para el usuario con ID: {}", dto.getId());
                 return rs.next();
             }
         } catch (SQLException e) {
+            LOGGER.error("Error al actualizar usuario: {}", e.getMessage(), e);
             throw new Exception("Error al buscar ID: " + e.getMessage());
         }
     }
@@ -127,9 +144,11 @@ public class UsuarioDAO extends ConexionBD {
                     
                     Timestamp fechaCreacionSql = rs.getTimestamp("fecha_creacion");
                     usuario.setFechaCreacion(fechaCreacionSql != null ? fechaCreacionSql.toLocalDateTime() : null);
+                    LOGGER.info("Usuario encontrado con nombre de usuario: {}", username);
                 }
             }
         } catch (SQLException e) {
+            LOGGER.error("Error al actualizar usuario: {}", e.getMessage(), e);
             throw new Exception("Error al buscar usuario por nombre de usuario: " + e.getMessage());
         }
         return usuario;
@@ -155,9 +174,11 @@ public class UsuarioDAO extends ConexionBD {
                     
                     Timestamp fechaCreacionSql = rs.getTimestamp("fecha_creacion");
                     usuario.setFechaCreacion(fechaCreacionSql != null ? fechaCreacionSql.toLocalDateTime() : null);
+                    LOGGER.info("Usuario encontrado con nombre de usuario: {}", username);
                 }
             }
         } catch (SQLException e) {
+            LOGGER.error("Error al actualizar usuario: {}", e.getMessage(), e);
             throw new Exception("Error al buscar usuario por nombre de usuario y contraseña: " + e.getMessage());
         }
         return usuario;
@@ -169,8 +190,10 @@ public class UsuarioDAO extends ConexionBD {
             ps.setBoolean(1, nuevoEstado);
             ps.setInt(2, dto.getId());
             int filasAfectadas = ps.executeUpdate();
+            LOGGER.info("Se cambió el estado activo del usuario con ID {} a {}", dto.getId(), nuevoEstado);
             return filasAfectadas > 0;
         } catch (SQLException e) {
+            LOGGER.error("Error al actualizar usuario: {}", e.getMessage(), e);
             throw new Exception("Error al cambiar el estado activo del usuario: " + e.getMessage());
         }
     }

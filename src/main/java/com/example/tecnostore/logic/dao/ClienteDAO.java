@@ -7,10 +7,16 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import com.example.App;
 import com.example.tecnostore.data_access.ConexionBD;
 import com.example.tecnostore.logic.dto.ClienteDTO;
 
 public class ClienteDAO extends ConexionBD {
+
+    private static final Logger LOGGER = LogManager.getLogger(ClienteDAO.class);
 
     private static final String SQL_INSERT = "INSERT INTO clientes (nombre, email, telefono, activo) VALUES (?, ?, ?, ?)";
     private static final String SQL_UPDATE = "UPDATE clientes SET nombre = ?, email = ?, telefono = ?, activo = ? WHERE id = ?";
@@ -39,6 +45,7 @@ public class ClienteDAO extends ConexionBD {
 
             return filas > 0;
         } catch (SQLException e) {
+            LOGGER.error("Error al registrar cliente: {}", e.getMessage(), e);
             throw new Exception("Error al registrar cliente: " + e.getMessage(), e);
         }
     }
@@ -54,6 +61,7 @@ public class ClienteDAO extends ConexionBD {
             int filas = ps.executeUpdate();
             return filas > 0;
         } catch (SQLException e) {
+            LOGGER.error("Error al actualizar cliente: {}", e.getMessage(), e);
             throw new Exception("Error al actualizar cliente: " + e.getMessage(), e);
         }
     }
@@ -64,6 +72,7 @@ public class ClienteDAO extends ConexionBD {
             int filas = ps.executeUpdate();
             return filas > 0;
         } catch (SQLException e) {
+            LOGGER.error("Error al eliminar lógicamente el cliente: {}", e.getMessage(), e);
             throw new Exception("Error al eliminar lógicamente el cliente: " + e.getMessage(), e);
         }
     }
@@ -81,6 +90,7 @@ public class ClienteDAO extends ConexionBD {
                 }
             }
         } catch (SQLException e) {
+            LOGGER.error("Error al consultar clientes: {}", e.getMessage(), e);
             throw new Exception("Error al consultar clientes: " + e.getMessage(), e);
         }
         return clientes;
@@ -95,6 +105,7 @@ public class ClienteDAO extends ConexionBD {
                 }
             }
         } catch (SQLException e) {
+            LOGGER.error("Error al verificar email: {}", e.getMessage(), e);
             throw new Exception("Error al verificar email: " + e.getMessage(), e);
         }
         return false;

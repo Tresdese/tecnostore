@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+<VBox xmlns="http://javafx.com/javafx/17.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.tecnostore.gui.controller.FXMLRegistroCompraViewController" spacing="20" padding="20">
+    <children>
+        <Label text="Registrar compra a proveedor" style="-fx-font-weight: bold; -fx-font-size: 18px;" />
+        <GridPane hgap="15" vgap="10" padding="15" style="-fx-background-color: #e3f2fd; -fx-background-radius: 5;">
+            <children>
+                <Label text="Número de compra:" GridPane.rowIndex="0" GridPane.columnIndex="0" />
+                <TextField fx:id="numCompraField" GridPane.rowIndex="0" GridPane.columnIndex="1" />
+                <Label text="Fecha:" GridPane.rowIndex="0" GridPane.columnIndex="2" />
+                <DatePicker fx:id="fechaPicker" GridPane.rowIndex="0" GridPane.columnIndex="3" />
+
+                <Label text="Proveedor:" GridPane.rowIndex="1" GridPane.columnIndex="0" />
+                <TextField fx:id="proveedorField" GridPane.rowIndex="1" GridPane.columnIndex="1" />
+                <Label text="Sucursal:" GridPane.rowIndex="1" GridPane.columnIndex="2" />
+                <TextField fx:id="sucursalField" GridPane.rowIndex="1" GridPane.columnIndex="3" />
+            </children>
+        </GridPane>
+        <VBox spacing="10" VBox.vgrow="ALWAYS">
+            <children>
+                <Label text="Productos Añadidos" style="-fx-font-weight: bold;" />
+                <TableView fx:id="productsTable" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn text="Producto" />
+                        <TableColumn text="Cantidad" />
+                        <TableColumn text="Precio Unitario" />
+                        <TableColumn text="Subtotal" />
+                    </columns>
+                </TableView>
+            </children>
+        </VBox>
+        <BorderPane>
+            <right>
+                <VBox spacing="10" alignment="BOTTOM_RIGHT">
+                    <children>
+                        <GridPane hgap="10" vgap="5" alignment="CENTER_RIGHT" style="-fx-background-color: #1976d2; -fx-padding: 10; -fx-background-radius: 5;">
+                            <children>
+                                <Label text="Subtotal:" textFill="white" style="-fx-font-weight: bold;" GridPane.rowIndex="0" GridPane.columnIndex="0" />
+                                <Label fx:id="lblSubtotal" text="$0.00" textFill="white" style="-fx-font-weight: bold;" GridPane.rowIndex="0" GridPane.columnIndex="1" />
+                                <Label text="Impuestos:" textFill="white" style="-fx-font-weight: bold;" GridPane.rowIndex="1" GridPane.columnIndex="0" />
+                                <Label fx:id="lblImpuestos" text="$0.00" textFill="white" style="-fx-font-weight: bold;" GridPane.rowIndex="1" GridPane.columnIndex="1" />
+                                <Label text="Total:" textFill="white" style="-fx-font-size: 14px; -fx-font-weight: bold;" GridPane.rowIndex="2" GridPane.columnIndex="0" />
+                                <Label fx:id="lblTotal" text="$0.00" textFill="white" style="-fx-font-size: 14px; -fx-font-weight: bold;" GridPane.rowIndex="2" GridPane.columnIndex="1" />
+                            </children>
+                        </GridPane>
+                        <HBox spacing="15" alignment="CENTER_RIGHT">
+                            <children>
+                                <Button text="Guardar Borrador" onAction="#onGuardarBorrador" />
+                                <Button text="Registrar Compra" onAction="#onRegistrarCompra" style="-fx-background-color: #1565c0; -fx-text-fill: white; -fx-font-weight: bold;" />
+                            </children>
+                        </HBox>
+                    </children>
+                </VBox>
+            </right>
+        </BorderPane>
+    </children>
+</VBox>

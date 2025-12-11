@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+<VBox xmlns="http://javafx.com/javafx/17.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.tecnostore.gui.controller.FXMLReportesViewController" spacing="15" padding="20">
+    <children>
+        <Label text="Panel de Reportes" style="-fx-font-weight: bold; -fx-font-size: 18px;" />
+        <GridPane hgap="10" vgap="10" padding="10" style="-fx-border-color: lightgray; -fx-padding: 10px;">
+            <children>
+                <Label text="Filtros Comunes" GridPane.rowIndex="0" GridPane.columnIndex="0" />
+                <Label text="Fecha Inicio:" GridPane.rowIndex="1" GridPane.columnIndex="0" />
+                <DatePicker GridPane.rowIndex="1" GridPane.columnIndex="1" />
+                <Label text="Fecha Fin:" GridPane.rowIndex="2" GridPane.columnIndex="0" />
+                <DatePicker GridPane.rowIndex="2" GridPane.columnIndex="1" />
+                <Label text="Sucursal:" GridPane.rowIndex="3" GridPane.columnIndex="0" />
+                <TextField GridPane.rowIndex="3" GridPane.columnIndex="1" />
+
+                <Label text="Filtros Especiales" GridPane.rowIndex="0" GridPane.columnIndex="2" />
+                <Label text="Vendedor:" GridPane.rowIndex="1" GridPane.columnIndex="2" />
+                <TextField GridPane.rowIndex="1" GridPane.columnIndex="3" />
+            </children>
+        </GridPane>
+        <HBox spacing="15">
+            <children>
+                <VBox spacing="10">
+                    <children>
+                        <Pane minHeight="200" style="-fx-border-color: darkgray; -fx-background-color: #f0f0f0;">
+                            <children>
+                                <Label text="Gráfica de Barras" />
+                            </children>
+                        </Pane>
+                        <Pane minHeight="200" style="-fx-border-color: darkgray; -fx-background-color: #f0f0f0;">
+                            <children>
+                                <Label text="Gráfica Lineal" />
+                            </children>
+                        </Pane>
+                    </children>
+                </VBox>
+                <VBox spacing="10" HBox.hgrow="ALWAYS">
+                    <children>
+                        <Label text="Detalle de Reportes" />
+                        <TableView fx:id="reportTable" VBox.vgrow="ALWAYS">
+                            <columns>
+                                <TableColumn text="Fecha" />
+                                <TableColumn text="Sucursal" />
+                                <TableColumn text="Vendedor" />
+                                <TableColumn text="Producto" />
+                                <TableColumn text="Total" />
+                            </columns>
+                        </TableView>
+                    </children>
+                </VBox>
+            </children>
+        </HBox>
+        <HBox spacing="10">
+            <children>
+                <Button text="Generar Reporte" onAction="#onGenerar" />
+                <Button text="Exportar Excel-PDF" onAction="#onExportar" />
+            </children>
+        </HBox>
+    </children>
+</VBox>

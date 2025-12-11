@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<VBox xmlns="http://javafx.com/javafx/17.0.2" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.example.tecnostore.gui.controller.UsuarioModalController"
+      spacing="15" alignment="CENTER">
+    <children>
+        <Label text="DETALLE DE USUARIO">
+            <font>
+                <Font name="System Bold" size="12" />
+            </font>
+        </Label>
+        <GridPane hgap="10" vgap="10">
+            <columnConstraints>
+                <ColumnConstraints halignment="RIGHT" />
+                <ColumnConstraints hgrow="ALWAYS" />
+            </columnConstraints>
+            <children>
+                <Label text="Nombre:" GridPane.rowIndex="0" GridPane.columnIndex="0" />
+                <TextField fx:id="nombreField" GridPane.rowIndex="0" GridPane.columnIndex="1" />
+
+                <Label text="Contraseña:" GridPane.rowIndex="1" GridPane.columnIndex="0" />
+                <PasswordField fx:id="passwordField" GridPane.rowIndex="1" GridPane.columnIndex="1" />
+
+                <Label text="Rol:" GridPane.rowIndex="2" GridPane.columnIndex="0" />
+                <ComboBox fx:id="rolCombo" GridPane.rowIndex="2" GridPane.columnIndex="1" />
+
+                <Label text="Activo:" GridPane.rowIndex="3" GridPane.columnIndex="0" />
+                <CheckBox fx:id="activoCheckbox" GridPane.rowIndex="3" GridPane.columnIndex="1" />
+            </children>
+        </GridPane>
+        <HBox spacing="10" alignment="CENTER">
+            <children>
+                <Button fx:id="guardarButton" text="Guardar" onAction="#onGuardar" />
+                <Button fx:id="cancelarButton" text="Cancelar" onAction="#onCancelar" />
+            </children>
+        </HBox>
+    </children>
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20" />
+    </padding>
+</VBox>

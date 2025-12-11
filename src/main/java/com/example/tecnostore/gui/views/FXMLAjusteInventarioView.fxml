@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+<BorderPane xmlns="http://javafx.com/javafx/17.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.tecnostore.gui.controller.FXMLAjusteInventarioViewController" padding="10">
+    <top>
+        <HBox spacing="10" padding="0,0,10,0">
+            <children>
+                <TextField fx:id="searchField" promptText="Buscar registros de ajuste..." prefWidth="300" />
+                <Button text="Buscar" onAction="#onBuscar" />
+                <Pane HBox.hgrow="ALWAYS" />
+                <Button text="+ Nuevo Ajuste" onAction="#onNuevoAjuste" style="-fx-font-weight: bold;" />
+            </children>
+        </HBox>
+    </top>
+    <center>
+        <TableView fx:id="ajusteTable">
+            <columns>
+                <TableColumn text="Fecha" />
+                <TableColumn text="Usuario" />
+                <TableColumn text="Producto" />
+                <TableColumn text="Tipo" />
+                <TableColumn text="Cantidad" />
+                <TableColumn text="Razón" />
+            </columns>
+        </TableView>
+    </center>
+</BorderPane>

@@ -4,24 +4,25 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import com.example.App;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.example.tecnostore.logic.dto.UsuarioDTO;
 import com.example.tecnostore.logic.servicios.ServicioDeAutenticacion;
 import com.example.tecnostore.logic.servicios.ServicioRoles;
 
 import javafx.event.ActionEvent;
-import javafx.fxml.Initializable;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
+import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
 
 public class FXMLRegistroController implements Initializable {
+    private static final Logger LOGGER = LogManager.getLogger(FXMLRegistroController.class);
+    
     @FXML
     private Button returnBackButton;
 
@@ -35,7 +36,7 @@ public class FXMLRegistroController implements Initializable {
     private TextField textFieldPassword;
 
     @FXML
-    private ComboBox comboBoxRole;
+    private ComboBox<String> comboBoxRole;
 
     private ServicioRoles servicioRoles;
     // Si el registro es exitoso, se almacena aquí el usuario creado para que el invocador modal
@@ -84,17 +85,17 @@ public class FXMLRegistroController implements Initializable {
             }
             
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error("Error al cargar roles: {}", e.getMessage(), e);
         }
     }
 
     private void loadRoles() {
         try {
-            ServicioRoles servicioRoles = new ServicioRoles();
-            List<String> roles = servicioRoles.obtenerNombresRoles();
+            ServicioRoles rolesService = new ServicioRoles();
+            List<String> roles = rolesService.obtenerNombresRoles();
             comboBoxRole.getItems().addAll(roles);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error("Error al cargar roles: {}", e.getMessage(), e);
         }
     }  
 
@@ -117,7 +118,7 @@ public class FXMLRegistroController implements Initializable {
             Stage stage = (Stage) returnBackButton.getScene().getWindow();
             stage.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error("Error al cerrar ventana: {}", e.getMessage(), e);
         }
     }
 }

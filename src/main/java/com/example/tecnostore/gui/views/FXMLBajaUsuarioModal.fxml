@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+<VBox xmlns="http://javafx.com/javafx/17.0.2" xmlns:fx="http://javafx.com/fxml/1" alignment="CENTER" spacing="20" fx:controller="com.example.tecnostore.gui.controller.FXMLBajaUsuarioModalController">
+    <children>
+        <Label text="¿Confirmar dar de baja?" style="-fx-font-weight: bold; -fx-font-size: 16px;" />
+        <Label fx:id="messageLabel" wrapText="true" text="Esta acción desactivará al usuario en el sistema, pero conservará su registro histórico." />
+        <HBox spacing="10" alignment="CENTER">
+            <children>
+                <Button text="Cancelar" onAction="#onCancelar" />
+                <Button text="Confirmar" onAction="#onConfirmar" />
+            </children>
+        </HBox>
+    </children>
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20" />
+    </padding>
+</VBox>

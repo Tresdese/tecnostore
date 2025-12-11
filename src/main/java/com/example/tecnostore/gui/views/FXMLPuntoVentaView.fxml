@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+<VBox xmlns="http://javafx.com/javafx/17.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.tecnostore.gui.controller.FXMLPuntoVentaViewController" fx:id="rootContainer" spacing="20" alignment="CENTER" padding="50">
+    <children>
+        <Label text="TechnoStore ERP" style="-fx-font-size: 28px; -fx-font-weight: bold;" />
+        <Label text="Módulo de Ventas" />
+        <Button text="Hacer Venta" onAction="#onHacerVenta" prefWidth="200" prefHeight="50" />
+    </children>
+</VBox>

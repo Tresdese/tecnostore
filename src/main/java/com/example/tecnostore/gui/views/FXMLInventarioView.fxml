@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+<BorderPane xmlns="http://javafx.com/javafx/17.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.tecnostore.gui.controller.FXMLInventarioViewController" padding="10">
+    <top>
+        <HBox spacing="10" padding="10,0,10,0">
+            <children>
+                <TextField fx:id="searchField" promptText="Buscar Artículo" prefWidth="300" />
+                <Button text="Buscar" onAction="#onBuscar" />
+                <Button text="Registrar Producto" onAction="#onRegistrarProducto" />
+            </children>
+        </HBox>
+    </top>
+    <center>
+        <TableView fx:id="inventoryTable">
+            <columns>
+                <TableColumn text="Código" />
+                <TableColumn text="Descripción" />
+                <TableColumn text="Marca" />
+                <TableColumn text="Precio" />
+                <TableColumn text="Stock" />
+            </columns>
+        </TableView>
+    </center>
+    <right>
+        <VBox spacing="10" padding="0,0,0,10">
+            <children>
+                <Button text="Editar" onAction="#onEditar" />
+                <Button text="Eliminar" onAction="#onEliminar" />
+            </children>
+        </VBox>
+    </right>
+</BorderPane>

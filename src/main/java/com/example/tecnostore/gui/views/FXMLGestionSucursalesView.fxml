@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+<BorderPane xmlns="http://javafx.com/javafx/17.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.tecnostore.gui.controller.FXMLGestionSucursalesViewController" padding="10">
+    <left>
+        <VBox spacing="10" padding="0,10,0,0">
+            <children>
+                <Button text="Nueva Sucursal" onAction="#onNuevaSucursal" />
+                <Button text="Editar Seleccionada" onAction="#onEditarSeleccionada" />
+                <Button text="Eliminar Sucursal" onAction="#onEliminarSucursal" />
+            </children>
+        </VBox>
+    </left>
+    <center>
+        <TableView fx:id="sucursalTable">
+            <columns>
+                <TableColumn text="Nombre" />
+                <TableColumn text="Dirección" />
+                <TableColumn text="Teléfono" />
+                <TableColumn text="Estado" />
+            </columns>
+        </TableView>
+    </center>
+</BorderPane>

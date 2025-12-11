@@ -1,8 +1,8 @@
 package com.example.tecnostore.logic.dao;
 
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,7 +42,7 @@ public class RolDAO extends ConexionBD {
         return roles;
     }
 
-    public RolDTO buscarPorId(int id)  throws Exception {
+    public RolDTO buscarPorId(int id)  throws SQLException {
         RolDTO rol = null;
         try (PreparedStatement ps = getConnection().prepareStatement(SQL_SELECT_BY_ID)) {
             ps.setInt(1, id);
@@ -55,9 +55,6 @@ public class RolDAO extends ConexionBD {
                     );
                 }
             }
-        } catch (SQLException e) {
-            LOGGER.error("Error al buscar rol por ID: {}", e.getMessage(), e);
-            throw new Exception("Error al buscar rol por ID: " + e.getMessage());
         }
         return rol;
     }

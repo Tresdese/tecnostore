@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+<BorderPane xmlns="http://javafx.com/javafx/17.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.tecnostore.gui.controller.FXMLGestionUsuariosViewController" padding="10">
+    <top>
+        <HBox spacing="10" padding="0,0,10,0">
+            <children>
+                <TextField fx:id="searchField" promptText="Buscar usuario por ID o Nombre..." prefWidth="300" />
+                <Button text="Buscar" onAction="#onBuscar" />
+            </children>
+        </HBox>
+    </top>
+    <left>
+        <VBox spacing="10" padding="0,10,0,0">
+            <children>
+                <Button text="Crear Nuevo Usuario" onAction="#onCrearNuevo" />
+                <Button text="Editar Seleccionado" onAction="#onEditarSeleccionado" />
+                <Button text="Dar de Baja" onAction="#onDarDeBaja" />
+            </children>
+        </VBox>
+    </left>
+    <center>
+        <TableView fx:id="userTable">
+            <columns>
+                <TableColumn text="ID" />
+                <TableColumn text="Nombre" />
+                <TableColumn text="Rol" />
+                <TableColumn text="Teléfono" />
+                <TableColumn text="Estado" />
+            </columns>
+        </TableView>
+    </center>
+</BorderPane>

@@ -66,4 +66,9 @@ public class FXMLInventarioViewController {
             new Alert(Alert.AlertType.WARNING, "Debe seleccionar un producto para eliminar.").showAndWait();
         }
     }
+
+    @FXML
+    private void initialize() {
+        
+    }
 }

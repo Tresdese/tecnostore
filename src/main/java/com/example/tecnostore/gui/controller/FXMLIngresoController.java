@@ -13,9 +13,14 @@ import com.example.tecnostore.logic.utils.WindowServices;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 public class FXMLIngresoController implements Initializable {
     @FXML
@@ -81,17 +86,49 @@ public class FXMLIngresoController implements Initializable {
                     return;
                 }
 
-                // Guardar usuario y rol en sesión para el resto de la aplicación
-                Sesion.setUsuarioSesion(usuario);
-
-                WindowServices.showInformationDialog("Autenticación", "Inicio de sesión exitoso.");
-                windowServices.goToWindow("FXMLPrincipal.fxml", event, "Principal");
+                if (usuario.isTwoFactorEnabled() && usuario.getTwoFactorSecret() != null
+                        && !usuario.getTwoFactorSecret().isBlank()) {
+                    abrirDialogo2FA(usuario, event);
+                } else {
+                    completarLogin(usuario, event);
+                }
             } else {
                 WindowServices.showErrorDialog("Autenticación", "Usuario o contraseña incorrectos.");
             }
         } catch (Exception e) {
             WindowServices.showErrorDialog("Error", "Ocurrió un error al autenticar: " + e.getMessage());
             LOGGER.error("Error al autenticar: {}", e.getMessage(), e);
+        }
+    }
+
+    private void completarLogin(UsuarioDTO usuario, ActionEvent event) {
+        try {
+            Sesion.setUsuarioSesion(usuario);
+            WindowServices.showInformationDialog("Autenticación", "Inicio de sesión exitoso.");
+            windowServices.goToWindow("FXMLPrincipal.fxml", event, "Principal");
+        } catch (Exception e) {
+            WindowServices.showErrorDialog("Error", "No se pudo completar el inicio de sesión: " + e.getMessage());
+            LOGGER.error("Error al completar login: {}", e.getMessage(), e);
+        }
+    }
+
+    private void abrirDialogo2FA(UsuarioDTO usuario, ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(
+                    "/com/example/tecnostore/gui/views/FXMLTwoFactor.fxml"));
+            Parent root = loader.load();
+            FXMLTwoFactorController controller = loader.getController();
+            controller.setUser(usuario);
+            controller.setOn2FAOk(() -> completarLogin(usuario, event));
+
+            Stage dialog = new Stage();
+            dialog.initModality(Modality.APPLICATION_MODAL);
+            dialog.setTitle("Verificación 2FA");
+            dialog.setScene(new Scene(root));
+            dialog.showAndWait();
+        } catch (Exception e) {
+            WindowServices.showErrorDialog("Error", "No se pudo abrir la verificación 2FA: " + e.getMessage());
+            LOGGER.error("Error al abrir diálogo 2FA: {}", e.getMessage(), e);
         }
     }
 }

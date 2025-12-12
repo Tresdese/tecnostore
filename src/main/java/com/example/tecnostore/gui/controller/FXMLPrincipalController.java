@@ -2,21 +2,30 @@ package com.example.tecnostore.gui.controller;
 
 import java.io.IOException;
 import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ResourceBundle;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.example.tecnostore.logic.dao.UsuarioDAO;
 import com.example.tecnostore.logic.dto.UsuarioDTO;
+import com.example.tecnostore.logic.servicios.TwoFactorService;
 import com.example.tecnostore.logic.utils.Sesion;
 import com.example.tecnostore.logic.utils.WindowServices;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 public class FXMLPrincipalController implements Initializable {
 
@@ -34,12 +43,16 @@ public class FXMLPrincipalController implements Initializable {
     private Button employeeListButton;
     @FXML
     private Button reportesButton;
+    @FXML
+    private Button twoFactorButton;
 
     private UsuarioDTO usuarioDTO;
     @FXML
     private Button manageProductsButton;
 
     private WindowServices windowServices = new WindowServices();
+    private UsuarioDAO usuarioDAO;
+    private final TwoFactorService twoFactorService = new TwoFactorService();
     @FXML
     private Button gestionarSucursalesButton;
     @FXML
@@ -58,6 +71,12 @@ public class FXMLPrincipalController implements Initializable {
         setUsuarioDTO(Sesion.getUsuarioSesion());
 
         System.out.println("Rol en sesión: " + Sesion.getRolActual());
+
+        try {
+            usuarioDAO = new UsuarioDAO();
+        } catch (Exception e) {
+            LOGGER.error("No se pudo inicializar UsuarioDAO: {}", e.getMessage(), e);
+        }
     }
 
     @FXML
@@ -111,6 +130,7 @@ public class FXMLPrincipalController implements Initializable {
                 setButtonVisibility(deleteButton, true);
                 setButtonVisibility(employeeListButton, true);
                 setButtonVisibility(reportesButton, true);
+                setButtonVisibility(twoFactorButton, true);
                 break;
             case "CAJERO": // cajero
                 setButtonVisibility(registerButton, false);
@@ -118,6 +138,7 @@ public class FXMLPrincipalController implements Initializable {
                 setButtonVisibility(deleteButton, false);
                 setButtonVisibility(employeeListButton, false);
                 setButtonVisibility(reportesButton, true);
+                setButtonVisibility(twoFactorButton, true);
                 break;
             case "SUPERADMINISTRADOR": // superadministrador
                 setButtonVisibility(registerButton, true);
@@ -125,6 +146,7 @@ public class FXMLPrincipalController implements Initializable {
                 setButtonVisibility(deleteButton, true);
                 setButtonVisibility(employeeListButton, true);
                 setButtonVisibility(reportesButton, true);
+                setButtonVisibility(twoFactorButton, true);
                 break;
             case "GERENTE DE INVENTARIO": // gerente
                 setButtonVisibility(registerButton, true);
@@ -132,6 +154,7 @@ public class FXMLPrincipalController implements Initializable {
                 setButtonVisibility(deleteButton, true);
                 setButtonVisibility(employeeListButton, true);
                 setButtonVisibility(reportesButton, true);
+                setButtonVisibility(twoFactorButton, true);
                 break;
             default:
                 setButtonVisibility(registerButton, false);
@@ -139,6 +162,7 @@ public class FXMLPrincipalController implements Initializable {
                 setButtonVisibility(deleteButton, false);
                 setButtonVisibility(employeeListButton, false);
                 setButtonVisibility(reportesButton, false);
+                setButtonVisibility(twoFactorButton, true);
                 break;
         }
     }
@@ -220,6 +244,113 @@ public class FXMLPrincipalController implements Initializable {
 
     @FXML
     private void handleRegistrosAuditoriaButton(ActionEvent event) {
+        abrirRegistrosAuditoria();
+    }
+
+    private void abrirRegistrosAuditoria() {
+        try {
+            windowServices.openModal("FXMLAuditoriaView.fxml", "Registros de Auditoría");
+        } catch (IOException e) {
+            LOGGER.error("Error al abrir el formulario de registros de auditoría: {}", e.getMessage(), e);
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText(null);
+            alert.setContentText("No se pudo abrir el formulario de registros de auditoría: " + e.getMessage());
+            alert.showAndWait();
+        }
+    }
+
+    @FXML
+    private void handleActivar2FAButton(ActionEvent event) {
+        UsuarioDTO usuario = Sesion.getUsuarioSesion();
+        if (usuario == null) {
+            WindowServices.showErrorDialog("2FA", "No hay usuario en sesión.");
+            return;
+        }
+
+        try {
+            asegurarDAO();
+            asegurarSecret(usuario);
+
+            String otpauth = twoFactorService.generarOtpAuthUrl(usuario.getUsuario(), "TecnoStore", usuario.getTwoFactorSecret());
+            String qrUrl = construirQrUrl(otpauth);
+
+            abrirModalConfiguracion2FA(usuario, qrUrl);
+        } catch (Exception e) {
+            WindowServices.showErrorDialog("2FA", "No se pudo iniciar la configuración: " + e.getMessage());
+            LOGGER.error("Error al configurar 2FA: {}", e.getMessage(), e);
+        }
+    }
+
+    private void abrirModalConfiguracion2FA(UsuarioDTO usuario, String qrUrl) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/tecnostore/gui/views/FXMLConfigurar2FA.fxml"));
+            Parent root = loader.load();
+            FXMLConfigurar2FAController controller = loader.getController();
+            controller.setData(qrUrl, usuario.getTwoFactorSecret(), () -> abrirVerificacion2FA(usuario));
+
+            Stage dialog = new Stage();
+            dialog.initModality(Modality.APPLICATION_MODAL);
+            dialog.setTitle("Configurar 2FA");
+            dialog.setScene(new Scene(root));
+            dialog.showAndWait();
+        } catch (Exception e) {
+            WindowServices.showErrorDialog("2FA", "No se pudo abrir la configuración: " + e.getMessage());
+            LOGGER.error("Error al abrir modal de configuración 2FA: {}", e.getMessage(), e);
+        }
+    }
+
+    private void abrirVerificacion2FA(UsuarioDTO usuario) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/tecnostore/gui/views/FXMLTwoFactor.fxml"));
+            Parent root = loader.load();
+            FXMLTwoFactorController controller = loader.getController();
+            controller.setUser(usuario);
+            controller.setOn2FAOk(() -> {
+                try {
+                    usuario.setTwoFactorEnabled(true);
+                    asegurarDAO();
+                    usuarioDAO.actualizar(usuario);
+                    Sesion.setUsuarioSesion(usuario);
+                    WindowServices.showInformationDialog("2FA", "Código verificado. 2FA activado.");
+                } catch (Exception e) {
+                    WindowServices.showErrorDialog("2FA", "Se verificó el código, pero no se pudo activar en la cuenta: " + e.getMessage());
+                    LOGGER.error("Error al activar 2FA tras verificación: {}", e.getMessage(), e);
+                }
+            });
+
+            Stage dialog = new Stage();
+            dialog.initModality(Modality.APPLICATION_MODAL);
+            dialog.setTitle("Verificar 2FA");
+            dialog.setScene(new Scene(root));
+            dialog.showAndWait();
+        } catch (Exception e) {
+            WindowServices.showErrorDialog("2FA", "No se pudo abrir la verificación: " + e.getMessage());
+            LOGGER.error("Error al abrir verificación 2FA: {}", e.getMessage(), e);
+        }
+    }
+
+    private void asegurarSecret(UsuarioDTO usuario) throws Exception {
+        if (usuario.getTwoFactorSecret() != null && !usuario.getTwoFactorSecret().isBlank()) {
+            return;
+        }
+        var key = twoFactorService.generarSecretKey();
+        usuario.setTwoFactorSecret(key.getKey());
+        usuario.setTwoFactorEnabled(false);
+        asegurarDAO();
+        usuarioDAO.actualizar(usuario);
+        Sesion.setUsuarioSesion(usuario);
+    }
+
+    private String construirQrUrl(String otpauthUrl) {
+        String encoded = URLEncoder.encode(otpauthUrl, StandardCharsets.UTF_8);
+        return "https://chart.googleapis.com/chart?chs=250x250&cht=qr&chl=" + encoded + "&chld=L|0";
+    }
+
+    private void asegurarDAO() throws Exception {
+        if (usuarioDAO == null) {
+            usuarioDAO = new UsuarioDAO();
+        }
     }
 
 }

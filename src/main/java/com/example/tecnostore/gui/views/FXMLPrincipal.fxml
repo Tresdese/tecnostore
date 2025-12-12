@@ -12,8 +12,10 @@
    <children>
         <VBox alignment="TOP_CENTER" layoutX="410.0" layoutY="66.0" prefHeight="306.0" prefWidth="145.0" spacing="20.0">
          <children>
+
             <Button fx:id="registerButton" mnemonicParsing="false" onAction="#handleRegisterButton" text="Registrar" />
             <Button fx:id="gestionarSucursalesButton" mnemonicParsing="false" onAction="#handlegestionarSucursalesButton" text="Gestionar sucursales" />
+             <Button fx:id="puntoVentaButton" mnemonicParsing="false" onAction="#handlePuntoVentaButton" text="Punto de Venta" />
             <Button fx:id="registrosAuditoriaButton" mnemonicParsing="false" onAction="#handleRegistrosAuditoriaButton" text="Gestionar auditorias" />
             <Button fx:id="employeeListButton" mnemonicParsing="false" onAction="#handleEmployeeListButton" text="Lista de empleados" />
             <Button fx:id="manageProductsButton" mnemonicParsing="false" onAction="#handleManageProductsButton" text="Gestionar productos" />

@@ -4,25 +4,48 @@ import com.example.tecnostore.logic.dao.LogDAO;
 import com.example.tecnostore.logic.dto.LogAuditoriaDTO;
 import com.example.tecnostore.logic.utils.WindowServices;
 
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-
-import java.util.Collections;
+import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 
 public class FXMLAuditoriaViewController {
-    @FXML private TableView<LogAuditoriaDTO> resultTable;
+    @FXML
+    private Button btnBuscar;
+
+    @FXML
+    private Button btnLimpiar;
+
+    @FXML
+    private Button btnExportar;
+
+    @FXML
+    private Button btnCerrar;
+
+    @FXML private TableView<LogAuditoriaDTO> tblAuditoria;
+    @FXML private TableColumn<LogAuditoriaDTO, String> colFecha;
+    @FXML private TableColumn<LogAuditoriaDTO, String> colUsuario;
+    @FXML private TableColumn<LogAuditoriaDTO, String> colAccion;
+    @FXML private TableColumn<LogAuditoriaDTO, String> colDetalles;
+    @FXML private TableColumn<LogAuditoriaDTO, String> colIp;
+    @FXML private TextField txtUsuarioFiltro;
+    @FXML private TextField txtAccionFiltro;
 
     private LogDAO logDAO;
-    private ObservableList<LogAuditoriaDTO> masterData;
-
+    private ObservableList<LogAuditoriaDTO> masterData = FXCollections.observableArrayList();
 
     @FXML
     private void initialize() {
-        resultTable.setPlaceholder(new Label("No se encontraron registros de auditoría."));
-        masterData = FXCollections.observableArrayList();
+        if (tblAuditoria != null) {
+            tblAuditoria.setPlaceholder(new Label("No se encontraron registros de auditoría."));
+        }
+        configurarColumnas();
 
         try {
             this.logDAO = new LogDAO();
@@ -32,27 +55,77 @@ public class FXMLAuditoriaViewController {
         }
     }
 
+    private void configurarColumnas() {
+        if (colFecha != null) {
+            colFecha.setCellValueFactory(cd -> new SimpleStringProperty(
+                    cd.getValue().getFecha() != null ? cd.getValue().getFecha().toString() : ""));
+        }
+        if (colUsuario != null) {
+            colUsuario.setCellValueFactory(cd -> new SimpleStringProperty(
+                    cd.getValue().getUsuarioId() != null ? cd.getValue().getUsuarioId().toString() : ""));
+        }
+        if (colAccion != null) {
+            colAccion.setCellValueFactory(cd -> new SimpleStringProperty(
+                    cd.getValue().getAccion() != null ? cd.getValue().getAccion() : ""));
+        }
+        if (colDetalles != null) {
+            colDetalles.setCellValueFactory(cd -> new SimpleStringProperty(
+                    cd.getValue().getDescripcion() != null ? cd.getValue().getDescripcion() : ""));
+        }
+        if (colIp != null) {
+            colIp.setCellValueFactory(cd -> new SimpleStringProperty(""));
+        }
+    }
+
     private void cargarDatos() {
         if (logDAO == null) return;
         try {
             masterData.setAll(logDAO.obtenerTodos());
-            resultTable.setItems(masterData);
+            aplicarFiltros();
         } catch (Exception e) {
             WindowServices.showErrorDialog("Error", "Error al cargar los logs de auditoría: " + e.getMessage());
         }
     }
 
-    @FXML
-    private void onLimpiar() {
-        // No hay campos de filtro en la interfaz, por lo que Limpiar restablece la vista.
+    private void aplicarFiltros() {
+        String usuarioTerm = txtUsuarioFiltro != null ? txtUsuarioFiltro.getText().trim().toLowerCase() : "";
+        String accionTerm = txtAccionFiltro != null ? txtAccionFiltro.getText().trim().toLowerCase() : "";
 
-        // Se establece la lista de la tabla al estado inicial (la lista completa).
-        resultTable.setItems(masterData);
+        var filtrados = masterData.stream().filter(log -> {
+            boolean usuarioCoincide = usuarioTerm.isEmpty()
+                    || (log.getUsuarioId() != null && log.getUsuarioId().toString().toLowerCase().contains(usuarioTerm));
+            boolean accionCoincide = accionTerm.isEmpty()
+                    || (log.getAccion() != null && log.getAccion().toLowerCase().contains(accionTerm));
+            return usuarioCoincide && accionCoincide;
+        }).toList();
+
+        if (tblAuditoria != null) {
+            tblAuditoria.setItems(FXCollections.observableArrayList(filtrados));
+        }
     }
 
-    @FXML private void onBuscar() {
-        // Dado que no hay filtros de búsqueda implementados en la UI,
-        // la acción "Buscar" simplemente recarga los datos desde la BD.
-        cargarDatos();
+    @FXML
+    private void onLimpiar() {
+        if (txtUsuarioFiltro != null) txtUsuarioFiltro.clear();
+        if (txtAccionFiltro != null) txtAccionFiltro.clear();
+        aplicarFiltros();
+    }
+
+    @FXML
+    private void onBuscar() {
+        aplicarFiltros();
+    }
+
+    @FXML
+    private void onExportar() {
+        WindowServices.showInformationDialog("Auditoría", "La exportación aún no está implementada.");
+    }
+
+    @FXML
+    private void onCerrar() {
+        if (tblAuditoria != null && tblAuditoria.getScene() != null) {
+            Stage stage = (Stage) tblAuditoria.getScene().getWindow();
+            stage.close();
+        }
     }
 }

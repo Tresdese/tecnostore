@@ -20,6 +20,7 @@
             <Button fx:id="employeeListButton" mnemonicParsing="false" onAction="#handleEmployeeListButton" text="Lista de empleados" />
             <Button fx:id="manageProductsButton" mnemonicParsing="false" onAction="#handleManageProductsButton" text="Gestionar productos" />
             <Button fx:id="reportesButton" mnemonicParsing="false" onAction="#handleReportesButton" text="Reportes" />
+            <Button fx:id="twoFactorButton" mnemonicParsing="false" onAction="#handleActivar2FAButton" text="Activar 2FA" />
          </children>
       </VBox>
       <Label fx:id="welcomeLabel" layoutX="56.0" layoutY="57.0" text="Bienvenido" />

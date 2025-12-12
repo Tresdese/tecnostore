@@ -9,6 +9,7 @@ module com.example {
     requires com.github.librepdf.openpdf;
     requires org.jfree.jfreechart;
     requires java.desktop;
+    requires googleauth;
     
     opens com.example to javafx.fxml;
     opens com.example.tecnostore.gui.controller to javafx.fxml;

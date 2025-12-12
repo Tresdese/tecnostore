@@ -1,5 +1,7 @@
 package com.example.tecnostore.gui.controller;
 
+import java.io.IOException;
+
 import com.example.tecnostore.logic.dao.LogDAO;
 import com.example.tecnostore.logic.dto.LogAuditoriaDTO;
 import com.example.tecnostore.logic.utils.WindowServices;
@@ -118,7 +120,15 @@ public class FXMLAuditoriaViewController {
 
     @FXML
     private void onExportar() {
-        WindowServices.showInformationDialog("Auditoría", "La exportación aún no está implementada.");
+        try {
+            WindowServices.showInformationDialog("Auditoría", "La exportación aún no está implementada.");
+        } catch (NullPointerException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     @FXML

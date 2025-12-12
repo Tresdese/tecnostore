@@ -37,7 +37,9 @@ public class FXMLPrincipalController implements Initializable {
     private Label welcomeLabel;
     @FXML
     private Button registerButton;
+    @FXML
     private Button editButton;
+    @FXML
     private Button deleteButton;
     @FXML
     private Button employeeListButton;
@@ -45,20 +47,19 @@ public class FXMLPrincipalController implements Initializable {
     private Button reportesButton;
     @FXML
     private Button twoFactorButton;
-
-    private UsuarioDTO usuarioDTO;
     @FXML
     private Button manageProductsButton;
-
-    private WindowServices windowServices = new WindowServices();
-    private UsuarioDAO usuarioDAO;
-    private final TwoFactorService twoFactorService = new TwoFactorService();
     @FXML
     private Button gestionarSucursalesButton;
     @FXML
     private Button registrosAuditoriaButton;
     @FXML
     private Button puntoVentaButton;
+
+    private UsuarioDTO usuarioDTO;
+    private WindowServices windowServices = new WindowServices();
+    private UsuarioDAO usuarioDAO;
+    private final TwoFactorService twoFactorService = new TwoFactorService();
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -145,6 +146,9 @@ public class FXMLPrincipalController implements Initializable {
                 setButtonVisibility(reportesButton, true);
                 setButtonVisibility(twoFactorButton, true);
                 setButtonVisibility(puntoVentaButton, true);
+                setButtonVisibility(gestionarSucursalesButton, false);
+                setButtonVisibility(registrosAuditoriaButton, false);
+                
                 break;
             case "SUPERADMINISTRADOR": // superadministrador
                 setButtonVisibility(registerButton, true);

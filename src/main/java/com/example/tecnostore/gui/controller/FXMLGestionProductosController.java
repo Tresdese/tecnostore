@@ -6,8 +6,9 @@ import java.util.ResourceBundle;
 
 import com.example.tecnostore.logic.dto.ProductoDTO;
 import com.example.tecnostore.logic.servicios.ServicioProductos;
-
+import com.example.tecnostore.logic.utils.Sesion;
 import com.example.tecnostore.logic.utils.WindowServices;
+
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -51,8 +52,25 @@ public class FXMLGestionProductosController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        setUserRole(Sesion.getRolActual());
         configurarTabla();
         cargarInformacion();
+    }
+
+    private void setUserRole(String usuarioRol) {
+        if (usuarioRol.equals("CAJERO")) {
+            setButtonVisibility(editProductButton, false);
+            setButtonVisibility(deleteProductButton, false);
+            setButtonVisibility(insertProductButton, false);
+        } else if (usuarioRol.equals("ADMINISTRADOR")) {
+            insertProductButton.setDisable(true);
+            editProductButton.setDisable(true);
+            deleteProductButton.setDisable(true);
+        } else {
+            insertProductButton.setDisable(true);
+            editProductButton.setDisable(true);
+            deleteProductButton.setDisable(true);
+        }
     }
 
     private ObservableList<ProductoDTO> observableListProductos;
@@ -175,4 +193,10 @@ public class FXMLGestionProductosController implements Initializable {
         }
     }
     
+    void setButtonVisibility(Button btn, boolean visible) {
+        if (btn != null) {
+            btn.setVisible(visible);
+            btn.setManaged(visible);
+        }
+    }
 }

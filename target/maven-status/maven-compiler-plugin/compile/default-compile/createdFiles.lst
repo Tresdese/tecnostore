@@ -1,5 +1,6 @@
 com\example\tecnostore\gui\controller\FXMLRegistroVentaModalController.class
 com\example\tecnostore\logic\dto\VentaResumenDTO.class
+com\example\tecnostore\logic\servicios\CompraService.class
 com\example\tecnostore\logic\utils\WindowServices.class
 com\example\tecnostore\gui\controller\FXMLBajaUsuarioModalController.class
 com\example\tecnostore\gui\controller\FXMLEliminarSucursalModalController.class

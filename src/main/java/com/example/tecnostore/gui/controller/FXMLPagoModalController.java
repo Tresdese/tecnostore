@@ -1,5 +1,10 @@
 package com.example.tecnostore.gui.controller;
 
+import java.util.List;
+
+import com.example.tecnostore.logic.dto.ProductoDTO;
+import com.example.tecnostore.logic.servicios.VentaService;
+import com.example.tecnostore.logic.utils.Sesion;
 import com.example.tecnostore.logic.utils.WindowServices;
 
 import javafx.fxml.FXML;
@@ -10,6 +15,7 @@ import javafx.scene.control.TextField;
 import javafx.stage.Window;
 
 public class FXMLPagoModalController {
+
     @FXML private ComboBox<String> metodoPago;
     @FXML private Label totalValue;
     @FXML private TextField receivedField;
@@ -18,106 +24,93 @@ public class FXMLPagoModalController {
 
     private double totalPagar;
     private Window owner;
-    private boolean confirmado;
-    private double montoRecibido;
-    private double cambio;
-    private String metodoSeleccionado;
 
-    public void setTotalPagar(double totalPagar) {
-        this.totalPagar = totalPagar;
-        updateTotals();
+    // VARIABLES NUEVAS NECESARIAS
+    private List<ProductoDTO> productosAVender; // Para saber qué descontar del inventario
+    private boolean pagoExitoso = false;        // Para avisar al otro controlador
+
+    public void setOwner(Window owner) { this.owner = owner; }
+
+    // --- MÉTODO 1: Permite al controlador de ventas enviar la lista de productos ---
+    public void inicializarPago(double total, List<ProductoDTO> productos) {
+        this.totalPagar = total;
+        this.productosAVender = productos;
+
+        if (totalValue != null) {
+            totalValue.setText(String.format("$%,.2f", totalPagar));
+        }
     }
 
-    public void setOwner(Window owner) {
-        this.owner = owner;
+    // --- MÉTODO 2: Permite al controlador de ventas saber si se cobró ---
+    public boolean isPagoExitoso() {
+        return pagoExitoso;
+    }
+
+    // Mantenemos este método por compatibilidad si lo usabas antes
+    public void setTotalPagar(double totalPagar) {
+        this.totalPagar = totalPagar;
+        if (totalValue != null) {
+            totalValue.setText(String.format("$%,.2f", totalPagar));
+        }
     }
 
     @FXML
     private void initialize() {
-        if (metodoPago != null) {
-            metodoPago.getItems().setAll("Efectivo", "Tarjeta");
-            metodoPago.setValue("Efectivo");
-        }
+        metodoPago.getItems().setAll("Efectivo", "Tarjeta");
+        metodoPago.setValue("Efectivo");
 
-        if (confirmButton != null) {
-            confirmButton.setDisable(true);
-        }
-
-        if (receivedField != null) {
-            receivedField.textProperty().addListener((obs, oldVal, newVal) -> recalcularCambio());
-        }
-
-        updateTotals();
+        // Listener para calcular el cambio automáticamente
+        receivedField.textProperty().addListener((observable, oldValue, newValue) -> {
+            try {
+                if (!newValue.isEmpty()) {
+                    double recibido = Double.parseDouble(newValue);
+                    double cambio = recibido - totalPagar;
+                    changeValue.setText(String.format("$%,.2f", Math.max(0, cambio)));
+                }
+            } catch (NumberFormatException e) {
+                changeValue.setText("$0.00");
+            }
+        });
     }
 
     @FXML
     private void onConfirmar() {
-        if (!entradaValida()) {
-            WindowServices.showErrorDialog("Pago", "Ingrese un monto válido y suficiente.");
-            return;
-        }
+        try {
+            double recibido = Double.parseDouble(receivedField.getText());
 
-        confirmado = true;
-        metodoSeleccionado = metodoPago != null ? metodoPago.getValue() : null;
-        montoRecibido = parseMontoRecibido();
-        cambio = montoRecibido - totalPagar;
+            // 1. Validar monto
+            if (recibido < totalPagar) {
+                WindowServices.showWarningDialog("Pago Insuficiente", "El monto recibido es menor al total.");
+                return;
+            }
 
-        cerrarModal();
-        if (owner != null) {
-            owner.hide();
+            // 2. Obtener datos de sesión (o usar default si es nulo)
+            int usuarioId = 1;
+            if (Sesion.getUsuarioSesion() != null) {
+                usuarioId = Sesion.getUsuarioSesion().getId();
+            }
+
+            // 3. Procesar la venta usando el servicio (Esto guarda en BD y resta Stock)
+            VentaService servicio = new VentaService();
+            // Asumimos Sucursal ID = 1
+            servicio.procesarVenta(usuarioId, 1, productosAVender);
+
+            // 4. Marcar éxito y cerrar
+            WindowServices.showInformationDialog("Venta Exitosa", "La venta se ha registrado correctamente.");
+            pagoExitoso = true;
+            receivedField.getScene().getWindow().hide();
+
+        } catch (NumberFormatException e) {
+            WindowServices.showErrorDialog("Error", "Por favor ingrese una cantidad numérica válida.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            WindowServices.showErrorDialog("Error Crítico", "No se pudo procesar la venta: " + e.getMessage());
         }
     }
 
     @FXML
     private void onCancelar() {
-        confirmado = false;
-        cerrarModal();
+        pagoExitoso = false;
+        receivedField.getScene().getWindow().hide();
     }
-
-    private void updateTotals() {
-        if (totalValue != null) {
-            totalValue.setText(String.format("$%,.2f", totalPagar));
-        }
-        recalcularCambio();
-    }
-
-    private void recalcularCambio() {
-        double recibido = parseMontoRecibido();
-        boolean valido = recibido >= totalPagar && recibido > 0;
-        double diff = valido ? recibido - totalPagar : 0;
-
-        if (changeValue != null) {
-            changeValue.setText(String.format("$%,.2f", diff));
-        }
-        if (confirmButton != null) {
-            confirmButton.setDisable(!valido);
-        }
-    }
-
-    private boolean entradaValida() {
-        return totalPagar > 0 && parseMontoRecibido() >= totalPagar;
-    }
-
-    private double parseMontoRecibido() {
-        if (receivedField == null || receivedField.getText() == null) {
-            return 0d;
-        }
-        String texto = receivedField.getText().trim().replace(",", "");
-        try {
-            return Double.parseDouble(texto);
-        } catch (NumberFormatException e) {
-            return 0d;
-        }
-    }
-
-    private void cerrarModal() {
-        if (changeValue != null && changeValue.getScene() != null) {
-            changeValue.getScene().getWindow().hide();
-        }
-    }
-
-    public boolean isConfirmado() { return confirmado; }
-    public double getMontoRecibido() { return montoRecibido; }
-    public double getCambio() { return cambio; }
-    public String getMetodoSeleccionado() { return metodoSeleccionado; }
 }

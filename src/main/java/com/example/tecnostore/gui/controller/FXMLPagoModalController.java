@@ -1,11 +1,8 @@
 package com.example.tecnostore.gui.controller;
 
-import java.io.IOException;
 import java.util.List;
 
-import com.example.tecnostore.logic.dao.VentaDAO;
-import com.example.tecnostore.logic.dto.DetalleVentaDTO;
-import com.example.tecnostore.logic.dto.VentaDTO;
+import com.example.tecnostore.logic.dto.ProductoDTO;
 import com.example.tecnostore.logic.servicios.VentaService;
 import com.example.tecnostore.logic.utils.Sesion;
 import com.example.tecnostore.logic.utils.WindowServices;
@@ -17,106 +14,101 @@ import javafx.scene.control.TextField;
 import javafx.stage.Window;
 
 public class FXMLPagoModalController {
+
     @FXML private ComboBox<String> metodoPago;
     @FXML private Label totalValue;
     @FXML private TextField receivedField;
     @FXML private Label changeValue;
 
     private double totalPagar;
-    private Window owner; // La ventana del Registro de Venta
-    private List<DetalleVentaDTO> detallesVenta; // <--- NUEVO ATRIBUTO
-    private VentaService ventaService; // <--- NUEVO ATRIBUTO
-    private VentaDAO ventaDAO;
+    private Window owner;
 
-    // *** MÉTODO AGREGADO PARA TRANSFERIR DETALLES ***
-    public void setDetallesVenta(List<DetalleVentaDTO> detalles) {
-        this.detallesVenta = detalles;
-    }
-
-    public void setTotalPagar(double totalPagar) {
-        this.totalPagar = totalPagar;
-        updateTotals();
-    }
+    // VARIABLES NUEVAS NECESARIAS
+    private List<ProductoDTO> productosAVender; // Para saber qué descontar del inventario
+    private boolean pagoExitoso = false;        // Para avisar al otro controlador
 
     public void setOwner(Window owner) { this.owner = owner; }
+
+    // --- MÉTODO 1: Permite al controlador de ventas enviar la lista de productos ---
+    public void inicializarPago(double total, List<ProductoDTO> productos) {
+        this.totalPagar = total;
+        this.productosAVender = productos;
+
+        if (totalValue != null) {
+            totalValue.setText(String.format("$%,.2f", totalPagar));
+        }
+    }
+
+    // --- MÉTODO 2: Permite al controlador de ventas saber si se cobró ---
+    public boolean isPagoExitoso() {
+        return pagoExitoso;
+    }
+
+    // Mantenemos este método por compatibilidad si lo usabas antes
+    public void setTotalPagar(double totalPagar) {
+        this.totalPagar = totalPagar;
+        if (totalValue != null) {
+            totalValue.setText(String.format("$%,.2f", totalPagar));
+        }
+    }
 
     @FXML
     private void initialize() {
         metodoPago.getItems().setAll("Efectivo", "Tarjeta");
         metodoPago.setValue("Efectivo");
-        try {
-            this.ventaService = new VentaService();
-            this.ventaDAO = new VentaDAO();
-        } catch (Exception e) {
-            WindowServices.showErrorDialog("Error", "No se pudo inicializar el servicio de ventas: " + e.getMessage());
-        }
-        updateTotals();
-    }
 
-    private void updateTotals() {
-        if (totalValue != null) {
-            totalValue.setText(String.format("$%,.2f", totalPagar));
-        }
-
-        // Lógica de cálculo de cambio (ajustada para el evento onConfirmar)
-        if (changeValue != null) {
-            double recibido = 0;
-            // Solo intentamos leer el campo recibido si el campo no es nulo
-            if (receivedField != null && receivedField.getText() != null && !receivedField.getText().isEmpty()) {
-                try {
-                    recibido = Double.parseDouble(receivedField.getText());
-                } catch (NumberFormatException e) {
-                    // Si falla la conversión, recibido sigue siendo 0
+        // Listener para calcular el cambio automáticamente
+        receivedField.textProperty().addListener((observable, oldValue, newValue) -> {
+            try {
+                if (!newValue.isEmpty()) {
+                    double recibido = Double.parseDouble(newValue);
+                    double cambio = recibido - totalPagar;
+                    changeValue.setText(String.format("$%,.2f", Math.max(0, cambio)));
                 }
+            } catch (NumberFormatException e) {
+                changeValue.setText("$0.00");
             }
-
-            double cambio = Math.max(0, recibido - totalPagar);
-            changeValue.setText(String.format("$%,.2f", cambio));
-        }
+        });
     }
 
-    // *** LÓGICA DE NEGOCIO Y CIERRE IMPLEMENTADA ***
     @FXML
-    private void onConfirmar() throws IOException {
-        updateTotals();
-
+    private void onConfirmar() {
         try {
-            if (detallesVenta != null && !detallesVenta.isEmpty() && ventaService != null) {
-                // Flujo con detalles: registra venta completa (stock y detalles)
-                VentaDTO venta = new VentaDTO();
-                venta.setTotal(totalPagar);
-                venta.setMetodoPago(metodoPago.getValue());
-                venta.setDetalles(detallesVenta);
-                ventaService.registrarVentaCompleta(venta);
-            } else {
-                // Flujo simple: solo registra la venta con total (sin detalles)
-                if (ventaDAO == null) {
-                    WindowServices.showWarningDialog("Error", "No hay servicio de venta disponible.");
-                    return;
-                }
-                String usuarioId = Sesion.getUsuarioSesion() != null
-                        ? String.valueOf(Sesion.getUsuarioSesion().getId())
-                        : null;
-                ventaDAO.registrarVenta(usuarioId, totalPagar);
+            double recibido = Double.parseDouble(receivedField.getText());
+
+            // 1. Validar monto
+            if (recibido < totalPagar) {
+                WindowServices.showWarningDialog("Pago Insuficiente", "El monto recibido es menor al total.");
+                return;
             }
 
-            WindowServices.showInformationDialog("Éxito", "Venta registrada y stock descontado.");
-
-            // 3. CERRAR MODAL ACTUAL
-            changeValue.getScene().getWindow().hide();
-
-            // 4. CERRAR VENTANA PADRE (Registro de Venta) para forzar el refresco de la tabla principal
-            if (owner != null) {
-                owner.hide(); // Cierra FXMLRegistroVentaModal
+            // 2. Obtener datos de sesión (o usar default si es nulo)
+            int usuarioId = 1;
+            if (Sesion.getUsuarioSesion() != null) {
+                usuarioId = Sesion.getUsuarioSesion().getId();
             }
 
+            // 3. Procesar la venta usando el servicio (Esto guarda en BD y resta Stock)
+            VentaService servicio = new VentaService();
+            // Asumimos Sucursal ID = 1
+            servicio.procesarVenta(usuarioId, 1, productosAVender);
+
+            // 4. Marcar éxito y cerrar
+            WindowServices.showInformationDialog("Venta Exitosa", "La venta se ha registrado correctamente.");
+            pagoExitoso = true;
+            receivedField.getScene().getWindow().hide();
+
+        } catch (NumberFormatException e) {
+            WindowServices.showErrorDialog("Error", "Por favor ingrese una cantidad numérica válida.");
         } catch (Exception e) {
-            WindowServices.showErrorDialog("Error de Transacción", "Fallo al registrar la venta: " + e.getMessage());
+            e.printStackTrace();
+            WindowServices.showErrorDialog("Error Crítico", "No se pudo procesar la venta: " + e.getMessage());
         }
     }
 
     @FXML
     private void onCancelar() {
-        changeValue.getScene().getWindow().hide();
+        pagoExitoso = false;
+        receivedField.getScene().getWindow().hide();
     }
 }

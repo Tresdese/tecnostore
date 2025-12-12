@@ -1,101 +1,86 @@
 package com.example.tecnostore.logic.servicios;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.List;
 
+import com.example.tecnostore.data_access.ConexionBD;
 import com.example.tecnostore.logic.dao.LogDAO;
-import com.example.tecnostore.logic.dao.VentaDAO;
-import com.example.tecnostore.logic.dao.DetalleVentaDAO;
 import com.example.tecnostore.logic.dao.ProductoDAO;
-import com.example.tecnostore.logic.dto.VentaDTO;
-import com.example.tecnostore.logic.dto.VentaResumenDTO;
-import com.example.tecnostore.logic.dto.DetalleVentaDTO;
-import com.example.tecnostore.logic.utils.Sesion;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import com.example.tecnostore.logic.dao.VentaDAO;
+import com.example.tecnostore.logic.dto.ProductoDTO;
 
 public class VentaService {
 
-    private static final Logger LOGGER = LogManager.getLogger(VentaService.class);
+    private final VentaDAO ventaDAO;
+    private final LogDAO logDAO;
+    private final ProductoDAO productoDAO;
 
-    private final String DB_URL = "jdbc:mysql://localhost:3306/seguridad_ventas";
-    private final String DB_USER = "root";
-    private final String DB_PASS = "4422";
-
-    private VentaDAO ventaDAO;
-    private LogDAO logDAO;
-    private DetalleVentaDAO detalleVentaDAO;
-    private ProductoDAO productoDAO;
-
-    public VentaService() {
+    public VentaService() throws Exception {
+        this.ventaDAO = new VentaDAO();
+        this.productoDAO = new ProductoDAO();
         try {
-            this.ventaDAO = new VentaDAO();
             this.logDAO = new LogDAO();
-            this.detalleVentaDAO = new DetalleVentaDAO();
-            this.productoDAO = new ProductoDAO();
         } catch (Exception e) {
-            LOGGER.error("Error al inicializar DAOs: {}", e.getMessage(), e);
-            throw new RuntimeException("Error al inicializar DAOs de Venta: " + e.getMessage(), e);
+            throw new RuntimeException("Error al inicializar LogDAO: " + e.getMessage(), e);
         }
     }
 
-    public List<VentaResumenDTO> obtenerTodasLasVentas() throws Exception {
-        return ventaDAO.obtenerVentas();
-    }
-
-    public void registrarVentaCompleta(VentaDTO venta) throws Exception {
-
-        String usuarioActual = Sesion.getUsuarioSesion() != null ? Sesion.getUsuarioSesion().getUsuario() : "Sistema";
-
-        if (venta.getTotal() <= 0 || venta.getDetalles().isEmpty()) {
-            throw new IllegalArgumentException("El monto debe ser positivo y la venta no debe estar vacía.");
-        }
-
+    // Adaptamos el método para que reciba la lista del controlador,
+    // pero use tu DAO específico internamente.
+    public void procesarVenta(int usuarioId, int sucursalId, List<ProductoDTO> productos) throws Exception {
         Connection conn = null;
 
+        // 1. Calcular el monto total sumando la lista (Tu DAO pide el total ya calculado)
+        double montoTotal = 0;
+        for (ProductoDTO p : productos) {
+            montoTotal += p.getPrecio() * p.getStock();
+        }
+
         try {
-            conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
-            conn.setAutoCommit(false);
+            // Usamos tu conexión centralizada
+            ConexionBD conexionBD = new ConexionBD();
+            conn = conexionBD.getConnection();
+            conn.setAutoCommit(false); // Transacción para seguridad
 
-            int ventaId = ventaDAO.insertarVenta(conn, usuarioActual, venta.getTotal());
-
-            for (DetalleVentaDTO detalle : venta.getDetalles()) {
-                int cantidadVendida = detalle.getCantidad();
-                int productoId = detalle.getProductoId();
-
-                productoDAO.actualizarStock(productoId, 500 - cantidadVendida);
+            if (montoTotal <= 0) {
+                throw new IllegalArgumentException("El monto debe ser positivo.");
             }
 
-            detalleVentaDAO.registrarDetalles(conn, ventaId, venta.getDetalles());
+            // 2. Descontar Inventario (Esto se mantiene igual para que el stock baje)
+            for (ProductoDTO item : productos) {
+                ProductoDTO enBD = productoDAO.buscarPorId(item);
+                if (enBD.getStock() < item.getStock()) {
+                    throw new Exception("Stock insuficiente para: " + item.getNombre());
+                }
+                productoDAO.actualizarStock(item.getId(), enBD.getStock() - item.getStock());
+            }
 
-            logDAO.registrarLog(conn, usuarioActual, "REGISTRO_VENTA", "EXITO", "Venta ID: " + ventaId + ", Total: " + venta.getTotal());
+            // 3. Registrar la Venta usando TU ESTRUCTURA ACTUAL DE VentaDAO
+            // Tu DAO pide (Connection, String usuario, double monto).
+            // Convertimos el int usuarioId a String para cumplir con tu código.
+            ventaDAO.insertarVenta(conn, String.valueOf(usuarioId), montoTotal);
+
+            // 4. Auditoría
+            logDAO.registrarLog(conn, String.valueOf(usuarioId), "REGISTRO_VENTA", "EXITO", "Monto: " + montoTotal);
+
             conn.commit();
-
-            LOGGER.info("Venta ID {} procesada correctamente por {}.", ventaId, usuarioActual);
+            System.out.println("Venta procesada correctamente.");
 
         } catch (Exception e) {
             if (conn != null) {
                 try {
                     conn.rollback();
-                    logDAO.registrarLog(conn, usuarioActual, "REGISTRO_VENTA", "ERROR", e.getMessage());
+                    conn.setAutoCommit(true);
+                    logDAO.registrarLog(conn, String.valueOf(usuarioId), "REGISTRO_VENTA", "ERROR", e.getMessage());
                 } catch (SQLException ex) {
-                    LOGGER.error("Error durante el rollback: {}", ex.getMessage());
+                    ex.printStackTrace();
                 }
             }
-            LOGGER.error("Error en transacción de venta: {}", e.getMessage(), e);
-            throw new Exception("Error al registrar la venta: " + e.getMessage());
-
+            throw e;
         } finally {
             if (conn != null) {
-                try {
-                    conn.setAutoCommit(true);
-                    conn.close();
-                } catch (SQLException e) {
-                    LOGGER.error("Error al cerrar conexión: {}", e.getMessage());
-                }
+                try { conn.close(); } catch (SQLException e) { e.printStackTrace(); }
             }
         }
     }

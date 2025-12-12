@@ -3,6 +3,13 @@ package com.example.tecnostore.gui.controller;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
+
+import com.example.tecnostore.logic.dto.ProductoDTO;
+import com.example.tecnostore.logic.servicios.ServicioProductos;
+
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -17,12 +24,6 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.beans.property.SimpleStringProperty;
-
-import com.example.tecnostore.logic.dto.ProductoDTO;
-import com.example.tecnostore.logic.servicios.ServicioProductos;
 
 public class FXMLGestionProductosController implements Initializable {
 

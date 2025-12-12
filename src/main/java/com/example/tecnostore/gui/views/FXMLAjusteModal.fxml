@@ -1,42 +1,67 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.geometry.*?>
-<VBox xmlns="http://javafx.com/javafx/17.0.2" xmlns:fx="http://javafx.com/fxml/1" spacing="15" fx:controller="com.example.tecnostore.gui.controller.FXMLAjusteModalController">
+
+<VBox xmlns="http://javafx.com/javafx/17.0.2"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.example.tecnostore.gui.controller.FXMLAjusteModalController"
+      spacing="14"
+      alignment="CENTER"
+      style="-fx-background-color: white;">
+
+    <padding>
+        <Insets top="18" right="18" bottom="18" left="18"/>
+    </padding>
+
     <children>
-        <Label text="Ajuste de Inventario" style="-fx-font-weight: bold; -fx-font-size: 16px;" />
-        <GridPane hgap="10" vgap="10" padding="10">
+
+        <Label text="Nuevo Ajuste de Inventario"
+               style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+
+        <GridPane hgap="10" vgap="10">
+            <padding>
+                <Insets top="8" right="8" bottom="8" left="8"/>
+            </padding>
             <children>
-                <Label text="Producto:" GridPane.rowIndex="0" GridPane.columnIndex="0" />
-                <ComboBox fx:id="productoCombo" GridPane.rowIndex="0" GridPane.columnIndex="1" />
-                <Label text="Tipo del Movimiento:" GridPane.rowIndex="1" GridPane.columnIndex="0" />
-                <HBox spacing="10" GridPane.rowIndex="1" GridPane.columnIndex="1">
+
+                <Label text="Producto" GridPane.rowIndex="0" GridPane.columnIndex="0" />
+                <ComboBox fx:id="productoCombo" prefWidth="260" GridPane.rowIndex="0" GridPane.columnIndex="1" />
+
+                <Label text="Tipo de movimiento" GridPane.rowIndex="1" GridPane.columnIndex="0" />
+                <HBox spacing="12" GridPane.rowIndex="1" GridPane.columnIndex="1">
                     <children>
                         <RadioButton fx:id="entradaRadio" text="Entrada" />
                         <RadioButton fx:id="salidaRadio" text="Salida" />
                     </children>
                 </HBox>
-                <Label text="Tipo de Ajuste:" GridPane.rowIndex="2" GridPane.columnIndex="0" />
-                <HBox spacing="10" GridPane.rowIndex="2" GridPane.columnIndex="1">
-                    <children>
-                        <ComboBox fx:id="tipoAjusteCombo" />
-                        <Label text="Cantidad:" />
-                        <TextField fx:id="cantidadField" />
-                    </children>
-                </HBox>
-                <Label text="Razón del Movimiento:" GridPane.rowIndex="3" GridPane.columnIndex="0" />
-                <TextArea fx:id="razonArea" prefRowCount="3" GridPane.rowIndex="3" GridPane.columnIndex="1" />
+
+                <Label text="Cantidad" GridPane.rowIndex="2" GridPane.columnIndex="0" />
+                <TextField fx:id="cantidadField" promptText="Ej. 10" GridPane.rowIndex="2" GridPane.columnIndex="1" />
+
+                <Label text="Razón del movimiento" GridPane.rowIndex="3" GridPane.columnIndex="0" />
+                <TextArea fx:id="razonArea" prefRowCount="3" wrapText="true" GridPane.rowIndex="3" GridPane.columnIndex="1" />
+
+                <Label text="Realizado por" GridPane.rowIndex="4" GridPane.columnIndex="0" />
+                <Label fx:id="realizadoPor" text="" GridPane.rowIndex="4" GridPane.columnIndex="1" />
             </children>
         </GridPane>
-        <Label fx:id="realizadoPor" style="-fx-font-style: italic;" />
+
         <HBox spacing="10" alignment="CENTER_RIGHT">
+            <padding>
+                <Insets top="10" right="0" bottom="0" left="0"/>
+            </padding>
             <children>
-                <Button text="Cancelar" onAction="#onCancelar" />
-                <Button text="Confirmar Ajuste" onAction="#onConfirmar" />
+                <Button fx:id="btnConfirmar"
+                        text="Confirmar Ajuste"
+                        onAction="#onConfirmar"/>
+                <Button fx:id="btnCancelar"
+                        text="Cancelar"
+                        onAction="#onCancelar"/>
             </children>
         </HBox>
+
     </children>
-    <padding>
-        <Insets top="20" right="20" bottom="20" left="20" />
-    </padding>
+
 </VBox>

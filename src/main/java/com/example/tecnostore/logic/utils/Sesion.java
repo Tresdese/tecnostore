@@ -36,7 +36,6 @@ public class Sesion {
     public static void setUsuarioSesion(UsuarioDTO usuario) {
         usuarioSesion = usuario;
 
-        // Si no hay tutor en sesión, limpiamos el rol y terminamos
         if (usuarioSesion == null) {
             rolActual = null;
             return;

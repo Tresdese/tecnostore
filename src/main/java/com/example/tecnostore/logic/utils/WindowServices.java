@@ -15,6 +15,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -25,6 +26,13 @@ public class WindowServices {
     private static final String VIEW_PATH = "/com/example/tecnostore/gui/views/";
 
     public WindowServices() {
+    }
+
+    public void setButtonVisibility(Button btn, boolean visible) {
+        if (btn != null) {
+            btn.setVisible(visible);
+            btn.setManaged(visible);
+        }
     }
 
     public FXMLLoader loadSimpleFXML(String fxmlPath) throws IOException, NullPointerException {

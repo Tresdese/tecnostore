@@ -1,8 +1,8 @@
 package com.example.tecnostore.logic.dao;
 
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +10,6 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.example.App;
 import com.example.tecnostore.data_access.ConexionBD;
 import com.example.tecnostore.logic.dto.ClienteDTO;
 

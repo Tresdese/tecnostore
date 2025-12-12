@@ -24,14 +24,11 @@ public class FXMLPrincipalController implements Initializable {
 
     @FXML
     private Button logOutButton;
-
     @FXML
     private Label welcomeLabel;
     @FXML
     private Button registerButton;
-    @FXML
     private Button editButton;
-    @FXML
     private Button deleteButton;
     @FXML
     private Button employeeListButton;
@@ -41,6 +38,10 @@ public class FXMLPrincipalController implements Initializable {
     private Button manageProductsButton;
 
     private WindowServices windowServices = new WindowServices();
+    @FXML
+    private Button gestionarSucursalesButton;
+    @FXML
+    private Button registrosAuditoriaButton;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -112,7 +113,7 @@ public class FXMLPrincipalController implements Initializable {
                 setButtonVisibility(registerButton, false);
                 setButtonVisibility(editButton, true);
                 setButtonVisibility(deleteButton, false);
-                setButtonVisibility(employeeListButton, true);
+                setButtonVisibility(employeeListButton, false);
                 break;
             case "SUPERADMINISTRADOR": // superadministrador
                 setButtonVisibility(registerButton, true);
@@ -137,30 +138,13 @@ public class FXMLPrincipalController implements Initializable {
 
     @FXML
     private void handleRegisterButton(ActionEvent event) {
-        setUserRole(Sesion.getRolActual());
-
-        try {
-            windowServices.openModal("FXMLRegistroUsuario.fxml", "Registro de Usuario");
-        } catch (IOException e) {
-            LOGGER.error("Error al abrir el formulario de registro: {}", e.getMessage(), e);
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error");
-            alert.setHeaderText(null);
-            alert.setContentText("No se pudo abrir el formulario de registro: " + e.getMessage());
-            alert.showAndWait();
-        }
+        registrarBoton();
     }
 
-    @FXML
-    private void handleEditButton(ActionEvent event) {
-    }
-
-    @FXML
-    private void handleDeleteButton(ActionEvent event) {
-    }
 
     @FXML
     private void handleEmployeeListButton(ActionEvent event) {
+        handleManageUsersButton(event);
     }
 
     @FXML
@@ -171,6 +155,50 @@ public class FXMLPrincipalController implements Initializable {
             LOGGER.error("Error al abrir el formulario de gestión de productos: {}", e.getMessage(), e);
             e.printStackTrace();
         }
+    }
+
+    private void handleManageUsersButton(ActionEvent event) {
+        try {
+            windowServices.openModal("FXMLGestionUsuariosView.fxml", "Gestión de usuarios");
+        } catch (IOException e) {
+            LOGGER.error("Error al abrir el formulario de gestión de usuarios: {}", e.getMessage(), e);
+            e.printStackTrace();
+        }
+    }
+
+    private void registrarBoton() {
+        try {
+            windowServices.openModal("FXMLUsuarioModal.fxml", "Registro de Usuario");
+        } catch (IOException e) {
+            LOGGER.error("Error al abrir el formulario de registro: {}", e.getMessage(), e);
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText(null);
+            alert.setContentText("No se pudo abrir el formulario de registro: " + e.getMessage());
+            alert.showAndWait();
+        }
+    }
+
+    private void gestionarSucursales() {
+        try {
+            windowServices.openModal("FXMLGestionSucursalesView.fxml", "Gestión de Sucursales");
+        } catch (IOException e) {
+            LOGGER.error("Error al abrir el formulario de gestión de sucursales: {}", e.getMessage(), e);
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText(null);
+            alert.setContentText("No se pudo abrir el formulario de gestión de sucursales: " + e.getMessage());
+            alert.showAndWait();
+        }
+    }
+
+    @FXML
+    private void handlegestionarSucursalesButton(ActionEvent event) {
+        gestionarSucursales();
+    }
+
+    @FXML
+    private void handleRegistrosAuditoriaButton(ActionEvent event) {
     }
 
 }

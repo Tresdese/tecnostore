@@ -1,34 +1,68 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.geometry.*?>
-<BorderPane xmlns="http://javafx.com/javafx/17.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.tecnostore.gui.controller.FXMLGestionUsuariosViewController" padding="10">
+
+<BorderPane xmlns="http://javafx.com/javafx/8.0.171"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.tecnostore.gui.controller.FXMLGestionUsuariosViewController">
+
+    <!-- TOP: Barra de título y búsqueda -->
     <top>
-        <HBox spacing="10" padding="0,0,10,0">
+        <VBox spacing="10">
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10"/>
+            </padding>
+
             <children>
-                <TextField fx:id="searchField" promptText="Buscar usuario por ID o Nombre..." prefWidth="300" />
-                <Button text="Buscar" onAction="#onBuscar" />
-            </children>
-        </HBox>
-    </top>
-    <left>
-        <VBox spacing="10" padding="0,10,0,0">
-            <children>
-                <Button text="Crear Nuevo Usuario" onAction="#onCrearNuevo" />
-                <Button text="Editar Seleccionado" onAction="#onEditarSeleccionado" />
-                <Button text="Dar de Baja" onAction="#onDarDeBaja" />
+
+                <Label text="Gestión de Usuarios"
+                       style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <children>
+                        <Label text="Buscar usuario:"/>
+                        <TextField fx:id="txtBuscarUsuario" promptText="Nombre o correo" />
+                        <Button fx:id="btnBuscar" text="Buscar" onAction="#onBuscar"/>
+                        <Button fx:id="btnLimpiarBusqueda" text="Limpiar" onAction="#onLimpiarBusqueda"/>
+                    </children>
+                    <padding>
+                        <!-- Aquí es donde NO debes usar 0,0,10,0 como texto -->
+                        <Insets top="0" right="0" bottom="10" left="0"/>
+                    </padding>
+                </HBox>
+
             </children>
         </VBox>
-    </left>
+    </top>
+
+    <!-- CENTER: Tabla de usuarios -->
     <center>
-        <TableView fx:id="userTable">
+        <TableView fx:id="tblUsuarios">
             <columns>
-                <TableColumn text="ID" />
-                <TableColumn text="Nombre" />
-                <TableColumn text="Rol" />
-                <TableColumn text="Teléfono" />
-                <TableColumn text="Estado" />
+                <TableColumn fx:id="colId" text="ID" prefWidth="60"/>
+                <TableColumn fx:id="colNombre" text="Nombre" prefWidth="150"/>
+                <TableColumn fx:id="colCorreo" text="Correo" prefWidth="200"/>
+                <TableColumn fx:id="colRol" text="Rol" prefWidth="100"/>
+                <TableColumn fx:id="colEstado" text="Estado" prefWidth="100"/>
             </columns>
         </TableView>
     </center>
+
+    <!-- BOTTOM: Botones de acción -->
+    <bottom>
+        <HBox spacing="10" alignment="CENTER_RIGHT">
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10"/>
+            </padding>
+            <children>
+                <Button fx:id="btnAgregar" text="Agregar" onAction="#onAgregar"/>
+                <Button fx:id="btnEditar" text="Editar" onAction="#onEditar"/>
+                <Button fx:id="btnEliminar" text="Eliminar" onAction="#onEliminar"/>
+                <Button fx:id="btnCerrar" text="Cerrar" onAction="#onCerrar"/>
+            </children>
+        </HBox>
+    </bottom>
+
 </BorderPane>

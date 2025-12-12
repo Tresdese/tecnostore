@@ -1,40 +1,79 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.geometry.*?>
-<VBox xmlns="http://javafx.com/javafx/17.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.tecnostore.gui.controller.FXMLAuditoriaViewController" spacing="15" padding="20">
-    <children>
-        <Label text="Logs de Auditoría" style="-fx-font-weight: bold; -fx-font-size: 18px;" />
-        <Label text="Filtros" />
-        <GridPane hgap="10" vgap="10" padding="10" style="-fx-border-color: lightgray; -fx-padding: 10px;">
+
+<BorderPane xmlns="http://javafx.com/javafx/8.0.171"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.tecnostore.gui.controller.FXMLAuditoriaViewController">
+
+    <!-- TOP: Título y filtros -->
+    <top>
+        <VBox spacing="8">
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10"/>
+            </padding>
+
             <children>
-                <Label text="Fecha Inicio:" GridPane.rowIndex="0" GridPane.columnIndex="0" />
-                <DatePicker GridPane.rowIndex="0" GridPane.columnIndex="1" />
-                <Label text="Fecha Fin:" GridPane.rowIndex="0" GridPane.columnIndex="2" />
-                <DatePicker GridPane.rowIndex="0" GridPane.columnIndex="3" />
-                <Label text="Usuario:" GridPane.rowIndex="1" GridPane.columnIndex="0" />
-                <TextField GridPane.rowIndex="1" GridPane.columnIndex="1" />
-                <Label text="Acción:" GridPane.rowIndex="1" GridPane.columnIndex="2" />
-                <TextField GridPane.rowIndex="1" GridPane.columnIndex="3" />
-                <Label text="Módulo:" GridPane.rowIndex="2" GridPane.columnIndex="0" />
-                <TextField GridPane.rowIndex="2" GridPane.columnIndex="1" />
-                <HBox spacing="10" GridPane.rowIndex="2" GridPane.columnIndex="3">
+                <Label text="Registro de Auditoría"
+                       style="-fx-font-size: 22px; -fx-font-weight: bold;"/>
+
+                <HBox spacing="10" alignment="CENTER_LEFT">
                     <children>
-                        <Button text="Limpiar" onAction="#onLimpiar" />
-                        <Button text="Buscar" onAction="#onBuscar" />
+                        <Label text="Usuario:"/>
+                        <TextField fx:id="txtUsuarioFiltro"
+                                   promptText="Nombre de usuario"/>
+
+                        <Label text="Acción:"/>
+                        <TextField fx:id="txtAccionFiltro"
+                                   promptText="Descripción de la acción"/>
+
+                        <Button fx:id="btnBuscar"
+                                text="Buscar"
+                                onAction="#onBuscar"/>
+
+                        <Button fx:id="btnLimpiar"
+                                text="Limpiar filtros"
+                                onAction="#onLimpiar"/>
                     </children>
+                    <!-- Aquí es donde a veces ponen padding="10" -->
+                    <padding>
+                        <Insets top="5" right="0" bottom="0" left="0"/>
+                    </padding>
                 </HBox>
             </children>
-        </GridPane>
-        <Label text="Resultado" />
-        <TableView fx:id="resultTable" VBox.vgrow="ALWAYS">
+        </VBox>
+    </top>
+
+    <!-- CENTER: Tabla de auditoría -->
+    <center>
+        <TableView fx:id="tblAuditoria">
             <columns>
-                <TableColumn text="Fecha y Hora" />
-                <TableColumn text="Usuario" />
-                <TableColumn text="Acción" />
-                <TableColumn text="Módulo" />
+                <TableColumn fx:id="colFecha" text="Fecha / Hora" prefWidth="150"/>
+                <TableColumn fx:id="colUsuario" text="Usuario" prefWidth="150"/>
+                <TableColumn fx:id="colAccion" text="Acción" prefWidth="250"/>
+                <TableColumn fx:id="colDetalles" text="Detalles" prefWidth="250"/>
+                <TableColumn fx:id="colIp" text="IP" prefWidth="120"/>
             </columns>
         </TableView>
-        <Label text="Página 1 de..." />
-    </children>
-</VBox>
+    </center>
+
+    <!-- BOTTOM: Botones de acción -->
+    <bottom>
+        <HBox spacing="10" alignment="CENTER_RIGHT">
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10"/>
+            </padding>
+            <children>
+                <Button fx:id="btnExportar"
+                        text="Exportar"
+                        onAction="#onExportar"/>
+                <Button fx:id="btnCerrar"
+                        text="Cerrar"
+                        onAction="#onCerrar"/>
+            </children>
+        </HBox>
+    </bottom>
+
+</BorderPane>

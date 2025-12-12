@@ -7,19 +7,37 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class FXMLAjusteInventarioViewController {
+    @FXML
+    private TextField txtIdProducto;
+
+    @FXML
+    private TextField txtNombreProducto;
+
+    @FXML
+    private TextField txtExistenciaActual;
+
+    @FXML
+    private TextField txtCantidadAjuste;
+
+    @FXML
+    private TextArea txtMotivo;
+
+    @FXML
+    private Button btnAplicar;
+
+    @FXML
+    private Button btnCancelar;
+
     @FXML private TableView<?> ajusteTable;
-
-    private String loggedUser = "UsuarioLogeado";
-
-    public void setLoggedUser(String loggedUser) {
-        this.loggedUser = loggedUser;
-    }
 
     @FXML
     private void initialize() {
@@ -36,11 +54,8 @@ public class FXMLAjusteInventarioViewController {
 
         Stage owner = (Stage) ajusteTable.getScene().getWindow();
         try {
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/com/example/tecnostore/gui/views/FXMLAjusteModal.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/tecnostore/gui/views/FXMLAjusteModal.fxml"));
             Parent root = loader.load();
-            FXMLAjusteModalController controller = loader.getController();
-            controller.setLoggedUser(loggedUser);
 
             Stage modalStage = new Stage();
             modalStage.initOwner(owner);

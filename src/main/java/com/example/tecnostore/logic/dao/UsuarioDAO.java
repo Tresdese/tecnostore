@@ -1,10 +1,11 @@
 package com.example.tecnostore.logic.dao;
 
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -196,5 +197,28 @@ public class UsuarioDAO extends ConexionBD {
             LOGGER.error("Error al actualizar usuario: {}", e.getMessage(), e);
             throw new Exception("Error al cambiar el estado activo del usuario: " + e.getMessage());
         }
+    }
+
+    public List<UsuarioDTO> buscarTodos() throws Exception {
+        List<UsuarioDTO> usuarios = new java.util.ArrayList<>();
+        try (PreparedStatement ps = getConnection().prepareStatement(SQL_SELECT_ALL);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                UsuarioDTO usuario = new UsuarioDTO();
+                usuario.setId(rs.getInt("id"));
+                usuario.setNombre(rs.getString("nombre"));
+                usuario.setUsuario(rs.getString("usuario"));
+                usuario.setContrasenaHash(rs.getString("contraseña_hash"));
+                usuario.setRol_id(rs.getInt("rol_id"));
+                usuario.setActivo(rs.getBoolean("activo"));
+                Timestamp fechaCreacionSql = rs.getTimestamp("fecha_creacion");
+                usuario.setFechaCreacion(fechaCreacionSql != null ? fechaCreacionSql.toLocalDateTime() : null);
+                usuarios.add(usuario);
+            }
+        } catch (SQLException e) {
+            LOGGER.error("Error al obtener todos los usuarios: {}", e.getMessage(), e);
+            throw new Exception("Error al obtener todos los usuarios: " + e.getMessage());
+        }
+        return usuarios;
     }
 }

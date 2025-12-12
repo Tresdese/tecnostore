@@ -54,7 +54,7 @@
         <HBox spacing="10" alignment="CENTER">
             <children>
                 <Button text="Cancelar" onAction="#onCancelar" />
-                <Button text="Confirmar" onAction="#onConfirmar" defaultButton="true" />
+                <Button fx:id="confirmButton" text="Confirmar" onAction="#onConfirmar" defaultButton="true" />
             </children>
         </HBox>
     </children>

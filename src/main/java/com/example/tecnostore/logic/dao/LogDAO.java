@@ -13,7 +13,8 @@ import com.example.tecnostore.logic.dto.LogAuditoriaDTO;
 
 public class LogDAO extends ConexionBD {
 
-    private static final String SQL_SELECT_LOGS = "SELECT id, usuario_id, accion, descripcion, fecha FROM logs_auditoria";
+        private static final String SQL_SELECT_LOGS = "SELECT l.id, l.usuario_id, u.usuario AS usuario_nombre, l.accion, l.descripcion, l.fecha "
+            + "FROM logs_auditoria l LEFT JOIN usuarios u ON l.usuario_id = u.id";
     private static final String SQL_INSERT_LOG = "INSERT INTO logs_auditoria (usuario_id, accion, descripcion) VALUES (?, ?, ?)";
 
     public LogDAO() throws Exception {
@@ -56,6 +57,7 @@ public class LogDAO extends ConexionBD {
                 dto.setId(rs.getInt("id"));
                 int usuarioId = rs.getInt("usuario_id");
                 dto.setUsuarioId(rs.wasNull() ? null : usuarioId);
+                dto.setNombreUsuario(rs.getString("usuario_nombre"));
                 dto.setAccion(rs.getString("accion"));
                 dto.setDescripcion(rs.getString("descripcion"));
                 Timestamp ts = rs.getTimestamp("fecha");

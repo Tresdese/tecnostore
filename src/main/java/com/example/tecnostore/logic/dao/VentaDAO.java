@@ -32,6 +32,13 @@ public class VentaDAO {
         }
     }
 
+        /** Inserta una venta usando una nueva conexión basada en config.properties. */
+        public void registrarVenta(String usuario, double monto) throws Exception {
+            try (ConexionBD bd = new ConexionBD(); Connection conn = bd.getConnection()) {
+                insertarVenta(conn, usuario, monto);
+            }
+        }
+
     public List<VentaResumenDTO> obtenerVentas() throws Exception {
         List<VentaResumenDTO> ventas = new ArrayList<>();
 

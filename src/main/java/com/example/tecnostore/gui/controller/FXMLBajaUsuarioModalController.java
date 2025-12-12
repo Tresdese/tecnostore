@@ -9,7 +9,6 @@ import com.example.tecnostore.logic.utils.WindowServices;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
-import javafx.stage.Window;
 
 public class FXMLBajaUsuarioModalController {
     private static final Logger LOGGER = LogManager.getLogger(FXMLBajaUsuarioModalController.class);
@@ -53,6 +52,8 @@ public class FXMLBajaUsuarioModalController {
         } catch (Exception e) {
             LOGGER.error("Error al dar de baja usuario: {}", e.getMessage(), e);
             WindowServices.showErrorDialog("Error", "No se pudo dar de baja al usuario: " + e.getMessage());
+        } finally {
+            cerrar();
         }
     }
 

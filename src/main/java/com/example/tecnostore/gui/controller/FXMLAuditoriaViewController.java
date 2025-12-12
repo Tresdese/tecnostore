@@ -64,7 +64,9 @@ public class FXMLAuditoriaViewController {
         }
         if (colUsuario != null) {
             colUsuario.setCellValueFactory(cd -> new SimpleStringProperty(
-                    cd.getValue().getUsuarioId() != null ? cd.getValue().getUsuarioId().toString() : ""));
+                cd.getValue().getNombreUsuario() != null && !cd.getValue().getNombreUsuario().isBlank()
+                    ? cd.getValue().getNombreUsuario()
+                    : (cd.getValue().getUsuarioId() != null ? cd.getValue().getUsuarioId().toString() : "")));
         }
         if (colAccion != null) {
             colAccion.setCellValueFactory(cd -> new SimpleStringProperty(
@@ -95,7 +97,8 @@ public class FXMLAuditoriaViewController {
 
         var filtrados = masterData.stream().filter(log -> {
             boolean usuarioCoincide = usuarioTerm.isEmpty()
-                    || (log.getUsuarioId() != null && log.getUsuarioId().toString().toLowerCase().contains(usuarioTerm));
+                || (log.getNombreUsuario() != null && log.getNombreUsuario().toLowerCase().contains(usuarioTerm))
+                || (log.getUsuarioId() != null && log.getUsuarioId().toString().toLowerCase().contains(usuarioTerm));
             boolean accionCoincide = accionTerm.isEmpty()
                     || (log.getAccion() != null && log.getAccion().toLowerCase().contains(accionTerm));
             return usuarioCoincide && accionCoincide;

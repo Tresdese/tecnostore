@@ -15,6 +15,8 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
+import java.io.IOException;
+
 public class FXMLAuditoriaViewController {
     @FXML
     private Button btnBuscar;
@@ -117,7 +119,7 @@ public class FXMLAuditoriaViewController {
     }
 
     @FXML
-    private void onExportar() {
+    private void onExportar() throws IOException {
         WindowServices.showInformationDialog("Auditoría", "La exportación aún no está implementada.");
     }
 

@@ -63,17 +63,21 @@ public class FXMLGestionProductosController implements Initializable {
             setButtonVisibility(deleteProductButton, false);
             setButtonVisibility(insertProductButton, false);
         } else if (usuarioRol.equals("ADMINISTRADOR")) {
-            insertProductButton.setDisable(true);
-            editProductButton.setDisable(true);
-            deleteProductButton.setDisable(true);
-        } else if (usuarioRol.equals("GERENTE DE INVENTARIO")) {
             insertProductButton.setDisable(false);
             editProductButton.setDisable(false);
             deleteProductButton.setDisable(false);
+        } else if (usuarioRol.equals("GERENTE DE INVENTARIO")) {
+            insertProductButton.setDisable(true);
+            editProductButton.setDisable(true);
+            deleteProductButton.setDisable(true);
+        } else if (usuarioRol.equals("SUPERADMINISTRADOR")) {
+            setButtonVisibility(editProductButton, false);
+            setButtonVisibility(deleteProductButton, false);
+            setButtonVisibility(insertProductButton, false);
         } else {
-            setButtonVisibility(editProductButton, true);
-            setButtonVisibility(deleteProductButton, true);
-            setButtonVisibility(insertProductButton, true);
+            setButtonVisibility(editProductButton, false);
+            setButtonVisibility(deleteProductButton, false);
+            setButtonVisibility(insertProductButton, false);
         }
     }
 

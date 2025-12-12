@@ -26,6 +26,13 @@ public class FXMLConfigurar2FAController {
     @FXML private Button btnCopiarEnlace;
 
     private Runnable onContinuar;
+    @FXML
+    private void initialize() {
+        // Mensaje inicial para evitar pantalla en blanco si aún no se setea data
+        lblEstado.setText("Generando código QR...");
+        txtQrUrl.setVisible(false);
+        txtQrUrl.setManaged(false);
+    }
 
     public void setData(String qrUrl, String secret, Runnable onContinuar) {
         this.onContinuar = onContinuar;
@@ -33,20 +40,30 @@ public class FXMLConfigurar2FAController {
             Image img = new Image(qrUrl, true);
             img.errorProperty().addListener((obs, oldVal, newVal) -> {
                 if (newVal) {
-                    lblEstado.setText("No se pudo cargar el QR. Copia/pega el enlace:");
-                    lblQrUrl.setText(qrUrl);
-                    txtQrUrl.setText(qrUrl);
-                    txtQrUrl.setVisible(true);
-                    txtQrUrl.setManaged(true);
+                    mostrarFallback(qrUrl);
                 }
             });
             imgQr.setImage(img);
             lblQrUrl.setText(qrUrl);
             txtQrUrl.setText(qrUrl);
+            lblEstado.setText("Escanea el QR con tu app de autenticación.");
+        } else {
+            mostrarFallback("No se recibió URL de QR.");
         }
-        if (secret != null) {
+
+        if (secret != null && !secret.isBlank()) {
             lblSecret.setText(secret);
+        } else {
+            lblSecret.setText("No se recibió clave.");
         }
+    }
+
+    private void mostrarFallback(String mensaje) {
+        lblEstado.setText("No se pudo cargar el QR. Copia/pega el enlace:");
+        lblQrUrl.setText(mensaje);
+        txtQrUrl.setText(mensaje);
+        txtQrUrl.setVisible(true);
+        txtQrUrl.setManaged(true);
     }
 
     @FXML

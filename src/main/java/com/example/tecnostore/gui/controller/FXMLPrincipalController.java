@@ -139,7 +139,6 @@ public class FXMLPrincipalController implements Initializable {
                 setButtonVisibility(puntoVentaButton, false);
                 setButtonVisibility(gestionarSucursalesButton, true);
                 setButtonVisibility(registrosAuditoriaButton, true);
-                setButtonVisibility(manageProductsButton, false);
                 break;
 
             case "CAJERO": // Cajero
@@ -164,7 +163,6 @@ public class FXMLPrincipalController implements Initializable {
                 setButtonVisibility(puntoVentaButton, false);
                 setButtonVisibility(gestionarSucursalesButton, true);
                 setButtonVisibility(registrosAuditoriaButton, true);
-                setButtonVisibility(manageProductsButton, false);
                 break;
 
             case "GERENTE DE INVENTARIO": // Gerente
@@ -190,7 +188,6 @@ public class FXMLPrincipalController implements Initializable {
                 setButtonVisibility(puntoVentaButton, false);
                 setButtonVisibility(gestionarSucursalesButton, false);
                 setButtonVisibility(registrosAuditoriaButton, false);
-                setButtonVisibility(manageProductsButton, false);
                 break;
         }
     }

@@ -32,6 +32,8 @@ public class FXMLPrincipalController implements Initializable {
     private Button deleteButton;
     @FXML
     private Button employeeListButton;
+    @FXML
+    private Button reportesButton;
 
     private UsuarioDTO usuarioDTO;
     @FXML
@@ -108,30 +110,35 @@ public class FXMLPrincipalController implements Initializable {
                 setButtonVisibility(editButton, true);
                 setButtonVisibility(deleteButton, true);
                 setButtonVisibility(employeeListButton, true);
+                setButtonVisibility(reportesButton, true);
                 break;
             case "CAJERO": // cajero
                 setButtonVisibility(registerButton, false);
                 setButtonVisibility(editButton, true);
                 setButtonVisibility(deleteButton, false);
                 setButtonVisibility(employeeListButton, false);
+                setButtonVisibility(reportesButton, true);
                 break;
             case "SUPERADMINISTRADOR": // superadministrador
                 setButtonVisibility(registerButton, true);
                 setButtonVisibility(editButton, true);
                 setButtonVisibility(deleteButton, true);
                 setButtonVisibility(employeeListButton, true);
+                setButtonVisibility(reportesButton, true);
                 break;
             case "GERENTE DE INVENTARIO": // gerente
                 setButtonVisibility(registerButton, true);
                 setButtonVisibility(editButton, false);
                 setButtonVisibility(deleteButton, true);
                 setButtonVisibility(employeeListButton, true);
+                setButtonVisibility(reportesButton, true);
                 break;
             default:
                 setButtonVisibility(registerButton, false);
                 setButtonVisibility(editButton, false);
                 setButtonVisibility(deleteButton, false);
                 setButtonVisibility(employeeListButton, false);
+                setButtonVisibility(reportesButton, false);
                 break;
         }
     }
@@ -163,6 +170,20 @@ public class FXMLPrincipalController implements Initializable {
         } catch (IOException e) {
             LOGGER.error("Error al abrir el formulario de gestión de usuarios: {}", e.getMessage(), e);
             e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleReportesButton(ActionEvent event) {
+        try {
+            windowServices.openModal("FXMLReportesView.fxml", "Panel de Reportes");
+        } catch (IOException e) {
+            LOGGER.error("Error al abrir el panel de reportes: {}", e.getMessage(), e);
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText(null);
+            alert.setContentText("No se pudo abrir el panel de reportes: " + e.getMessage());
+            alert.showAndWait();
         }
     }
 

@@ -4,60 +4,84 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import com.example.tecnostore.logic.dao.VentaDAO;
-import com.example.tecnostore.logic.dto.VentaResumenDTO;
-import com.example.tecnostore.logic.utils.Sesion;
+import com.example.tecnostore.logic.dto.ProductoDTO;
+import com.example.tecnostore.logic.servicios.ServicioProductos;
 import com.example.tecnostore.logic.utils.WindowServices;
 
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.control.TextInputDialog;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
 public class FXMLRegistroVentaModalController {
     @FXML private TextField searchField;
-    @FXML private TableView<VentaResumenDTO> productTable;
+    @FXML private TableView<ProductoDTO> productTable;
     @FXML private Label subtotalLabel;
     @FXML private Label ivaLabel;
     @FXML private Label totalLabel;
-    @FXML private TableColumn<VentaResumenDTO, String> colCodigo;
-    @FXML private TableColumn<VentaResumenDTO, String> colDescripcion;
+    @FXML private TableColumn<ProductoDTO, String> colCodigo;
+    @FXML private TableColumn<ProductoDTO, String> colDescripcion;
+    @FXML private TableColumn<ProductoDTO, Double> colPrecio;
+    @FXML private TableColumn<ProductoDTO, Integer> colCantidad;
+    @FXML private TableColumn<ProductoDTO, Double> colImporte;
 
-    private VentaDAO ventaDAO;
-    private final ObservableList<VentaResumenDTO> ventas = FXCollections.observableArrayList();
+    private ServicioProductos servicioProductos;
 
     @FXML private void initialize(URL location, ResourceBundle resources) {
-        productTable.setItems(ventas);
+        productTable.setItems(FXCollections.observableArrayList());
 
         try {
-            ventaDAO = new VentaDAO();
+            servicioProductos = new ServicioProductos();
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        colCodigo.setCellValueFactory(cell -> new SimpleStringProperty(
-                cell.getValue().getUsuario() != null ? cell.getValue().getUsuario() : ""));
-        colDescripcion.setCellValueFactory(cell -> new SimpleStringProperty(
-                String.format("$%,.2f", cell.getValue().getMontoTotal())));
-
-        cargarVentas();
+        colCodigo.setCellValueFactory(cell -> new SimpleStringProperty(String.valueOf(cell.getValue().getId())));
+        colDescripcion.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getNombre()));
+        colPrecio.setCellValueFactory(cell -> new SimpleDoubleProperty(cell.getValue().getPrecio()).asObject());
+        colCantidad.setCellValueFactory(cell -> new SimpleIntegerProperty(cell.getValue().getStock()).asObject());
+        colImporte.setCellValueFactory(cell ->
+                new SimpleDoubleProperty(cell.getValue().getPrecio() * cell.getValue().getStock()).asObject());
     }
 
     @FXML
     private void onBuscar() {
         String texto = searchField.getText();
-        cargarVentas(texto);
+        if (texto == null || texto.isBlank()) return;
+
+        try {
+            for (ProductoDTO p : servicioProductos.obtenerTodosProductos()) {
+                if (String.valueOf(p.getId()).equals(texto) || p.getNombre().toLowerCase().contains(texto.toLowerCase())) {
+
+
+                    ProductoDTO item = new ProductoDTO();
+                    item.setId(p.getId());
+                    item.setNombre(p.getNombre());
+                    item.setPrecio(p.getPrecio());
+                    item.setStock(1);
+
+                    productTable.getItems().add(item);
+                    actualizarEtiquetas();
+                    searchField.clear();
+                    return;
+                }
+            }
+            WindowServices.showWarningDialog("Aviso", "Producto no encontrado.");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML private void onCancelarVenta() {
@@ -67,23 +91,12 @@ public class FXMLRegistroVentaModalController {
 
     @FXML
     private void onHacerPago() {
-        double total = obtenerTotal();
-        if (total <= 0) {
-            try {
-                WindowServices.showWarningDialog("Pago", "No hay ventas cargadas o el total es 0. Agrega una venta antes de pagar.");
-            } catch (NullPointerException | IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-            return;
-        }
-
         Window owner = searchField != null ? searchField.getScene().getWindow() : null;
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/tecnostore/gui/views/FXMLPagoModal.fxml"));
             Parent root = loader.load();
             FXMLPagoModalController controller = loader.getController();
-            controller.setTotalPagar(total);
+            controller.setTotalPagar(obtenerTotal());
             controller.setOwner(owner);
 //
             Stage modalStage = new Stage();
@@ -99,75 +112,16 @@ public class FXMLRegistroVentaModalController {
         }
     }
 
-    @FXML
-    private void onAgregarVenta() {
-        TextInputDialog dialog = new TextInputDialog();
-        dialog.setTitle("Agregar venta");
-        dialog.setHeaderText("Ingrese el monto de la venta");
-        dialog.setContentText("Monto:");
-
-        dialog.showAndWait().ifPresent(valor -> {
-            double monto;
-            try {
-                monto = Double.parseDouble(valor.replace(",", "").trim());
-            } catch (NumberFormatException e) {
-                WindowServices.showErrorDialog("Venta", "Monto inválido.");
-                return;
-            }
-
-            if (monto <= 0) {
-                try {
-                    WindowServices.showWarningDialog("Venta", "El monto debe ser mayor a 0.");
-                } catch (NullPointerException | IOException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-                return;
-            }
-
-            String usuario = Sesion.getUsuarioSesion() != null
-                    ? String.valueOf(Sesion.getUsuarioSesion().getId())
-                    : null;
-
-            try {
-                if (ventaDAO == null) {
-                    ventaDAO = new VentaDAO();
-                }
-                ventaDAO.registrarVenta(usuario, monto);
-                cargarVentas();
-            } catch (Exception e) {
-                WindowServices.showErrorDialog("Venta", "No se pudo registrar la venta: " + e.getMessage());
-            }
-        });
-    }
-
-    private void cargarVentas() {
-        cargarVentas(null);
-    }
-
-    private void cargarVentas(String filtro) {
-        ventas.clear();
-        try {
-            if (ventaDAO == null) {
-                ventaDAO = new VentaDAO();
-            }
-            var data = ventaDAO.obtenerVentas();
-            if (filtro != null && !filtro.isBlank()) {
-                String term = filtro.trim().toLowerCase();
-                data = data.stream()
-                        .filter(v -> (v.getUsuario() != null && v.getUsuario().toLowerCase().contains(term))
-                                || String.valueOf(v.getMontoTotal()).toLowerCase().contains(term))
-                        .toList();
-            }
-            ventas.addAll(data);
-            actualizarEtiquetas();
-        } catch (Exception e) {
-            WindowServices.showErrorDialog("Ventas", "No se pudieron cargar las ventas: " + e.getMessage());
-        }
-    }
-
     private double obtenerTotal() {
-        return ventas.stream().mapToDouble(VentaResumenDTO::getMontoTotal).sum();
+        if (totalLabel == null || totalLabel.getText() == null) {
+            return 0;
+        }
+        String texto = totalLabel.getText().replaceAll("[^0-9,.-]", "").replace(",", "");
+        try {
+            return Double.parseDouble(texto);
+        } catch (NumberFormatException e) {
+            return 0;
+        }
     }
 
     //actualizar información de las etiquetas de ventas

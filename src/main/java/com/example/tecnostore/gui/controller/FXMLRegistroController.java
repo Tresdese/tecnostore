@@ -46,7 +46,7 @@ public class FXMLRegistroController implements Initializable {
     public UsuarioDTO getCreatedUser() {
         return createdUser;
     }
-//
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         loadRoles();

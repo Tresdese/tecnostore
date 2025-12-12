@@ -13,7 +13,10 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox spacing="10" xmlns="http://javafx.com/javafx/17.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.tecnostore.gui.controller.FXMLRegistroVentaModalController">
+<VBox spacing="10"
+      xmlns="http://javafx.com/javafx/17.0.2"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.example.tecnostore.gui.controller.FXMLRegistroVentaModalController">
 
     <padding>
         <Insets top="10" right="10" bottom="10" left="10"/>
@@ -54,17 +57,21 @@
                     <children>
                         <Label text="Subtotal:"
                                GridPane.rowIndex="0" GridPane.columnIndex="0" />
-                        <Label fx:id="subtotalLabel" text="$0.00"
+                        <!-- SIN $ -->
+                        <Label fx:id="subtotalLabel" text="0.00"
                                GridPane.rowIndex="0" GridPane.columnIndex="1" />
 
                         <Label text="IVA:"
                                GridPane.rowIndex="1" GridPane.columnIndex="0" />
-                        <Label fx:id="ivaLabel" text="$0.00"
+                        <!-- SIN $ -->
+                        <Label fx:id="ivaLabel" text="0.00"
                                GridPane.rowIndex="1" GridPane.columnIndex="1" />
 
                         <Label text="TOTAL:" style="-fx-font-weight: bold;"
                                GridPane.rowIndex="2" GridPane.columnIndex="0" />
-                        <Label fx:id="totalLabel" text="$0.00" style="-fx-font-weight: bold; -fx-text-fill: green;"
+                        <!-- SIN $ -->
+                        <Label fx:id="totalLabel" text="0.00"
+                               style="-fx-font-weight: bold; -fx-text-fill: green;"
                                GridPane.rowIndex="2" GridPane.columnIndex="1" />
                     </children>
                     <columnConstraints>

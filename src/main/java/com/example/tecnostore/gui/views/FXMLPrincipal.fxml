@@ -1,29 +1,76 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.tecnostore.gui.controller.FXMLPrincipalController">
-   <children>
-        <VBox alignment="TOP_CENTER" layoutX="410.0" layoutY="66.0" prefHeight="306.0" prefWidth="145.0" spacing="20.0">
-         <children>
+<BorderPane prefHeight="600.0" prefWidth="800.0"
+            style="-fx-background-color: #212121;"
+            xmlns="http://javafx.com/javafx/17.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.tecnostore.gui.controller.FXMLPrincipalController">
 
-            <Button fx:id="registerButton" mnemonicParsing="false" onAction="#handleRegisterButton" text="Registrar" />
-            <Button fx:id="gestionarSucursalesButton" mnemonicParsing="false" onAction="#handlegestionarSucursalesButton" text="Gestionar sucursales" />
-             <Button fx:id="puntoVentaButton" mnemonicParsing="false" onAction="#handlePuntoVentaButton" text="Punto de Venta" />
-            <Button fx:id="registrosAuditoriaButton" mnemonicParsing="false" onAction="#handleRegistrosAuditoriaButton" text="Gestionar auditorias" />
-            <Button fx:id="employeeListButton" mnemonicParsing="false" onAction="#handleEmployeeListButton" text="Lista de empleados" />
-            <Button fx:id="manageProductsButton" mnemonicParsing="false" onAction="#handleManageProductsButton" text="Gestionar productos" />
-            <Button fx:id="reportesButton" mnemonicParsing="false" onAction="#handleReportesButton" text="Reportes" />
-            <Button fx:id="twoFactorButton" mnemonicParsing="false" onAction="#handleActivar2FAButton" text="Activar 2FA" />
-         </children>
-      </VBox>
-      <Label fx:id="welcomeLabel" layoutX="56.0" layoutY="57.0" text="Bienvenido" />
-      <Button fx:id="logOutButton" layoutX="60.0" layoutY="323.0" mnemonicParsing="false" onAction="#logOutActionButton" text="Cerrar sesion" />
-   </children>
-</AnchorPane>
+    <top>
+        <HBox alignment="CENTER_LEFT" prefHeight="70.0" spacing="20.0"
+              style="-fx-background-color: #1a1a1a; -fx-padding: 20 50; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 10, 0, 0, 5);">
+            <Label text="TechnoStore ERP" textFill="WHITE">
+                <font>
+                    <Font name="System Bold" size="24.0" />
+                </font>
+            </Label>
+            <Label fx:id="welcomeLabel" text="Bienvenido" textFill="#bdbdbd" style="-fx-font-size: 16px;" />
+
+            <HBox HBox.hgrow="ALWAYS" alignment="CENTER_RIGHT" spacing="10.0">
+                <Button fx:id="twoFactorButton" mnemonicParsing="false" onAction="#handleActivar2FAButton" text="Activar 2FA"
+                        style="-fx-background-color: transparent; -fx-border-color: #536dfe; -fx-border-radius: 5; -fx-text-fill: #536dfe; -fx-font-weight: bold;" />
+                <Button fx:id="logOutButton" mnemonicParsing="false" onAction="#logOutActionButton" text="Cerrar sesión"
+                        style="-fx-background-color: #d32f2f; -fx-text-fill: white; -fx-font-weight: bold;" />
+            </HBox>
+        </HBox>
+    </top>
+
+    <center>
+        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="15.0">
+            <children>
+                <Label text="PANEL DE NAVEGACIÓN" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #8c9eff;" />
+
+                <GridPane alignment="CENTER" hgap="25.0" vgap="15.0" style="-fx-background-color: #303030; -fx-padding: 20; -fx-background-radius: 8;">
+                    <columnConstraints>
+                        <ColumnConstraints halignment="RIGHT" minWidth="10.0" prefWidth="150.0" />
+                        <ColumnConstraints halignment="LEFT" minWidth="10.0" prefWidth="150.0" />
+                    </columnConstraints>
+
+                    <Button fx:id="puntoVentaButton" onAction="#handlePuntoVentaButton" text="Punto de Venta" GridPane.rowIndex="0" GridPane.columnIndex="0" prefWidth="200"
+                            style="-fx-background-color: #00897b; -fx-text-fill: white; -fx-font-weight: bold;" />
+
+                    <Button fx:id="manageProductsButton" onAction="#handleManageProductsButton" text="Gestionar Productos" GridPane.rowIndex="1" GridPane.columnIndex="0" prefWidth="200"
+                            style="-fx-background-color: #424242; -fx-text-fill: white;" />
+
+                    <Button fx:id="gestionarSucursalesButton" onAction="#handlegestionarSucursalesButton" text="Gestionar Sucursales" GridPane.rowIndex="2" GridPane.columnIndex="0" prefWidth="200"
+                            style="-fx-background-color: #424242; -fx-text-fill: white;" />
+
+                    <Button fx:id="registrosAuditoriaButton" onAction="#handleRegistrosAuditoriaButton" text="Registros Auditoría" GridPane.rowIndex="3" GridPane.columnIndex="0" prefWidth="200"
+                            style="-fx-background-color: #424242; -fx-text-fill: white;" />
+
+                    <Button fx:id="employeeListButton" onAction="#handleEmployeeListButton" text="Lista de Empleados" GridPane.rowIndex="0" GridPane.columnIndex="1" prefWidth="200"
+                            style="-fx-background-color: #424242; -fx-text-fill: white;" />
+
+                    <Button fx:id="registerButton" onAction="#handleRegisterButton" text="Registrar Usuario" GridPane.rowIndex="1" GridPane.columnIndex="1" prefWidth="200"
+                            style="-fx-background-color: #424242; -fx-text-fill: white;" />
+
+                    <Button fx:id="reportesButton" onAction="#handleReportesButton" text="Reportes" GridPane.rowIndex="2" GridPane.columnIndex="1" prefWidth="200"
+                            style="-fx-background-color: #424242; -fx-text-fill: white;" />
+
+                </GridPane>
+            </children>
+            <padding>
+                <Insets top="30.0" />
+            </padding>
+        </VBox>
+    </center>
+
+    <bottom>
+        <Label text="TechnoStore ERP" alignment="CENTER" prefHeight="30.0" BorderPane.alignment="CENTER"
+               style="-fx-text-fill: #9e9e9e; -fx-font-size: 11px;" />
+    </bottom>
+
+</BorderPane>

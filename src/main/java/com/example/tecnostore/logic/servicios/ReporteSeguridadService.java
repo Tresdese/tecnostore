@@ -20,8 +20,10 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.DefaultCategoryDataset;
 
+import com.example.tecnostore.logic.dao.LogDAO;
 import com.example.tecnostore.logic.dao.ProductoDAO;
 import com.example.tecnostore.logic.dao.VentaDAO;
+import com.example.tecnostore.logic.dto.LogAuditoriaDTO;
 import com.example.tecnostore.logic.dto.ProductoDTO;
 import com.example.tecnostore.logic.dto.VentaResumenDTO;
 import com.example.tecnostore.logic.utils.Sesion;
@@ -40,10 +42,12 @@ public class ReporteSeguridadService {
 
     private final VentaDAO ventaDAO;
     private final ProductoDAO productoDAO;
+    private final LogDAO logDAO;
 
     public ReporteSeguridadService() throws Exception {
         this.ventaDAO = new VentaDAO();
         this.productoDAO = new ProductoDAO();
+        this.logDAO = new LogDAO();
     }
 
     public List<Path> generarReportesAutomaticos(String directorioSalida, String rolUsuario) {
@@ -92,6 +96,8 @@ public class ReporteSeguridadService {
                 documento.close();
             }
 
+            registrarLogReporte("VENTAS", rutaArchivo);
+
         } catch (Exception e) {
             if (e instanceof SecurityException se) throw se;
             LOGGER.error("Error al generar reporte de ventas: {}", e.getMessage(), e);
@@ -139,6 +145,8 @@ public class ReporteSeguridadService {
                 documento.close();
             }
 
+            registrarLogReporte("INVENTARIO", rutaArchivo);
+
         } catch (Exception e) {
             if (e instanceof SecurityException se) throw se;
             LOGGER.error("Error al generar reporte de inventario: {}", e.getMessage(), e);
@@ -185,6 +193,8 @@ public class ReporteSeguridadService {
             } finally {
                 documento.close();
             }
+
+            registrarLogReporte("KPIS", rutaArchivo);
 
         } catch (Exception e) {
             if (e instanceof SecurityException se) throw se;
@@ -267,5 +277,17 @@ public class ReporteSeguridadService {
             throw new RuntimeException("No se pudo preparar el directorio de reportes: " + e.getMessage(), e);
         }
         return base;
+    }
+
+    private void registrarLogReporte(String tipo, Path ruta) {
+        try {
+            LogAuditoriaDTO dto = new LogAuditoriaDTO();
+            dto.setUsuarioId(Sesion.getUsuarioSesion() != null ? Sesion.getUsuarioSesion().getId() : null);
+            dto.setAccion("REPORTE_" + tipo.toUpperCase());
+            dto.setDescripcion("Generado en " + ruta.toAbsolutePath());
+            logDAO.registrar(dto);
+        } catch (Exception e) {
+            LOGGER.warn("No se pudo registrar log para reporte {}: {}", tipo, e.getMessage());
+        }
     }
 }

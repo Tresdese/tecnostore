@@ -4,14 +4,18 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Date;
 
-import com.example.tecnostore.logic.dto.VentaResumenDTO;
+import com.example.tecnostore.logic.dao.LogDAO;
+import com.example.tecnostore.logic.dto.LogAuditoriaDTO;
 import com.example.tecnostore.logic.servicios.ReporteSeguridadService;
 import com.example.tecnostore.logic.utils.Sesion;
 
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -34,18 +38,10 @@ public class FXMLReportesViewController {
     @FXML
     private Button btnGenerar;
 
-    @FXML
-    private TableColumn colFecha;
-
-    @FXML
-    private TableColumn colTipo;
-
-    @FXML
-    private TableColumn colDescripcion;
-
-    @FXML
-    private TableColumn colEstado;
-
+    @FXML private TableColumn<LogAuditoriaDTO, String> colFecha;
+    @FXML private TableColumn<LogAuditoriaDTO, String> colTipo;
+    @FXML private TableColumn<LogAuditoriaDTO, String> colDescripcion;
+    @FXML private TableColumn<LogAuditoriaDTO, String> colEstado;
     @FXML
     private Button btnVerDetalle;
 
@@ -55,17 +51,21 @@ public class FXMLReportesViewController {
     @FXML
     private Button btnCerrar;
 
-    @FXML private TableView<VentaResumenDTO> tblReportes;
+    @FXML private TableView<LogAuditoriaDTO> tblReportes;
     @FXML private Label statusLabel;
     @FXML private ComboBox<String> cmbTipoReporte;
 
     private ReporteSeguridadService reporteService;
+    private LogDAO logDAO;
+    private final ObservableList<LogAuditoriaDTO> data = FXCollections.observableArrayList();
 
     @FXML
     private void initialize() {
         if (tblReportes != null) {
             tblReportes.setPlaceholder(new Label("Genere un reporte para visualizar los datos."));
         }
+
+        configurarColumnas();
 
         if (cmbTipoReporte != null) {
             cmbTipoReporte.setItems(FXCollections.observableArrayList(
@@ -75,7 +75,8 @@ public class FXMLReportesViewController {
 
         try {
             this.reporteService = new ReporteSeguridadService();
-            actualizarTablaVentas();
+            this.logDAO = new LogDAO();
+            actualizarTablaLogs();
             if (statusLabel != null) {
                 statusLabel.setText("Listo para generar reportes automáticos.");
             }
@@ -109,7 +110,7 @@ public class FXMLReportesViewController {
                 carpeta = rutas.isEmpty() ? carpetaBase : rutas.get(0).getParent();
             }
 
-            actualizarTablaVentas();
+            actualizarTablaLogs();
             setStatus(carpeta != null
                     ? "Reportes generados en " + carpeta.toAbsolutePath()
                     : "Reportes generados.");
@@ -138,11 +139,16 @@ public class FXMLReportesViewController {
         stage.close();
     }
 
-    private void actualizarTablaVentas() {
-        if (reporteService == null || tblReportes == null) {
+    private void actualizarTablaLogs() {
+        if (tblReportes == null || logDAO == null) {
             return;
         }
-        tblReportes.setItems(FXCollections.observableArrayList(reporteService.obtenerVentasParaUI()));
+        try {
+            data.setAll(logDAO.obtenerTodos());
+            tblReportes.setItems(data);
+        } catch (Exception e) {
+            setStatus("No se pudieron cargar logs: " + e.getMessage());
+        }
     }
 
     private void setStatus(String mensaje) {
@@ -160,5 +166,23 @@ public class FXMLReportesViewController {
     private String construirRuta(Path base, String prefijo) {
         String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         return base.resolve("reporte_" + prefijo + "_" + timestamp + ".pdf").toString();
+    }
+
+    private void configurarColumnas() {
+        if (colFecha != null) {
+            colFecha.setCellValueFactory(cell -> {
+                var fecha = cell.getValue().getFecha();
+                return new SimpleStringProperty(fecha != null ? fecha.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")) : "");
+            });
+        }
+        if (colTipo != null) {
+            colTipo.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getAccion()));
+        }
+        if (colDescripcion != null) {
+            colDescripcion.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getDescripcion()));
+        }
+        if (colEstado != null) {
+            colEstado.setCellValueFactory(cell -> new SimpleStringProperty("GENERADO"));
+        }
     }
 }

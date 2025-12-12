@@ -5,6 +5,7 @@ com\example\tecnostore\gui\controller\FXMLBajaUsuarioModalController.class
 com\example\tecnostore\gui\controller\FXMLEliminarSucursalModalController.class
 com\example\tecnostore\gui\controller\FXMLAjusteModalController$1.class
 com\example\tecnostore\gui\controller\FXMLPuntoVentaViewController.class
+com\example\tecnostore\logic\dto\DetalleCompraDTO.class
 com\example\tecnostore\gui\controller\FXMLSucursalModalController.class
 com\example\tecnostore\gui\controller\FXMLUsuarioModalController$1.class
 com\example\tecnostore\gui\controller\FXMLSucursalModalController$SucursalData.class
@@ -24,6 +25,7 @@ com\example\tecnostore\gui\controller\FXMLPrincipalController.class
 com\example\tecnostore\logic\servicios\ClienteService.class
 com\example\tecnostore\gui\controller\FXMLGestionSucursalesViewController$TableColumnFactory.class
 com\example\tecnostore\gui\controller\FXMLPagoModalController.class
+com\example\tecnostore\logic\dto\LogAuditoriaDTO.class
 com\example\tecnostore\logic\servicios\ServicioProductos.class
 com\example\tecnostore\logic\servicios\ProveedorService.class
 com\example\tecnostore\gui\controller\FXMLIngresoController.class
@@ -48,6 +50,8 @@ com\example\tecnostore\gui\controller\FXMLGestionSucursalesViewController.class
 com\example\tecnostore\logic\dto\SucursalDTO.class
 com\example\tecnostore\gui\controller\FXMLProductoModalController.class
 com\example\tecnostore\logic\utils\Sesion.class
+com\example\tecnostore\logic\dto\CompraDTO.class
+com\example\tecnostore\logic\dao\CompraDAO.class
 com\example\tecnostore\logic\dao\LogDAO.class
 com\example\tecnostore\gui\controller\FXMLGestionProductosController.class
 com\example\tecnostore\gui\controller\FXMLUsuarioModalController.class

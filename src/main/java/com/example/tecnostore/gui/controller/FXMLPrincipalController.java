@@ -166,7 +166,7 @@ public class FXMLPrincipalController implements Initializable {
                 break;
 
             case "GERENTE DE INVENTARIO": // Gerente
-                setButtonVisibility(registerButton, true);
+                setButtonVisibility(registerButton, false);
                 setButtonVisibility(editButton, false);
                 setButtonVisibility(deleteButton, true);
                 setButtonVisibility(employeeListButton, true);

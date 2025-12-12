@@ -7,15 +7,26 @@
 <VBox xmlns="http://javafx.com/javafx/17.0.2" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.example.tecnostore.gui.controller.FXMLPuntoVentaViewController"
       fx:id="rootContainer"
-      spacing="20"
-      alignment="CENTER">
+      spacing="15"
+      alignment="TOP_CENTER">
 
     <padding>
-        <Insets top="50.0" right="50.0" bottom="50.0" left="50.0" />
+        <Insets top="20.0" right="20.0" bottom="20.0" left="20.0" />
     </padding>
     <children>
-        <Label text="TechnoStore ERP" style="-fx-font-size: 28px; -fx-font-weight: bold;" />
-        <Label text="Módulo de Ventas" />
-        <Button text="Hacer Venta" onAction="#onHacerVenta" prefWidth="200" prefHeight="50" />
+        <Label text="TechnoStore ERP | Módulo de Ventas (TPV)" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-padding: 0 0 10 0;" />
+
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Button text="Nueva Venta" onAction="#onHacerVenta" prefWidth="150" style="-fx-background-color: #4CAF50; -fx-text-fill: white;" />
+        </HBox>
+
+        <TableView fx:id="salesTable" VBox.vgrow="ALWAYS" prefHeight="400.0">
+            <columns>
+            </columns>
+            <placeholder>
+                <Label text="No hay registros de ventas realizadas."/>
+            </placeholder>
+        </TableView>
+
     </children>
 </VBox>

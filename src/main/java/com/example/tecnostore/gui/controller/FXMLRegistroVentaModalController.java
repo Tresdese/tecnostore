@@ -124,7 +124,7 @@ public class FXMLRegistroVentaModalController {
         }
     }
 
-    //actualizar información de las etiquetas de venta
+    //actualizar información de las etiquetas de ventas
     private void actualizarEtiquetas() {
         double total = obtenerTotal();
         double subtotal = total / 1.16;

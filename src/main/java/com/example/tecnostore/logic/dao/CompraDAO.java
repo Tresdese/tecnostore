@@ -30,8 +30,8 @@ public class CompraDAO extends ConexionBD {
             for (ProductoDTO p : productos) {
                 ps.setInt(1, compraId);
                 ps.setInt(2, p.getId());
-                ps.setInt(3, p.getStock()); // Cantidad comprada
-                ps.setDouble(4, p.getPrecio()); // Precio de costo
+                ps.setInt(3, p.getStock());
+                ps.setDouble(4, p.getPrecio());
                 ps.addBatch();
             }
             ps.executeBatch();

@@ -3,6 +3,8 @@ package com.example.tecnostore.logic.dto;
 import java.time.LocalDateTime;
 import java.util.List;
 
+
+//creacion de objeto compra
 public class CompraDTO {
     private int id;
     private String proveedor;

@@ -1,5 +1,7 @@
 package com.example.tecnostore.logic.dto;
 
+
+//creacion de detalles de la compra (objetos dentro de la compra general)
 public class DetalleCompraDTO {
     private int id;
     private int compra_id;

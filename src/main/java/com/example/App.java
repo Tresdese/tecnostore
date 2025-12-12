@@ -4,9 +4,7 @@ import java.io.IOException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 import com.example.tecnostore.logic.utils.WindowServices;
-
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;

@@ -129,7 +129,7 @@ public class FXMLPrincipalController implements Initializable {
     private void setUserRole(String usuarioRol) {
 
         switch (usuarioRol) {
-            case "ADMIN": // Admin
+            case "ADMIN": // Administrador
                 setButtonVisibility(registerButton, true);
                 setButtonVisibility(editButton, true);
                 setButtonVisibility(deleteButton, true);
@@ -137,10 +137,13 @@ public class FXMLPrincipalController implements Initializable {
                 setButtonVisibility(reportesButton, true);
                 setButtonVisibility(twoFactorButton, true);
                 setButtonVisibility(puntoVentaButton, false);
+                setButtonVisibility(gestionarSucursalesButton, true);
+                setButtonVisibility(registrosAuditoriaButton, true);
                 break;
-            case "CAJERO": // cajero
+
+            case "CAJERO": // Cajero
                 setButtonVisibility(registerButton, false);
-                setButtonVisibility(editButton, true);
+                setButtonVisibility(editButton, false);
                 setButtonVisibility(deleteButton, false);
                 setButtonVisibility(employeeListButton, false);
                 setButtonVisibility(reportesButton, true);
@@ -148,9 +151,9 @@ public class FXMLPrincipalController implements Initializable {
                 setButtonVisibility(puntoVentaButton, true);
                 setButtonVisibility(gestionarSucursalesButton, false);
                 setButtonVisibility(registrosAuditoriaButton, false);
-                
                 break;
-            case "SUPERADMINISTRADOR": // superadministrador
+
+            case "SUPERADMINISTRADOR": // Superadministrador
                 setButtonVisibility(registerButton, true);
                 setButtonVisibility(editButton, true);
                 setButtonVisibility(deleteButton, true);
@@ -158,8 +161,11 @@ public class FXMLPrincipalController implements Initializable {
                 setButtonVisibility(reportesButton, true);
                 setButtonVisibility(twoFactorButton, true);
                 setButtonVisibility(puntoVentaButton, false);
+                setButtonVisibility(gestionarSucursalesButton, true);
+                setButtonVisibility(registrosAuditoriaButton, true);
                 break;
-            case "GERENTE DE INVENTARIO": // gerente
+
+            case "GERENTE DE INVENTARIO": // Gerente
                 setButtonVisibility(registerButton, true);
                 setButtonVisibility(editButton, false);
                 setButtonVisibility(deleteButton, true);
@@ -167,16 +173,20 @@ public class FXMLPrincipalController implements Initializable {
                 setButtonVisibility(reportesButton, true);
                 setButtonVisibility(twoFactorButton, true);
                 setButtonVisibility(puntoVentaButton, false);
+                setButtonVisibility(gestionarSucursalesButton, true);
+                setButtonVisibility(registrosAuditoriaButton, true);
                 break;
-            default:
+
+            default: // Cualquier otro rol o usuario no logueado
                 setButtonVisibility(registerButton, false);
                 setButtonVisibility(editButton, false);
                 setButtonVisibility(deleteButton, false);
                 setButtonVisibility(employeeListButton, false);
                 setButtonVisibility(reportesButton, false);
-                setButtonVisibility(twoFactorButton, true);
-                setButtonVisibility(twoFactorButton, true);
+                setButtonVisibility(twoFactorButton, false);
                 setButtonVisibility(puntoVentaButton, false);
+                setButtonVisibility(gestionarSucursalesButton, false);
+                setButtonVisibility(registrosAuditoriaButton, false);
                 break;
         }
     }

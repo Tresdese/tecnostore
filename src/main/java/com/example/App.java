@@ -10,7 +10,6 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 public class App extends Application {
-
     private static final Logger LOGGER = LogManager.getLogger(App.class);
     private static Scene scene;
 
@@ -32,5 +31,4 @@ public class App extends Application {
             throw e;
         }
     }
-
 }

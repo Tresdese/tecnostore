@@ -6,6 +6,9 @@ module com.example {
     requires transitive javafx.graphics;
     requires org.apache.logging.log4j;
     requires org.apache.logging.log4j.core;
+    requires com.github.librepdf.openpdf;
+    requires org.jfree.jfreechart;
+    requires java.desktop;
     
     opens com.example to javafx.fxml;
     opens com.example.tecnostore.gui.controller to javafx.fxml;
@@ -13,5 +16,6 @@ module com.example {
     exports com.example;
     exports com.example.tecnostore.logic.dao;
     exports com.example.tecnostore.logic.dto;
+    exports com.example.tecnostore.logic.servicios;
 
 }

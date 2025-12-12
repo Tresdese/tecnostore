@@ -4,6 +4,7 @@ E:\Documentos\Escuela\5to Semestre\Aspectos de seguridad para el desarrollo de S
 E:\Documentos\Escuela\5to Semestre\Aspectos de seguridad para el desarrollo de Software\Proyecto\tecnostore\src\main\java\com\example\tecnostore\logic\servicios\ServicioProductos.java
 E:\Documentos\Escuela\5to Semestre\Aspectos de seguridad para el desarrollo de Software\Proyecto\tecnostore\src\main\java\module-info.java
 E:\Documentos\Escuela\5to Semestre\Aspectos de seguridad para el desarrollo de Software\Proyecto\tecnostore\src\main\java\com\example\tecnostore\gui\controller\FXMLRegistroCompraViewController.java
+E:\Documentos\Escuela\5to Semestre\Aspectos de seguridad para el desarrollo de Software\Proyecto\tecnostore\src\main\java\com\example\tecnostore\logic\servicios\VentaService.java
 E:\Documentos\Escuela\5to Semestre\Aspectos de seguridad para el desarrollo de Software\Proyecto\tecnostore\src\main\java\com\example\tecnostore\gui\controller\FXMLInsercionProductoController.java
 E:\Documentos\Escuela\5to Semestre\Aspectos de seguridad para el desarrollo de Software\Proyecto\tecnostore\src\main\java\com\example\tecnostore\gui\controller\FXMLRegistroController.java
 E:\Documentos\Escuela\5to Semestre\Aspectos de seguridad para el desarrollo de Software\Proyecto\tecnostore\src\main\java\com\example\tecnostore\gui\controller\UsuarioModalController.java
@@ -12,6 +13,8 @@ E:\Documentos\Escuela\5to Semestre\Aspectos de seguridad para el desarrollo de S
 E:\Documentos\Escuela\5to Semestre\Aspectos de seguridad para el desarrollo de Software\Proyecto\tecnostore\src\main\java\com\example\tecnostore\gui\controller\FXMLInventarioViewController.java
 E:\Documentos\Escuela\5to Semestre\Aspectos de seguridad para el desarrollo de Software\Proyecto\tecnostore\src\main\java\com\example\tecnostore\logic\dto\UsuarioDTO.java
 E:\Documentos\Escuela\5to Semestre\Aspectos de seguridad para el desarrollo de Software\Proyecto\tecnostore\src\main\java\com\example\tecnostore\gui\controller\FXMLIngresoController.java
+E:\Documentos\Escuela\5to Semestre\Aspectos de seguridad para el desarrollo de Software\Proyecto\tecnostore\src\main\java\com\example\tecnostore\logic\dao\VentaDAO.java
+E:\Documentos\Escuela\5to Semestre\Aspectos de seguridad para el desarrollo de Software\Proyecto\tecnostore\src\main\java\com\example\tecnostore\logic\servicios\ReporteSeguridadService.java
 E:\Documentos\Escuela\5to Semestre\Aspectos de seguridad para el desarrollo de Software\Proyecto\tecnostore\src\main\java\com\example\tecnostore\gui\controller\FXMLAjusteInventarioViewController.java
 E:\Documentos\Escuela\5to Semestre\Aspectos de seguridad para el desarrollo de Software\Proyecto\tecnostore\src\main\java\com\example\tecnostore\gui\controller\FXMLLoginViewController.java
 E:\Documentos\Escuela\5to Semestre\Aspectos de seguridad para el desarrollo de Software\Proyecto\tecnostore\src\main\java\com\example\tecnostore\gui\controller\FXMLPagoModalController.java
@@ -23,6 +26,7 @@ E:\Documentos\Escuela\5to Semestre\Aspectos de seguridad para el desarrollo de S
 E:\Documentos\Escuela\5to Semestre\Aspectos de seguridad para el desarrollo de Software\Proyecto\tecnostore\src\main\java\com\example\tecnostore\gui\controller\FXMLConfirmacionModalController.java
 E:\Documentos\Escuela\5to Semestre\Aspectos de seguridad para el desarrollo de Software\Proyecto\tecnostore\src\main\java\com\example\tecnostore\logic\servicios\ServicioRoles.java
 E:\Documentos\Escuela\5to Semestre\Aspectos de seguridad para el desarrollo de Software\Proyecto\tecnostore\src\main\java\com\example\tecnostore\gui\controller\FXMLEdicionProductoController.java
+E:\Documentos\Escuela\5to Semestre\Aspectos de seguridad para el desarrollo de Software\Proyecto\tecnostore\src\main\java\com\example\tecnostore\logic\servicios\ProveedorService.java
 E:\Documentos\Escuela\5to Semestre\Aspectos de seguridad para el desarrollo de Software\Proyecto\tecnostore\src\main\java\com\example\tecnostore\logic\utils\WindowServices.java
 E:\Documentos\Escuela\5to Semestre\Aspectos de seguridad para el desarrollo de Software\Proyecto\tecnostore\src\main\java\com\example\tecnostore\gui\controller\FXMLProductoModalController.java
 E:\Documentos\Escuela\5to Semestre\Aspectos de seguridad para el desarrollo de Software\Proyecto\tecnostore\src\main\java\com\example\tecnostore\gui\controller\FXMLReportesViewController.java
@@ -37,6 +41,7 @@ E:\Documentos\Escuela\5to Semestre\Aspectos de seguridad para el desarrollo de S
 E:\Documentos\Escuela\5to Semestre\Aspectos de seguridad para el desarrollo de Software\Proyecto\tecnostore\src\main\java\com\example\tecnostore\gui\controller\FXMLRegistroVentaModalController.java
 E:\Documentos\Escuela\5to Semestre\Aspectos de seguridad para el desarrollo de Software\Proyecto\tecnostore\src\main\java\com\example\tecnostore\gui\controller\FXMLGestionUsuariosViewController.java
 E:\Documentos\Escuela\5to Semestre\Aspectos de seguridad para el desarrollo de Software\Proyecto\tecnostore\src\main\java\com\example\tecnostore\gui\controller\FXMLAjusteModalController.java
+E:\Documentos\Escuela\5to Semestre\Aspectos de seguridad para el desarrollo de Software\Proyecto\tecnostore\src\main\java\com\example\tecnostore\logic\dao\LogDAO.java
 E:\Documentos\Escuela\5to Semestre\Aspectos de seguridad para el desarrollo de Software\Proyecto\tecnostore\src\main\java\com\example\tecnostore\logic\dao\RolDAO.java
 E:\Documentos\Escuela\5to Semestre\Aspectos de seguridad para el desarrollo de Software\Proyecto\tecnostore\src\main\java\com\example\App.java
 E:\Documentos\Escuela\5to Semestre\Aspectos de seguridad para el desarrollo de Software\Proyecto\tecnostore\src\main\java\com\example\tecnostore\gui\controller\FXMLGestionProductosController.java

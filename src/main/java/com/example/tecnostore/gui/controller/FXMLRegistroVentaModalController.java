@@ -59,9 +59,14 @@ public class FXMLRegistroVentaModalController {
         cargarVentas(texto);
     }
 
-    @FXML private void onCancelarVenta() {
-        searchField.getScene().getWindow().hide();
+    private void calcularTotal() {
+        double total = obtenerTotal();
+        double subtotal = total / 1.16;
+        double iva = total - subtotal;
 
+        if (totalLabel != null) totalLabel.setText(String.format("$%,.2f", total));
+        if (subtotalLabel != null) subtotalLabel.setText(String.format("$%,.2f", subtotal));
+        if (ivaLabel != null) ivaLabel.setText(String.format("$%,.2f", iva));
     }
 
     @FXML
@@ -83,7 +88,7 @@ public class FXMLRegistroVentaModalController {
             FXMLPagoModalController controller = loader.getController();
             controller.setTotalPagar(total);
             controller.setOwner(owner);
-//
+
             Stage modalStage = new Stage();
             if (owner != null) {
                 modalStage.initOwner(owner);
@@ -92,7 +97,8 @@ public class FXMLRegistroVentaModalController {
             modalStage.setTitle("Pago");
             modalStage.setScene(new Scene(root));
             modalStage.showAndWait();
-        } catch (IOException e) {
+
+        } catch (Exception e) {
             WindowServices.showErrorDialog("Error", "No se pudo abrir el modal de pago: " + e.getMessage());
         }
     }
@@ -145,15 +151,11 @@ public class FXMLRegistroVentaModalController {
         return ventas.stream().mapToDouble(VentaResumenDTO::getMontoTotal).sum();
     }
 
-    //actualizar información de las etiquetas de ventas
-    private void actualizarEtiquetas() {
-        double total = obtenerTotal();
-        double subtotal = total / 1.16;
-        double iva = total - subtotal;
-
-        if (totalLabel != null) totalLabel.setText(String.format("$%,.2f", total));
-        if (subtotalLabel != null) subtotalLabel.setText(String.format("$%,.2f", subtotal));
-        if (ivaLabel != null) ivaLabel.setText(String.format("$%,.2f", iva));
+    @FXML private void onCancelarVenta() {
+        Stage stage = searchField != null && searchField.getScene() != null ? (Stage) searchField.getScene().getWindow() : null;
+        if (stage != null) {
+            stage.close();
+        }
     }
 
     private void cargarVentas() { cargarVentas(null); }
@@ -173,7 +175,7 @@ public class FXMLRegistroVentaModalController {
                 ).toList();
             }
             ventas.addAll(data);
-            actualizarEtiquetas();
+            calcularTotal();
         } catch (Exception e) {
             WindowServices.showErrorDialog("Ventas", "No se pudieron cargar las ventas: " + e.getMessage());
         }

@@ -18,7 +18,7 @@
         <HBox spacing="5">
             <children>
                 <TextField fx:id="searchField"
-                           promptText="Buscar por código o nombre"
+                           promptText="Buscar por usuario o total"
                            HBox.hgrow="ALWAYS" />
                 <Button text="Buscar" onAction="#onBuscar" defaultButton="true" />
             </children>
@@ -64,7 +64,6 @@
             <right>
                 <HBox spacing="10" alignment="CENTER_RIGHT">
                     <children>
-                        <Button text="Agregar Venta" onAction="#onAgregarVenta" />
                         <Button text="Cancelar Venta" onAction="#onCancelarVenta" />
                         <Button text="Hacer Pago" onAction="#onHacerPago" />
                     </children>

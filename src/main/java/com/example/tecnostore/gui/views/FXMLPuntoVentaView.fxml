@@ -5,11 +5,10 @@
 <?import javafx.scene.layout.VBox?>
 
 <VBox xmlns="http://javafx.com/javafx/17.0.2" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="com.example.tecnostore.gui.controller.FXMLPuntoVentaViewController"
-      fx:id="rootContainer"
-      spacing="15"
-      alignment="TOP_CENTER">
-//
+    fx:controller="com.example.tecnostore.gui.controller.FXMLPuntoVentaViewController"
+    fx:id="rootContainer"
+    spacing="15"
+    alignment="TOP_CENTER">
     <padding>
         <Insets top="20.0" right="20.0" bottom="20.0" left="20.0" />
     </padding>
@@ -22,6 +21,8 @@
 
         <TableView fx:id="salesTable" VBox.vgrow="ALWAYS" prefHeight="400.0">
             <columns>
+                <TableColumn fx:id="colUsuario" text="Usuario" />
+                <TableColumn fx:id="colMonto" text="Monto Total" />
             </columns>
             <placeholder>
                 <Label text="No hay registros de ventas realizadas."/>

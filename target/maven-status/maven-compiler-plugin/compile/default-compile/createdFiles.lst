@@ -5,6 +5,7 @@ com\example\tecnostore\logic\utils\WindowServices.class
 com\example\tecnostore\gui\controller\FXMLBajaUsuarioModalController.class
 com\example\tecnostore\gui\controller\FXMLEliminarSucursalModalController.class
 com\example\tecnostore\gui\controller\FXMLAjusteModalController$1.class
+com\example\tecnostore\logic\dao\DetalleVentaDAO.class
 com\example\tecnostore\gui\controller\FXMLPuntoVentaViewController.class
 com\example\tecnostore\gui\controller\FXMLTwoFactorController.class
 com\example\tecnostore\logic\dto\DetalleCompraDTO.class
@@ -34,6 +35,7 @@ com\example\tecnostore\logic\servicios\ProveedorService.class
 com\example\tecnostore\gui\controller\FXMLIngresoController.class
 com\example\tecnostore\logic\dto\RolDTO.class
 com\example\tecnostore\gui\controller\FXMLReportesViewController.class
+com\example\tecnostore\logic\dto\VentaDTO.class
 com\example\tecnostore\logic\servicios\ServicioDeAutenticacion.class
 com\example\tecnostore\gui\controller\FXMLAjusteInventarioViewController.class
 com\example\tecnostore\logic\dao\RolDAO.class
@@ -45,6 +47,7 @@ com\example\JavaFXApplication3.class
 com\example\tecnostore\data_access\ConexionBD.class
 com\example\tecnostore\gui\controller\FXMLEdicionProductoController.class
 module-info.class
+com\example\tecnostore\logic\dto\DetalleVentaDTO.class
 com\example\App.class
 com\example\JavaFXApplication3$1.class
 com\example\tecnostore\gui\controller\FXMLConfigurar2FAController.class

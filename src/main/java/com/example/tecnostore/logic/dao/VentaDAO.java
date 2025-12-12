@@ -58,10 +58,15 @@ public class VentaDAO {
         }
 
     public List<VentaResumenDTO> obtenerVentas() throws Exception {
-        // ... [Lógica de obtenerVentas() sin cambios] ...
         List<VentaResumenDTO> ventas = new ArrayList<>();
 
-        String sql = "SELECT * FROM ventas";
+        String sql = """
+            SELECT v.total       AS total,
+                   v.usuario_id  AS usuario_id,
+                   COALESCE(u.usuario, u.nombre) AS usuario
+              FROM ventas v
+              LEFT JOIN usuarios u ON v.usuario_id = u.id
+            """;
 
         try (ConexionBD bd = new ConexionBD();
              Connection conn = bd.getConnection();
@@ -70,14 +75,14 @@ public class VentaDAO {
 
             while (rs.next()) {
                 VentaResumenDTO dto = new VentaResumenDTO();
-                String usuario = extraerCadena(rs, "usuario", "vendedor", "creado_por", "user");
-                if (usuario == null) {
+                String usuario = extraerCadena(rs, "usuario");
+                if (usuario == null || usuario.isBlank()) {
                     Integer id = extraerEntero(rs, "usuario_id");
-                    usuario = id != null ? "ID " + id : null;
+                    usuario = id != null ? "ID " + id : "";
                 }
 
                 dto.setUsuario(usuario);
-                dto.setMontoTotal(extraerDouble(rs, "monto_total", "total", "monto", "importe", "total_venta"));
+                dto.setMontoTotal(extraerDouble(rs, "total", "monto_total", "monto", "importe", "total_venta"));
                 ventas.add(dto);
             }
         }
@@ -85,8 +90,45 @@ public class VentaDAO {
         return ventas;
     }
 
-    // ... [Métodos auxiliares extraerCadena, extraerDouble, extraerEntero omitidos, ya existen] ...
-    private String extraerCadena(ResultSet rs, String... posibles) { /* ... */ return null; }
-    private double extraerDouble(ResultSet rs, String... posibles) { /* ... */ return 0d; }
-    private Integer extraerEntero(ResultSet rs, String... posibles) { /* ... */ return null; }
+    private String extraerCadena(ResultSet rs, String... posibles) {
+        for (String col : posibles) {
+            try {
+                String val = rs.getString(col);
+                if (val != null) {
+                    return val;
+                }
+            } catch (SQLException ignored) {
+                // Continúa con el siguiente nombre de columna si no existe
+            }
+        }
+        return null;
+    }
+
+    private double extraerDouble(ResultSet rs, String... posibles) {
+        for (String col : posibles) {
+            try {
+                double val = rs.getDouble(col);
+                if (!rs.wasNull()) {
+                    return val;
+                }
+            } catch (SQLException ignored) {
+                // Continúa con el siguiente nombre de columna si no existe
+            }
+        }
+        return 0d;
+    }
+
+    private Integer extraerEntero(ResultSet rs, String... posibles) {
+        for (String col : posibles) {
+            try {
+                int val = rs.getInt(col);
+                if (!rs.wasNull()) {
+                    return val;
+                }
+            } catch (SQLException ignored) {
+                // Continúa con el siguiente nombre de columna si no existe
+            }
+        }
+        return null;
+    }
 }

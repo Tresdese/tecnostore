@@ -1,8 +1,13 @@
 package com.example.tecnostore.gui.controller;
 
+import java.io.IOException;
+import java.util.List;
+
+import com.example.tecnostore.logic.dao.VentaDAO;
 import com.example.tecnostore.logic.dto.DetalleVentaDTO;
 import com.example.tecnostore.logic.dto.VentaDTO;
 import com.example.tecnostore.logic.servicios.VentaService;
+import com.example.tecnostore.logic.utils.Sesion;
 import com.example.tecnostore.logic.utils.WindowServices;
 
 import javafx.fxml.FXML;
@@ -10,9 +15,6 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Window;
-
-import java.io.IOException;
-import java.util.List;
 
 public class FXMLPagoModalController {
     @FXML private ComboBox<String> metodoPago;
@@ -24,6 +26,7 @@ public class FXMLPagoModalController {
     private Window owner; // La ventana del Registro de Venta
     private List<DetalleVentaDTO> detallesVenta; // <--- NUEVO ATRIBUTO
     private VentaService ventaService; // <--- NUEVO ATRIBUTO
+    private VentaDAO ventaDAO;
 
     // *** MÉTODO AGREGADO PARA TRANSFERIR DETALLES ***
     public void setDetallesVenta(List<DetalleVentaDTO> detalles) {
@@ -43,6 +46,7 @@ public class FXMLPagoModalController {
         metodoPago.setValue("Efectivo");
         try {
             this.ventaService = new VentaService();
+            this.ventaDAO = new VentaDAO();
         } catch (Exception e) {
             WindowServices.showErrorDialog("Error", "No se pudo inicializar el servicio de ventas: " + e.getMessage());
         }
@@ -75,20 +79,26 @@ public class FXMLPagoModalController {
     @FXML
     private void onConfirmar() throws IOException {
         updateTotals();
-        if (ventaService == null || detallesVenta == null || detallesVenta.isEmpty()) {
-            WindowServices.showWarningDialog("Error", "No hay servicio de venta o productos para registrar.");
-            return;
-        }
 
         try {
-            // 1. Construir el DTO final de Venta
-            VentaDTO venta = new VentaDTO();
-            venta.setTotal(totalPagar);
-            venta.setMetodoPago(metodoPago.getValue());
-            venta.setDetalles(detallesVenta);
-
-            // 2. GUARDAR TRANSACCIÓN CRÍTICA
-            ventaService.registrarVentaCompleta(venta);
+            if (detallesVenta != null && !detallesVenta.isEmpty() && ventaService != null) {
+                // Flujo con detalles: registra venta completa (stock y detalles)
+                VentaDTO venta = new VentaDTO();
+                venta.setTotal(totalPagar);
+                venta.setMetodoPago(metodoPago.getValue());
+                venta.setDetalles(detallesVenta);
+                ventaService.registrarVentaCompleta(venta);
+            } else {
+                // Flujo simple: solo registra la venta con total (sin detalles)
+                if (ventaDAO == null) {
+                    WindowServices.showWarningDialog("Error", "No hay servicio de venta disponible.");
+                    return;
+                }
+                String usuarioId = Sesion.getUsuarioSesion() != null
+                        ? String.valueOf(Sesion.getUsuarioSesion().getId())
+                        : null;
+                ventaDAO.registrarVenta(usuarioId, totalPagar);
+            }
 
             WindowServices.showInformationDialog("Éxito", "Venta registrada y stock descontado.");
 

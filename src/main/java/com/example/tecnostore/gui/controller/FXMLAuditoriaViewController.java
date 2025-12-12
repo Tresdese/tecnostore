@@ -122,11 +122,7 @@ public class FXMLAuditoriaViewController {
     private void onExportar() {
         try {
             WindowServices.showInformationDialog("Auditoría", "La exportación aún no está implementada.");
-        } catch (NullPointerException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }

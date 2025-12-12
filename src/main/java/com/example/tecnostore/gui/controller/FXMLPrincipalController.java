@@ -175,6 +175,7 @@ public class FXMLPrincipalController implements Initializable {
                 setButtonVisibility(puntoVentaButton, false);
                 setButtonVisibility(gestionarSucursalesButton, true);
                 setButtonVisibility(registrosAuditoriaButton, true);
+                setButtonVisibility(manageProductsButton, true);
                 break;
 
             default: // Cualquier otro rol o usuario no logueado

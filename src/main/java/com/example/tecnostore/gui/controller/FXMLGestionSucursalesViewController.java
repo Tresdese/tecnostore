@@ -8,6 +8,7 @@ import org.apache.logging.log4j.Logger;
 import com.example.tecnostore.gui.controller.FXMLSucursalModalController.SucursalData;
 import com.example.tecnostore.logic.dao.SucursalDAO;
 import com.example.tecnostore.logic.dto.SucursalDTO;
+import com.example.tecnostore.logic.utils.Sesion;
 import com.example.tecnostore.logic.utils.WindowServices;
 
 import javafx.collections.FXCollections;
@@ -17,6 +18,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -24,6 +26,15 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class FXMLGestionSucursalesViewController {
+    @FXML
+    private Button agregarButton;
+
+    @FXML
+    private Button editarButton;
+
+    @FXML
+    private Button eliminarButton;
+
     @FXML
     private TextField searchField;
 
@@ -40,9 +51,11 @@ public class FXMLGestionSucursalesViewController {
 
     private final ObservableList<SucursalDTO> sucursales = FXCollections.observableArrayList();
     private SucursalDAO sucursalDAO;
+    private WindowServices windowServices = new WindowServices();
 
     @FXML
     private void initialize() {
+        setUserRole(Sesion.getRolActual());
         try {
             sucursalDAO = new SucursalDAO();
             configurarTabla();
@@ -50,6 +63,26 @@ public class FXMLGestionSucursalesViewController {
         } catch (Exception e) {
             LOGGER.error("Error al inicializar gestión de sucursales: {}", e.getMessage(), e);
             WindowServices.showErrorDialog("Error", "No se pudo inicializar la vista de sucursales: " + e.getMessage());
+        }
+    }
+
+    private void setUserRole(String usuarioRol) {
+        if (usuarioRol.equals("ADMIN")) {
+            windowServices.setButtonVisibility(agregarButton, true);
+            windowServices.setButtonVisibility(editarButton, true);
+            windowServices.setButtonVisibility(eliminarButton, true);
+        } else if (usuarioRol.equals("CAJERO")) {
+            windowServices.setButtonVisibility(agregarButton, false);
+            windowServices.setButtonVisibility(editarButton, false);
+            windowServices.setButtonVisibility(eliminarButton, false);
+        } else if (usuarioRol.equals("GERENTE DE INVENTARIO")) {
+            windowServices.setButtonVisibility(agregarButton, false);
+            windowServices.setButtonVisibility(editarButton, false);
+            windowServices.setButtonVisibility(eliminarButton, false);
+        } else if (usuarioRol.equals("SUPERADMINISTRADOR")) {
+            windowServices.setButtonVisibility(agregarButton, true);
+            windowServices.setButtonVisibility(editarButton, true);
+            windowServices.setButtonVisibility(eliminarButton, true);
         }
     }
 

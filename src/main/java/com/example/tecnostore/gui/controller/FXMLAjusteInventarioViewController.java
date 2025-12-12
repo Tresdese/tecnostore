@@ -2,41 +2,28 @@ package com.example.tecnostore.gui.controller;
 
 import java.io.IOException;
 
+import com.example.tecnostore.logic.utils.WindowServices;
+
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
 
 public class FXMLAjusteInventarioViewController {
-    @FXML
-    private TextField txtIdProducto;
 
-    @FXML
-    private TextField txtNombreProducto;
+    // Necesario para acceder a los métodos delegados
+    private final WindowServices windowServices = new WindowServices();
 
-    @FXML
-    private TextField txtExistenciaActual;
-
-    @FXML
-    private TextField txtCantidadAjuste;
-
-    @FXML
-    private TextArea txtMotivo;
-
-    @FXML
-    private Button btnAplicar;
-
-    @FXML
-    private Button btnCancelar;
-
+    @FXML private TextField txtIdProducto;
+    @FXML private TextField txtNombreProducto;
+    @FXML private TextField txtExistenciaActual;
+    @FXML private TextField txtCantidadAjuste;
+    @FXML private TextArea txtMotivo;
+    @FXML private Button btnAplicar;
+    @FXML private Button btnCancelar;
     @FXML private TableView<?> ajusteTable;
 
     @FXML
@@ -44,27 +31,23 @@ public class FXMLAjusteInventarioViewController {
         ajusteTable.setPlaceholder(new Label("No hay registros de ajuste de inventario."));
     }
 
-    @FXML private void onBuscar() { /* TODO: search adjustments */ }
+    @FXML private void onBuscar() {
+        // Lógica de búsqueda de ajustes (ej., llamando a AjusteService.buscarTodos())
+    }
 
+    // *** DELEGACIÓN A WINDOWSERVICES ***
     @FXML
     private void onNuevoAjuste() {
-        if (ajusteTable == null || ajusteTable.getScene() == null) {
-            return;
-        }
-
-        Stage owner = (Stage) ajusteTable.getScene().getWindow();
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/tecnostore/gui/views/FXMLAjusteModal.fxml"));
-            Parent root = loader.load();
+            // Delegamos la apertura del modal al servicio (openModal es para modales sin datos complejos de entrada)
+            windowServices.openModal("FXMLAjusteModal.fxml", "Nuevo Ajuste de Inventario");
 
-            Stage modalStage = new Stage();
-            modalStage.initOwner(owner);
-            modalStage.initModality(Modality.WINDOW_MODAL);
-            modalStage.setTitle("Nuevo Ajuste de Inventario");
-            modalStage.setScene(new Scene(root));
-            modalStage.showAndWait();
-        } catch (IOException e) {
-            new Alert(Alert.AlertType.ERROR, "No se pudo abrir el modal de ajuste: " + e.getMessage()).showAndWait();
+            // Si la modal fue exitosa, aquí se llamaría a onBuscar() para refrescar la tabla.
+            // onBuscar();
+
+        } catch (Exception e) {
+            // Usamos WindowServices.showErrorDialog en lugar de la Alert manual
+            WindowServices.showErrorDialog("Error", "No se pudo abrir el modal de ajuste: " + e.getMessage());
         }
     }
 }

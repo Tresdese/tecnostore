@@ -7,6 +7,7 @@ import java.util.ResourceBundle;
 import com.example.tecnostore.logic.dto.ProductoDTO;
 import com.example.tecnostore.logic.servicios.ServicioProductos;
 
+import com.example.tecnostore.logic.utils.WindowServices;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -92,18 +93,8 @@ public class FXMLGestionProductosController implements Initializable {
     @FXML
     private void handleInsertProductButton(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/tecnostore/gui/views/FXMLInsercionProducto.fxml"));
-            Parent root = loader.load();
-
-            FXMLInsercionProductoController controller = loader.getController();
-
-            Stage modalStage = new Stage();
-            modalStage.setTitle("Alta de Producto");
-            modalStage.initModality(Modality.WINDOW_MODAL);
-            Stage owner = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            modalStage.initOwner(owner);
-            modalStage.setScene(new Scene(root));
-            modalStage.showAndWait();
+            WindowServices ws = new WindowServices();
+            ws.openModal("FXMLInsercionProducto.fxml", "Alta de Producto");
 
             cargarInformacion();
         } catch (Exception e) {
@@ -120,10 +111,10 @@ public class FXMLGestionProductosController implements Initializable {
     private void handleEditProductButton(ActionEvent event) {
         ProductoDTO selectedProduct = productTable.getSelectionModel().getSelectedItem();
         if (selectedProduct == null) {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
+            Alert alert = new Alert(Alert.AlertType.WARNING,"Por favor, seleccione un producto para editar.",
+                    javafx.scene.control.ButtonType.OK);
             alert.setTitle("Advertencia");
             alert.setHeaderText("No se ha seleccionado ningún producto");
-            alert.setContentText("Por favor, seleccione un producto para editar.");
             alert.showAndWait();
             return;
         }

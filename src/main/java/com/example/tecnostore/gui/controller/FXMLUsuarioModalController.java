@@ -61,7 +61,7 @@ public class FXMLUsuarioModalController {
     public void setIsNew(boolean isNew) {
         this.isNew = isNew;
         applyState();
-    }
+    }//
 
     public void setOwner(Window owner) {
         this.owner = owner;

@@ -184,14 +184,29 @@ public class FXMLGestionUsuariosViewController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(VIEW_BASE + "FXMLBajaUsuarioModal.fxml"));
             Parent root = loader.load();
 
+            FXMLBajaUsuarioModalController controller = loader.getController();
+            UsuarioDTO seleccionado = getSeleccionado();
+
+            if (seleccionado != null) {
+                controller.setUsuarioActual(seleccionado);
+            }
+
             Stage modalStage = new Stage();
             modalStage.initOwner(owner);
             modalStage.initModality(Modality.WINDOW_MODAL);
             modalStage.setTitle("Dar de baja usuario");
             modalStage.setScene(new Scene(root));
             modalStage.showAndWait();
-        } catch (IOException e) {
-            new Alert(Alert.AlertType.ERROR, "No se pudo abrir el modal de baja de usuario: " + e.getMessage()).showAndWait();
+
+            // Muestra y espera; la baja se ejecuta dentro del modal
+            modalStage.showAndWait();
+
+            // Refrescamos la tabla para reflejar el cambio de estado (Activo -> Inactivo)
+            cargarUsuarios(textoBusqueda());
+
+        } catch (Exception e) {
+            LOGGER.error("Error al abrir el modal de baja de usuario: {}", e.getMessage(), e);
+            WindowServices.showErrorDialog("Error", "No se pudo abrir el modal de baja de usuario: " + e.getMessage());
         }
     }
 

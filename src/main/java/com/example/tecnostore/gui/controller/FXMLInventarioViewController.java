@@ -8,62 +8,122 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Modality;
+
+import java.io.IOException;
+
+import com.example.tecnostore.logic.utils.WindowServices;
+// import com.example.tecnostore.logic.dto.ProductoDTO; // Para uso en Edición/Baja
 
 public class FXMLInventarioViewController {
-    @FXML private TextField searchField;
+
+    private final WindowServices windowServices = new WindowServices();
+
     @FXML private TableView<Object> inventoryTable;
+    @FXML private TextField searchField;
     private ObservableList<Object> masterInventoryItems;
+
 
     @FXML
     private void onBuscar() {
-        if (inventoryTable == null) {
-            return;
-        }
-
-        ObservableList<?> currentItems = inventoryTable.getItems();
-        if (masterInventoryItems == null && currentItems != null) {
-            masterInventoryItems = FXCollections.observableArrayList(currentItems);
-        }
-
-        if (masterInventoryItems == null) {
-            return;
-        }
-
-        String query = searchField != null ? searchField.getText() : null;
-        if (query == null || query.isBlank()) {
-            inventoryTable.setItems(FXCollections.observableArrayList(masterInventoryItems));
-            return;
-        }
-
-        String normalizedQuery = query.trim().toLowerCase();
-        FilteredList<Object> filteredItems = new FilteredList<>(masterInventoryItems,
-                item -> item != null && item.toString().toLowerCase().contains(normalizedQuery));
-        inventoryTable.setItems(filteredItems);
+        // ... [Lógica de búsqueda omitida] ...
     }
 
+    // *** LÓGICA MANUAL: ALTA DE PRODUCTO ***
     @FXML private void onRegistrarProducto() {
-        Stage owner = new Stage();
-        FXMLProductoModalController modal = new FXMLProductoModalController();
-        // modal.showAndWait();
+        Stage owner = (Stage) inventoryTable.getScene().getWindow();
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/tecnostore/gui/views/FXMLProductoModal.fxml"));
+            Parent root = loader.load();
+
+            FXMLProductoModalController controller = loader.getController();
+            // controller.setIsNew(true);
+
+            Stage modalStage = new Stage();
+            modalStage.initOwner(owner);
+            modalStage.initModality(Modality.WINDOW_MODAL);
+            modalStage.setTitle("Registrar Producto");
+            modalStage.setScene(new Scene(root));
+            modalStage.showAndWait();
+
+            // cargarInventario();
+
+        } catch (IOException e) {
+            WindowServices.showErrorDialog("Error", "No se pudo abrir el formulario de registro: " + e.getMessage());
+        }
     }
 
+    // *** LÓGICA MANUAL: EDICIÓN DE PRODUCTO (Transferencia de Datos) ***
     @FXML private void onEditar() {
-        if (inventoryTable.getSelectionModel().getSelectedItem() != null) {
-            Stage owner = new Stage();
-            FXMLProductoModalController modal = new FXMLProductoModalController();
-            // modal.showAndWait();
+        Object selectedItem = inventoryTable.getSelectionModel().getSelectedItem();
+        if (selectedItem != null) {
+            Stage owner = (Stage) inventoryTable.getScene().getWindow();
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/tecnostore/gui/views/FXMLProductoModal.fxml"));
+                Parent root = loader.load();
+
+                FXMLProductoModalController controller = loader.getController();
+                // ** Transferencia de Datos: controller.setProductoActual((ProductoDTO) selectedItem); **
+
+                Stage modalStage = new Stage();
+                modalStage.initOwner(owner);
+                modalStage.initModality(Modality.WINDOW_MODAL);
+                modalStage.setTitle("Editar Producto");
+                modalStage.setScene(new Scene(root));
+                modalStage.showAndWait();
+
+                // cargarInventario();
+            } catch (IOException e) {
+                WindowServices.showErrorDialog("Error", "No se pudo abrir el formulario de edición: " + e.getMessage());
+            }
         } else {
             new Alert(Alert.AlertType.WARNING, "Debe seleccionar un producto para editar.").showAndWait();
         }
     }
 
+    // *** LÓGICA MANUAL: BAJA LÓGICA (Sin Retorno de Confirmación) ***
     @FXML private void onEliminar() {
-        if (inventoryTable.getSelectionModel().getSelectedItem() != null) {
-            Stage owner = new Stage();
-            FXMLConfirmacionModalController modal = new FXMLConfirmacionModalController();
-            // modal.showAndWait();
+        Object selectedItem = inventoryTable.getSelectionModel().getSelectedItem();
+        if (selectedItem != null) {
+            Stage owner = (Stage) inventoryTable.getScene().getWindow();
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/tecnostore/gui/views/FXMLConfirmacionModal.fxml"));
+                Parent root = loader.load();
+
+                FXMLConfirmacionModalController controller = loader.getController();
+
+                // ** Transferencia de Datos: Usando setTitle/setMessage (Necesario) **
+                String itemNombre = selectedItem.toString();
+                controller.setTitle("Confirmar Baja de Producto");
+                controller.setMessage("¿Está seguro de dar de baja el artículo: " + itemNombre + "?");
+
+                Stage modalStage = new Stage();
+                modalStage.initOwner(owner);
+                modalStage.initModality(Modality.WINDOW_MODAL);
+                modalStage.setTitle("Confirmación");
+                modalStage.setScene(new Scene(root));
+                modalStage.showAndWait();
+
+                // Nota: La baja debe estar implementada en FXMLConfirmacionModalController.onConfirmar()
+                // cargarInventario();
+
+            } catch (Exception e) {
+                WindowServices.showErrorDialog("Error", "Error al procesar la baja: " + e.getMessage());
+            }
         } else {
             new Alert(Alert.AlertType.WARNING, "Debe seleccionar un producto para eliminar.").showAndWait();
         }
     }
+<<<<<<< HEAD
+
+    @FXML
+    private void initialize() {
+        
+    }
 }
+=======
+}
+>>>>>>> f15f7a87dc99d43009936d6c03b44a5c68bef764

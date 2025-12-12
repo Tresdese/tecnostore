@@ -19,7 +19,7 @@ public class FXMLEliminarSucursalModalController {
 
     public boolean isConfirmado() {
         return confirmado;
-    }
+    }//
 
     public void setNombreSucursal(String nombre) {
         if (messageLabel != null && nombre != null) {

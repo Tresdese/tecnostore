@@ -25,7 +25,7 @@ public class FXMLRegistroVentaModalController {
     @FXML private void onBuscar() { /* TODO: buscar */ }
 
     @FXML private void onCancelarVenta() { searchField.getScene().getWindow().hide(); }
-
+//
     @FXML
     private void onHacerPago() {
         Window owner = searchField != null ? searchField.getScene().getWindow() : null;
@@ -35,7 +35,7 @@ public class FXMLRegistroVentaModalController {
             FXMLPagoModalController controller = loader.getController();
             controller.setTotalPagar(obtenerTotal());
             controller.setOwner(owner);
-
+//
             Stage modalStage = new Stage();
             if (owner != null) {
                 modalStage.initOwner(owner);

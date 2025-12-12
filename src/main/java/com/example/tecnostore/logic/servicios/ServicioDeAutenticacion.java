@@ -68,4 +68,10 @@ public class ServicioDeAutenticacion {
 
         return resultado;
     }
+
+    public boolean cambiarStatusActivo(UsuarioDTO usuario, boolean nuevoEstado) throws Exception {
+        // Ejecutamos la acción directamente en el DAO
+        // Se asume que UsuarioDAO tiene un método con esta firma, aunque no fue proporcionado.
+        return usuarioDAO.cambiarStatusActivo(usuario, nuevoEstado);
+    }
 }

@@ -1,15 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.geometry.*?>
-<VBox xmlns="http://javafx.com/javafx/17.0.2" xmlns:fx="http://javafx.com/fxml/1" spacing="10" padding="10" fx:controller="com.example.tecnostore.gui.controller.FXMLRegistroVentaModalController">
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns="http://javafx.com/javafx/17.0.2"
+      xmlns:fx="http://javafx.com/fxml/1"
+      spacing="10"
+      fx:controller="com.example.tecnostore.gui.controller.FXMLRegistroVentaModalController">
+
+    <padding>
+        <Insets top="10" right="10" bottom="10" left="10"/>
+    </padding>
+
     <children>
+
+        <!-- Barra de búsqueda -->
         <HBox spacing="5">
             <children>
-                <TextField fx:id="searchField" promptText="Buscar por código o nombre" HBox.hgrow="ALWAYS" />
+                <TextField fx:id="searchField"
+                           promptText="Buscar por código o nombre"
+                           HBox.hgrow="ALWAYS" />
                 <Button text="Buscar" onAction="#onBuscar" />
             </children>
         </HBox>
+
+        <!-- Tabla de productos -->
         <TableView fx:id="productTable" VBox.vgrow="ALWAYS">
             <columns>
                 <TableColumn text="Código" />
@@ -19,19 +35,35 @@
                 <TableColumn text="Importe" />
             </columns>
         </TableView>
-        <BorderPane padding="10,0,0,0">
+
+        <!-- Resumen + botones -->
+        <BorderPane>
+            <padding>
+                <Insets top="10" right="0" bottom="0" left="0"/>
+            </padding>
+
             <left>
-                <GridPane hgap="10" vgap="5" style="-fx-border-color: lightgray; -fx-padding: 10px;">
+                <GridPane hgap="10" vgap="5"
+                          style="-fx-border-color: lightgray; -fx-padding: 10px;">
                     <children>
-                        <Label text="Subtotal:" GridPane.rowIndex="0" GridPane.columnIndex="0" />
-                        <Label fx:id="subtotalLabel" text="$X.XX" GridPane.rowIndex="0" GridPane.columnIndex="1" />
-                        <Label text="IVA:" GridPane.rowIndex="1" GridPane.columnIndex="0" />
-                        <Label fx:id="ivaLabel" text="$X.XX" GridPane.rowIndex="1" GridPane.columnIndex="1" />
-                        <Label text="TOTAL:" GridPane.rowIndex="2" GridPane.columnIndex="0" />
-                        <Label fx:id="totalLabel" text="$0.00" GridPane.rowIndex="2" GridPane.columnIndex="1" />
+                        <Label text="Subtotal:"
+                               GridPane.rowIndex="0" GridPane.columnIndex="0" />
+                        <Label fx:id="subtotalLabel" text="\$X.XX"
+                               GridPane.rowIndex="0" GridPane.columnIndex="1" />
+
+                        <Label text="IVA:"
+                               GridPane.rowIndex="1" GridPane.columnIndex="0" />
+                        <Label fx:id="ivaLabel" text="\$X.XX"
+                               GridPane.rowIndex="1" GridPane.columnIndex="1" />
+
+                        <Label text="TOTAL:"
+                               GridPane.rowIndex="2" GridPane.columnIndex="0" />
+                        <Label fx:id="totalLabel" text="\$0.00"
+                               GridPane.rowIndex="2" GridPane.columnIndex="1" />
                     </children>
                 </GridPane>
             </left>
+
             <right>
                 <HBox spacing="10" alignment="CENTER_RIGHT">
                     <children>
@@ -41,5 +73,6 @@
                 </HBox>
             </right>
         </BorderPane>
+
     </children>
 </VBox>

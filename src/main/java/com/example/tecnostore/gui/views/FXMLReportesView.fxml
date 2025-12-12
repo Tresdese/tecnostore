@@ -1,62 +1,81 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.geometry.*?>
-<VBox xmlns="http://javafx.com/javafx/17.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.tecnostore.gui.controller.FXMLReportesViewController" spacing="15" padding="20">
-    <children>
-        <Label text="Panel de Reportes" style="-fx-font-weight: bold; -fx-font-size: 18px;" />
-        <GridPane hgap="10" vgap="10" padding="10" style="-fx-border-color: lightgray; -fx-padding: 10px;">
-            <children>
-                <Label text="Filtros Comunes" GridPane.rowIndex="0" GridPane.columnIndex="0" />
-                <Label text="Fecha Inicio:" GridPane.rowIndex="1" GridPane.columnIndex="0" />
-                <DatePicker GridPane.rowIndex="1" GridPane.columnIndex="1" />
-                <Label text="Fecha Fin:" GridPane.rowIndex="2" GridPane.columnIndex="0" />
-                <DatePicker GridPane.rowIndex="2" GridPane.columnIndex="1" />
-                <Label text="Sucursal:" GridPane.rowIndex="3" GridPane.columnIndex="0" />
-                <TextField GridPane.rowIndex="3" GridPane.columnIndex="1" />
 
-                <Label text="Filtros Especiales" GridPane.rowIndex="0" GridPane.columnIndex="2" />
-                <Label text="Vendedor:" GridPane.rowIndex="1" GridPane.columnIndex="2" />
-                <TextField GridPane.rowIndex="1" GridPane.columnIndex="3" />
-            </children>
-        </GridPane>
-        <HBox spacing="15">
+<BorderPane xmlns="http://javafx.com/javafx/8.0.171"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.tecnostore.gui.controller.FXMLReportesViewController">
+
+    <!-- TOP: Título y filtros -->
+    <top>
+        <VBox spacing="8">
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10"/>
+            </padding>
             <children>
-                <VBox spacing="10">
+                <Label text="Gestión de Reportes"
+                       style="-fx-font-size: 22px; -fx-font-weight: bold;"/>
+                <HBox spacing="10" alignment="CENTER_LEFT">
                     <children>
-                        <Pane minHeight="200" style="-fx-border-color: darkgray; -fx-background-color: #f0f0f0;">
-                            <children>
-                                <Label text="Gráfica de Barras" />
-                            </children>
-                        </Pane>
-                        <Pane minHeight="200" style="-fx-border-color: darkgray; -fx-background-color: #f0f0f0;">
-                            <children>
-                                <Label text="Gráfica Lineal" />
-                            </children>
-                        </Pane>
+                        <Label text="Tipo de reporte:"/>
+                        <ComboBox fx:id="cmbTipoReporte" prefWidth="180"/>
+
+                        <Label text="Desde:"/>
+                        <DatePicker fx:id="dpDesde"/>
+
+                        <Label text="Hasta:"/>
+                        <DatePicker fx:id="dpHasta"/>
+
+                        <Button fx:id="btnGenerar"
+                                text="Generar"
+                                onAction="#onGenerar"/>
                     </children>
-                </VBox>
-                <VBox spacing="10" HBox.hgrow="ALWAYS">
-                    <children>
-                        <Label text="Detalle de Reportes" />
-                        <TableView fx:id="reportTable" VBox.vgrow="ALWAYS">
-                            <columns>
-                                <TableColumn text="Fecha" />
-                                <TableColumn text="Sucursal" />
-                                <TableColumn text="Vendedor" />
-                                <TableColumn text="Producto" />
-                                <TableColumn text="Total" />
-                            </columns>
-                        </TableView>
-                    </children>
-                </VBox>
+                    <!-- Aquí ES MUY PROBABLE que tú tenías padding="10" -->
+                    <padding>
+                        <Insets top="5" right="0" bottom="0" left="0"/>
+                    </padding>
+                </HBox>
             </children>
-        </HBox>
-        <HBox spacing="10">
+        </VBox>
+    </top>
+
+    <!-- CENTER: Tabla de reportes -->
+    <center>
+        <TableView fx:id="tblReportes">
+            <columns>
+                <TableColumn fx:id="colFecha" text="Fecha" prefWidth="120"/>
+                <TableColumn fx:id="colTipo" text="Tipo" prefWidth="150"/>
+                <TableColumn fx:id="colDescripcion" text="Descripción" prefWidth="300"/>
+                <TableColumn fx:id="colEstado" text="Estado" prefWidth="100"/>
+            </columns>
+        </TableView>
+    </center>
+
+    <!-- BOTTOM: Botones -->
+    <bottom>
+        <VBox spacing="6">
+            <padding>
+                <Insets top="8" right="10" bottom="10" left="10"/>
+            </padding>
             <children>
-                <Button text="Generar Reporte" onAction="#onGenerar" />
-                <Button text="Exportar Excel-PDF" onAction="#onExportar" />
+                <Label fx:id="statusLabel" text="" />
+                <HBox spacing="10" alignment="CENTER_RIGHT">
+                    <children>
+                        <Button fx:id="btnVerDetalle"
+                                text="Ver detalle"
+                                onAction="#onVerDetalle"/>
+                        <Button fx:id="btnExportar"
+                                text="Exportar"
+                                onAction="#onExportar"/>
+                        <Button fx:id="btnCerrar"
+                                text="Cerrar"
+                                onAction="#onCerrar"/>
+                    </children>
+                </HBox>
             </children>
-        </HBox>
-    </children>
-</VBox>
+        </VBox>
+    </bottom>
+
+</BorderPane>

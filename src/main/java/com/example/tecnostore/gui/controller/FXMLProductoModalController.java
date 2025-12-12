@@ -45,7 +45,7 @@ public class FXMLProductoModalController {
             codigoField.setDisable(true);
         }
     }
-
+//
     @FXML private void onGuardar() { titleLabel.getScene().getWindow().hide(); }
     @FXML private void onCancelar() { titleLabel.getScene().getWindow().hide(); }
 }

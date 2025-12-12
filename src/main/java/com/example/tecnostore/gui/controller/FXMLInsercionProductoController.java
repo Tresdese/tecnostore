@@ -39,7 +39,7 @@ public class FXMLInsercionProductoController implements Initializable {
     @FXML
     private Button btnGuardar;
 
-
+//
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         comboEstado.getItems().addAll("activo", "inactivo");

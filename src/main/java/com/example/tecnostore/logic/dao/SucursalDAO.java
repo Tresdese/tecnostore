@@ -33,7 +33,7 @@ public class SucursalDAO extends ConexionBD {
         return sucursal;
     }
 
-    //Inserta una nueva sucursal.
+    //Inserta una nueva sucursal
 
     public int insertar(SucursalDTO sucursal) throws SQLException {
         Connection conn = null;

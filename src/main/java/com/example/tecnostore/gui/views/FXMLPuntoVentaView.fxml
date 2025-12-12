@@ -1,8 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.geometry.*?>
-<VBox xmlns="http://javafx.com/javafx/17.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.tecnostore.gui.controller.FXMLPuntoVentaViewController" fx:id="rootContainer" spacing="20" alignment="CENTER" padding="50">
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx/17.0.2" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.example.tecnostore.gui.controller.FXMLPuntoVentaViewController"
+      fx:id="rootContainer"
+      spacing="20"
+      alignment="CENTER">
+
+    <padding>
+        <Insets top="50.0" right="50.0" bottom="50.0" left="50.0" />
+    </padding>
     <children>
         <Label text="TechnoStore ERP" style="-fx-font-size: 28px; -fx-font-weight: bold;" />
         <Label text="Módulo de Ventas" />

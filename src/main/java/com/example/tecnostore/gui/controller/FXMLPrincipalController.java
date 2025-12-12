@@ -44,6 +44,8 @@ public class FXMLPrincipalController implements Initializable {
     private Button gestionarSucursalesButton;
     @FXML
     private Button registrosAuditoriaButton;
+    @FXML
+    private Button puntoVentaButton;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -111,6 +113,7 @@ public class FXMLPrincipalController implements Initializable {
                 setButtonVisibility(deleteButton, true);
                 setButtonVisibility(employeeListButton, true);
                 setButtonVisibility(reportesButton, true);
+                setButtonVisibility(puntoVentaButton, false); // << AÑADIDO
                 break;
             case "CAJERO": // cajero
                 setButtonVisibility(registerButton, false);
@@ -118,6 +121,7 @@ public class FXMLPrincipalController implements Initializable {
                 setButtonVisibility(deleteButton, false);
                 setButtonVisibility(employeeListButton, false);
                 setButtonVisibility(reportesButton, true);
+                setButtonVisibility(puntoVentaButton, true); // << AÑADIDO (TRUE)
                 break;
             case "SUPERADMINISTRADOR": // superadministrador
                 setButtonVisibility(registerButton, true);
@@ -125,6 +129,7 @@ public class FXMLPrincipalController implements Initializable {
                 setButtonVisibility(deleteButton, true);
                 setButtonVisibility(employeeListButton, true);
                 setButtonVisibility(reportesButton, true);
+                setButtonVisibility(puntoVentaButton, false); // << AÑADIDO
                 break;
             case "GERENTE DE INVENTARIO": // gerente
                 setButtonVisibility(registerButton, true);
@@ -132,6 +137,7 @@ public class FXMLPrincipalController implements Initializable {
                 setButtonVisibility(deleteButton, true);
                 setButtonVisibility(employeeListButton, true);
                 setButtonVisibility(reportesButton, true);
+                setButtonVisibility(puntoVentaButton, false); // << AÑADIDO
                 break;
             default:
                 setButtonVisibility(registerButton, false);
@@ -139,6 +145,7 @@ public class FXMLPrincipalController implements Initializable {
                 setButtonVisibility(deleteButton, false);
                 setButtonVisibility(employeeListButton, false);
                 setButtonVisibility(reportesButton, false);
+                setButtonVisibility(puntoVentaButton, false); // << AÑADIDO
                 break;
         }
     }
@@ -222,4 +229,13 @@ public class FXMLPrincipalController implements Initializable {
     private void handleRegistrosAuditoriaButton(ActionEvent event) {
     }
 
+    @FXML
+    private void handlePuntoVentaButton(ActionEvent event) {
+        try {
+            windowServices.goToWindow("FXMLPuntoVentaView.fxml", event, "Punto de Venta / TPV");
+        } catch (IOException e) {
+            LOGGER.error("Error al abrir el Punto de Venta: {}", e.getMessage(), e);
+            WindowServices.showErrorDialog("Error", "No se pudo abrir el Punto de Venta: " + e.getMessage());
+        }
+    }
 }

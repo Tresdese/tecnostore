@@ -25,6 +25,15 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 
 public class FXMLRegistroVentaModalController {
+    @FXML
+    private TableColumn colPrecio;
+
+    @FXML
+    private TableColumn colCantidad;
+
+    @FXML
+    private TableColumn colImporte;
+
     @FXML private TextField searchField;
     @FXML private TableView<VentaResumenDTO> productTable;
     @FXML private Label subtotalLabel;
@@ -59,14 +68,11 @@ public class FXMLRegistroVentaModalController {
         cargarVentas(texto);
     }
 
-    private void calcularTotal() {
-        double total = obtenerTotal();
-        double subtotal = total / 1.16;
-        double iva = total - subtotal;
-
-        if (totalLabel != null) totalLabel.setText(String.format("$%,.2f", total));
-        if (subtotalLabel != null) subtotalLabel.setText(String.format("$%,.2f", subtotal));
-        if (ivaLabel != null) ivaLabel.setText(String.format("$%,.2f", iva));
+    @FXML private void onCancelarVenta() {
+        Stage stage = searchField != null && searchField.getScene() != null ? (Stage) searchField.getScene().getWindow() : null;
+        if (stage != null) {
+            stage.close();
+        }
     }
 
     @FXML
@@ -147,17 +153,6 @@ public class FXMLRegistroVentaModalController {
         }
     }
 
-    private double obtenerTotal() {
-        return ventas.stream().mapToDouble(VentaResumenDTO::getMontoTotal).sum();
-    }
-
-    @FXML private void onCancelarVenta() {
-        Stage stage = searchField != null && searchField.getScene() != null ? (Stage) searchField.getScene().getWindow() : null;
-        if (stage != null) {
-            stage.close();
-        }
-    }
-
     private void cargarVentas() { cargarVentas(null); }
 
     private void cargarVentas(String filtro) {
@@ -175,9 +170,23 @@ public class FXMLRegistroVentaModalController {
                 ).toList();
             }
             ventas.addAll(data);
-            calcularTotal();
+            actualizarEtiquetas();
         } catch (Exception e) {
             WindowServices.showErrorDialog("Ventas", "No se pudieron cargar las ventas: " + e.getMessage());
         }
+    }
+
+    private double obtenerTotal() {
+        return ventas.stream().mapToDouble(VentaResumenDTO::getMontoTotal).sum();
+    }
+
+    private void actualizarEtiquetas() {
+        double total = obtenerTotal();
+        double subtotal = total / 1.16;
+        double iva = total - subtotal;
+
+        if (totalLabel != null) totalLabel.setText(String.format("$%,.2f", total));
+        if (subtotalLabel != null) subtotalLabel.setText(String.format("$%,.2f", subtotal));
+        if (ivaLabel != null) ivaLabel.setText(String.format("$%,.2f", iva));
     }
 }

@@ -21,8 +21,12 @@
 
         <TableView fx:id="salesTable" VBox.vgrow="ALWAYS" prefHeight="400.0">
             <columns>
-                <TableColumn fx:id="colUsuario" text="Usuario" />
-                <TableColumn fx:id="colMonto" text="Monto Total" />
+                <TableColumn fx:id="colVenta" text="Venta" />
+                <TableColumn fx:id="colProducto" text="Producto ID" />
+                <TableColumn fx:id="colNombre" text="Producto" />
+                <TableColumn fx:id="colCantidad" text="Cant." />
+                <TableColumn fx:id="colPrecio" text="Precio" />
+                <TableColumn fx:id="colSubtotal" text="Subtotal" />
             </columns>
             <placeholder>
                 <Label text="No hay registros de ventas realizadas."/>

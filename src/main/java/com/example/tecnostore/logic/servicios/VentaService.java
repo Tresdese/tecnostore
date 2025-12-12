@@ -1,102 +1,155 @@
 package com.example.tecnostore.logic.servicios;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.List;
 
-import com.example.tecnostore.logic.dao.LogDAO;
-import com.example.tecnostore.logic.dao.VentaDAO;
-import com.example.tecnostore.logic.dao.DetalleVentaDAO;
-import com.example.tecnostore.logic.dao.ProductoDAO;
-import com.example.tecnostore.logic.dto.VentaDTO;
-import com.example.tecnostore.logic.dto.VentaResumenDTO;
-import com.example.tecnostore.logic.dto.DetalleVentaDTO;
-import com.example.tecnostore.logic.utils.Sesion;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import com.example.tecnostore.data_access.ConexionBD;
+import com.example.tecnostore.logic.dao.DetalleVentaDAO;
+import com.example.tecnostore.logic.dao.LogDAO;
+import com.example.tecnostore.logic.dao.ProductoDAO;
+import com.example.tecnostore.logic.dao.VentaDAO;
+import com.example.tecnostore.logic.dto.DetalleVentaDTO;
+import com.example.tecnostore.logic.dto.ProductoDTO;
+import com.example.tecnostore.logic.dto.VentaDTO;
+import com.example.tecnostore.logic.dto.VentaResumenDTO;
+import com.example.tecnostore.logic.utils.Sesion;
 
 public class VentaService {
 
     private static final Logger LOGGER = LogManager.getLogger(VentaService.class);
 
-    private final String DB_URL = "jdbc:mysql://localhost:3306/seguridad_ventas";
-    private final String DB_USER = "root";
-    private final String DB_PASS = "4422";
+    private final VentaDAO ventaDAO;
+    private final LogDAO logDAO;
+    private final ProductoDAO productoDAO;
+    private final DetalleVentaDAO detalleVentaDAO;
 
-    private VentaDAO ventaDAO;
-    private LogDAO logDAO;
-    private DetalleVentaDAO detalleVentaDAO;
-    private ProductoDAO productoDAO;
+    public VentaService() throws Exception {
+        this.ventaDAO = new VentaDAO();
+        this.productoDAO = new ProductoDAO();
+        this.logDAO = new LogDAO();
+        this.detalleVentaDAO = new DetalleVentaDAO();
+    }
 
-    public VentaService() {
-        try {
-            this.ventaDAO = new VentaDAO();
-            this.logDAO = new LogDAO();
-            this.detalleVentaDAO = new DetalleVentaDAO();
-            this.productoDAO = new ProductoDAO();
-        } catch (Exception e) {
-            LOGGER.error("Error al inicializar DAOs: {}", e.getMessage(), e);
-            throw new RuntimeException("Error al inicializar DAOs de Venta: " + e.getMessage(), e);
+    /**
+     * Procesa una venta completa con detalles, validando stock y registrando log.
+     */
+    public void procesarVenta(int usuarioId, List<DetalleVentaDTO> detalles) throws Exception {
+        if (detalles == null || detalles.isEmpty()) {
+            throw new IllegalArgumentException("La venta no tiene productos.");
+        }
+
+        double montoTotal = detalles.stream()
+                .mapToDouble(detalle -> {
+                    double subtotal = detalle.getSubtotal();
+                    if (subtotal <= 0) {
+                        subtotal = detalle.getPrecioVenta() * detalle.getCantidad();
+                        detalle.setSubtotal(subtotal);
+                    }
+                    return subtotal;
+                })
+                .sum();
+
+        if (montoTotal <= 0) {
+            throw new IllegalArgumentException("El monto debe ser positivo.");
+        }
+
+        try (ConexionBD conexionBD = new ConexionBD()) {
+            Connection conn = conexionBD.getConnection();
+            try {
+                conn.setAutoCommit(false);
+
+                int ventaId = ventaDAO.insertarVenta(conn, String.valueOf(usuarioId), montoTotal);
+
+                for (DetalleVentaDTO detalle : detalles) {
+                    ProductoDTO consulta = new ProductoDTO();
+                    consulta.setId(detalle.getProductoId());
+                    ProductoDTO enBD = productoDAO.buscarPorId(consulta);
+                    if (enBD == null) {
+                        throw new Exception("Producto no encontrado: " + detalle.getProductoId());
+                    }
+                    if (enBD.getStock() < detalle.getCantidad()) {
+                        throw new Exception("Stock insuficiente para: " + enBD.getNombre());
+                    }
+                    productoDAO.actualizarStock(enBD.getId(), enBD.getStock() - detalle.getCantidad());
+                    detalle.setVentaId(ventaId);
+                }
+
+                detalleVentaDAO.registrarDetalles(conn, ventaId, detalles);
+
+                logDAO.registrarLog(conn, String.valueOf(usuarioId), "REGISTRO_VENTA", "EXITO",
+                        "Venta ID: " + ventaId + ", Monto: " + montoTotal);
+
+                conn.commit();
+                LOGGER.info("Venta {} procesada correctamente por usuario {}.", ventaId, usuarioId);
+
+            } catch (Exception e) {
+                try { conn.rollback(); } catch (SQLException ex) { LOGGER.error("Rollback falló: {}", ex.getMessage()); }
+                LOGGER.error("Error en transacción de venta: {}", e.getMessage(), e);
+                throw e;
+            } finally {
+                try { conn.setAutoCommit(true); } catch (SQLException ignored) {}
+                try { conn.close(); } catch (SQLException ignored) {}
+            }
         }
     }
 
+    /**
+     * Versión simple: solo registra la venta (sin detalles) usando usuario en sesión si existe.
+     */
+    public void registrarVentaSimple(double monto) throws Exception {
+        if (monto <= 0) {
+            throw new IllegalArgumentException("El monto debe ser positivo.");
+        }
+        String usuarioId = Sesion.getUsuarioSesion() != null
+                ? String.valueOf(Sesion.getUsuarioSesion().getId())
+                : null;
+        try (ConexionBD conexionBD = new ConexionBD(); Connection conn = conexionBD.getConnection()) {
+            ventaDAO.insertarVenta(conn, usuarioId, monto);
+        }
+    }
+
+    /**
+     * Adaptador para el modal de pago con detalles.
+     */
+    public void registrarVentaCompleta(VentaDTO venta, List<DetalleVentaDTO> detalles) throws Exception {
+        if (venta == null) {
+            throw new IllegalArgumentException("Venta requerida.");
+        }
+        if (detalles == null || detalles.isEmpty()) {
+            throw new IllegalArgumentException("La venta no tiene productos.");
+        }
+
+        double montoTotal = detalles.stream()
+                .mapToDouble(detalle -> {
+                    double subtotal = detalle.getSubtotal();
+                    if (subtotal <= 0) {
+                        subtotal = detalle.getPrecioVenta() * detalle.getCantidad();
+                        detalle.setSubtotal(subtotal);
+                    }
+                    return subtotal;
+                })
+                .sum();
+
+        venta.setDetalles(detalles);
+        venta.setTotal(montoTotal);
+
+        procesarVenta(
+                Sesion.getUsuarioSesion() != null ? Sesion.getUsuarioSesion().getId() : 0,
+                detalles
+        );
+    }
+
+    /** Obtiene todos los detalles de ventas. */
+    public List<DetalleVentaDTO> obtenerDetallesVentas() throws Exception {
+        return detalleVentaDAO.obtenerDetalles();
+    }
+
+    /** Obtiene todas las ventas registradas. */
     public List<VentaResumenDTO> obtenerTodasLasVentas() throws Exception {
         return ventaDAO.obtenerVentas();
-    }
-
-    public void registrarVentaCompleta(VentaDTO venta) throws Exception {
-
-        String usuarioActual = Sesion.getUsuarioSesion() != null ? Sesion.getUsuarioSesion().getUsuario() : "Sistema";
-
-        if (venta.getTotal() <= 0 || venta.getDetalles().isEmpty()) {
-            throw new IllegalArgumentException("El monto debe ser positivo y la venta no debe estar vacía.");
-        }
-
-        Connection conn = null;
-
-        try {
-            conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
-            conn.setAutoCommit(false);
-
-            int ventaId = ventaDAO.insertarVenta(conn, usuarioActual, venta.getTotal());
-
-            for (DetalleVentaDTO detalle : venta.getDetalles()) {
-                int cantidadVendida = detalle.getCantidad();
-                int productoId = detalle.getProductoId();
-
-                productoDAO.actualizarStock(productoId, 500 - cantidadVendida);
-            }
-
-            detalleVentaDAO.registrarDetalles(conn, ventaId, venta.getDetalles());
-
-            logDAO.registrarLog(conn, usuarioActual, "REGISTRO_VENTA", "EXITO", "Venta ID: " + ventaId + ", Total: " + venta.getTotal());
-            conn.commit();
-
-            LOGGER.info("Venta ID {} procesada correctamente por {}.", ventaId, usuarioActual);
-
-        } catch (Exception e) {
-            if (conn != null) {
-                try {
-                    conn.rollback();
-                    logDAO.registrarLog(conn, usuarioActual, "REGISTRO_VENTA", "ERROR", e.getMessage());
-                } catch (SQLException ex) {
-                    LOGGER.error("Error durante el rollback: {}", ex.getMessage());
-                }
-            }
-            LOGGER.error("Error en transacción de venta: {}", e.getMessage(), e);
-            throw new Exception("Error al registrar la venta: " + e.getMessage());
-
-        } finally {
-            if (conn != null) {
-                try {
-                    conn.setAutoCommit(true);
-                    conn.close();
-                } catch (SQLException e) {
-                    LOGGER.error("Error al cerrar conexión: {}", e.getMessage());
-                }
-            }
-        }
     }
 }

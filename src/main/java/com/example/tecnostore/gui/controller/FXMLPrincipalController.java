@@ -232,7 +232,7 @@ public class FXMLPrincipalController implements Initializable {
     @FXML
     private void handlePuntoVentaButton(ActionEvent event) {
         try {
-            windowServices.goToWindow("FXMLPuntoVentaView.fxml", event, "Punto de Venta / TPV");
+            windowServices.openModal("FXMLPuntoVentaView.fxml", "Punto de Ventas");
         } catch (IOException e) {
             LOGGER.error("Error al abrir el Punto de Venta: {}", e.getMessage(), e);
             WindowServices.showErrorDialog("Error", "No se pudo abrir el Punto de Venta: " + e.getMessage());

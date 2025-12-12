@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane prefHeight="520" prefWidth="440" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.tecnostore.gui.controller.FXMLConfigurar2FAController">
+    <top>
+        <VBox spacing="6.0">
+            <padding>
+                <Insets bottom="10" left="10" right="10" top="10" />
+            </padding>
+            <children>
+                <Label text="Activa tu verificación en dos pasos" />
+                <Label text="Escanea el código QR en tu app de autenticación (Google Authenticator, Authy, etc.)." wrapText="true" />
+            </children>
+        </VBox>
+    </top>
+    <center>
+        <VBox alignment="CENTER" spacing="10.0">
+            <padding>
+                <Insets bottom="12" left="12" right="12" top="12" />
+            </padding>
+            <children>
+                <ImageView fx:id="imgQr" fitHeight="199.0" fitWidth="196.0" preserveRatio="true" />
+                <Label text="Clave de respaldo:" />
+                <Label fx:id="lblSecret" style="-fx-font-family: 'Consolas'; -fx-font-size: 12;" />
+                <Label fx:id="lblEstado" wrapText="true" />
+                <Label text="Enlace QR (copiar si no se ve):" />
+                <Label fx:id="lblQrUrl" style="-fx-font-family: 'Consolas'; -fx-font-size: 11;" wrapText="true" />
+                <TextArea fx:id="txtQrUrl" editable="false" managed="false" prefRowCount="2" visible="false" wrapText="true" />
+                <HBox spacing="8">
+                    <children>
+                        <Button fx:id="btnAbrirNavegador" onAction="#onAbrirNavegador" text="Abrir en navegador" />
+                        <Button fx:id="btnCopiarEnlace" onAction="#onCopiarEnlace" text="Copiar enlace" />
+                    </children>
+                </HBox>
+            </children>
+        </VBox>
+    </center>
+    <bottom>
+        <HBox alignment="CENTER_RIGHT" prefHeight="79.0" prefWidth="440.0" spacing="10.0">
+            <padding>
+                <Insets bottom="10" left="10" right="10" top="10" />
+            </padding>
+            <children>
+                <Button fx:id="btnCancelar" onAction="#onCancelar" text="Cancelar" />
+                <Button fx:id="btnContinuar" onAction="#onContinuar" text="Continuar" />
+            </children>
+        </HBox>
+    </bottom>
+</BorderPane>

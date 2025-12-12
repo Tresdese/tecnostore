@@ -20,8 +20,8 @@ public class UsuarioDAO extends ConexionBD {
     // SECCIÓN CRÍTICA: manejo de datos sensibles (hash de contraseña)
     // - No loguear el hash ni la contraseña en ningún momento.
     // - Asegurarse de que el formato del hash (hex o base64) sea consistente entre la BD y la app.
-    private final static String SQL_INSERT = "INSERT INTO usuarios(nombre, usuario, contraseña_hash, rol_id, activo) VALUES (?, ?, ?, ?, ?)";
-    private final static String SQL_UPDATE = "UPDATE usuarios SET nombre=?, usuario=?, contraseña_hash=?, rol_id=?, activo=? WHERE id=?";
+    private final static String SQL_INSERT = "INSERT INTO usuarios(nombre, usuario, contraseña_hash, twofactor_secret, twofactor_enabled, rol_id, activo) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    private final static String SQL_UPDATE = "UPDATE usuarios SET nombre=?, usuario=?, contraseña_hash=?, twofactor_secret=?, twofactor_enabled=?, rol_id=?, activo=? WHERE id=?";
     private final static String SQL_DELETE = "DELETE FROM usuarios WHERE id=?";
     private final static String SQL_SELECT_BY_ID = "SELECT * FROM usuarios WHERE id=?";
     private final static String SQL_SELECT_ID = "SELECT id, usuario FROM usuarios WHERE id=?";
@@ -39,8 +39,10 @@ public class UsuarioDAO extends ConexionBD {
             ps.setString(1, dto.getNombre());
             ps.setString(2, dto.getUsuario());
             ps.setString(3, dto.getContrasenaHash());
-            ps.setInt(4, dto.getRol_id());
-            ps.setBoolean(5, dto.isActivo()); 
+            ps.setString(4, dto.getTwoFactorSecret());
+            ps.setBoolean(5, dto.isTwoFactorEnabled());
+            ps.setInt(6, dto.getRol_id());
+            ps.setBoolean(7, dto.isActivo()); 
             
             ps.executeUpdate();
             
@@ -63,9 +65,11 @@ public class UsuarioDAO extends ConexionBD {
             ps.setString(1, dto.getNombre());
             ps.setString(2, dto.getUsuario());
             ps.setString(3, dto.getContrasenaHash());
-            ps.setInt(4, dto.getRol_id());
-            ps.setBoolean(5, dto.isActivo());
-            ps.setInt(6, dto.getId());
+            ps.setString(4, dto.getTwoFactorSecret());
+            ps.setBoolean(5, dto.isTwoFactorEnabled());
+            ps.setInt(6, dto.getRol_id());
+            ps.setBoolean(7, dto.isActivo());
+            ps.setInt(8, dto.getId());
             ps.executeUpdate();
             LOGGER.info("Usuario actualizado con ID: {}", dto.getId());
         } catch (SQLException e) {
@@ -95,6 +99,8 @@ public class UsuarioDAO extends ConexionBD {
                     dto.setNombre(rs.getString("nombre"));
                     dto.setUsuario(rs.getString("usuario"));
                     dto.setContrasenaHash(rs.getString("contraseña_hash"));
+                    dto.setTwoFactorSecret(rs.getString("twofactor_secret"));
+                    dto.setTwoFactorEnabled(rs.getInt("twofactor_enabled") == 1);
                     dto.setRol_id(rs.getInt("rol_id"));
                     dto.setActivo(rs.getBoolean("activo"));
                     
@@ -140,6 +146,8 @@ public class UsuarioDAO extends ConexionBD {
                     // aquí se lee el hash almacenado en la base de datos
                     // IMPORTANTE: no imprimir ni exponer este valor en logs
                     usuario.setContrasenaHash(rs.getString("contraseña_hash"));
+                    usuario.setTwoFactorSecret(rs.getString("twofactor_secret"));
+                    usuario.setTwoFactorEnabled(rs.getInt("twofactor_enabled") == 1);
                     usuario.setRol_id(rs.getInt("rol_id"));
                     usuario.setActivo(rs.getBoolean("activo"));
                     
@@ -170,6 +178,8 @@ public class UsuarioDAO extends ConexionBD {
                     usuario.setUsuario(rs.getString("usuario"));
                     // leer hash desde la base de datos (verificar formato antes de comparar)
                     usuario.setContrasenaHash(rs.getString("contraseña_hash"));
+                    usuario.setTwoFactorSecret(rs.getString("twofactor_secret"));
+                    usuario.setTwoFactorEnabled(rs.getInt("twofactor_enabled") == 1);
                     usuario.setRol_id(rs.getInt("rol_id"));
                     usuario.setActivo(rs.getBoolean("activo"));
                     
@@ -209,6 +219,8 @@ public class UsuarioDAO extends ConexionBD {
                 usuario.setNombre(rs.getString("nombre"));
                 usuario.setUsuario(rs.getString("usuario"));
                 usuario.setContrasenaHash(rs.getString("contraseña_hash"));
+                usuario.setTwoFactorSecret(rs.getString("twofactor_secret"));
+                usuario.setTwoFactorEnabled(rs.getInt("twofactor_enabled") == 1);
                 usuario.setRol_id(rs.getInt("rol_id"));
                 usuario.setActivo(rs.getBoolean("activo"));
                 Timestamp fechaCreacionSql = rs.getTimestamp("fecha_creacion");

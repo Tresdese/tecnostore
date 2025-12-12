@@ -7,6 +7,8 @@ public class UsuarioDTO {
     private String nombre;
     private String usuario;
     private String contrasenaHash;
+    private String twoFactorSecret;
+    private boolean twoFactorEnabled;
     private int rol_id;
     private boolean activo;
     private LocalDateTime fechaCreacion;
@@ -17,6 +19,7 @@ public class UsuarioDTO {
         this.contrasenaHash = contrasenaHash;
         this.rol_id = rol_id;
         this.activo = activo;
+        this.twoFactorEnabled = false;
     }
 
     public UsuarioDTO() {
@@ -52,6 +55,22 @@ public class UsuarioDTO {
 
     public void setContrasenaHash(String contrasenaHash) {
         this.contrasenaHash = contrasenaHash;
+    }
+
+    public String getTwoFactorSecret() {
+        return twoFactorSecret;
+    }
+
+    public void setTwoFactorSecret(String twoFactorSecret) {
+        this.twoFactorSecret = twoFactorSecret;
+    }
+
+    public boolean isTwoFactorEnabled() {
+        return twoFactorEnabled;
+    }
+
+    public void setTwoFactorEnabled(boolean twoFactorEnabled) {
+        this.twoFactorEnabled = twoFactorEnabled;
     }
 
     public int getRol_id() {

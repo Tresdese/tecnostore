@@ -47,7 +47,7 @@ public class FXMLReportesViewController {
 
     @FXML
     private Button btnExportar;
-
+//
     @FXML
     private Button btnCerrar;
 
@@ -126,10 +126,40 @@ public class FXMLReportesViewController {
 
     @FXML
     private void onVerDetalle(ActionEvent event) {
+        LogAuditoriaDTO selectedLog = tblReportes.getSelectionModel().getSelectedItem();
+
+        if (selectedLog == null) {
+            Alert warning = new Alert(Alert.AlertType.WARNING);
+            warning.setTitle("Aviso");
+            warning.setHeaderText(null);
+            warning.setContentText("Seleccione un registro de la tabla para ver el detalle.");
+            warning.showAndWait();
+            return;
+        }
+
+        // Formatear la fecha
+        String fechaFormateada = selectedLog.getFecha() != null
+                ? selectedLog.getFecha().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+                : "N/A";
+
+        // Construir el contenido del mensaje
+        String contenido = String.format(
+                "ID de Log: %d\n" +
+                        "Usuario ID: %s\n" +
+                        "Fecha/Hora: %s\n" +
+                        "Tipo de Acción: %s\n" +
+                        "Descripción Completa:\n%s",
+                selectedLog.getId(),
+                selectedLog.getUsuarioId() != null ? selectedLog.getUsuarioId().toString() : "Sistema/N/A",
+                fechaFormateada,
+                selectedLog.getAccion(),
+                selectedLog.getDescripcion()
+        );
+
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Detalle de reporte");
-        alert.setHeaderText(null);
-        alert.setContentText("Seleccione un registro en la tabla para mostrar detalles.");
+        alert.setTitle("Detalle de Log de Auditoría");
+        alert.setHeaderText("Registro #" + selectedLog.getId());
+        alert.setContentText(contenido);
         alert.showAndWait();
     }
 

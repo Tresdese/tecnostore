@@ -1,25 +1,62 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.geometry.*?>
-<BorderPane xmlns="http://javafx.com/javafx/17.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.tecnostore.gui.controller.FXMLGestionSucursalesViewController" padding="10">
-    <left>
-        <VBox spacing="10" padding="0,10,0,0">
+
+<BorderPane xmlns="http://javafx.com/javafx/17.0.2"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.tecnostore.gui.controller.FXMLGestionSucursalesViewController">
+
+    <top>
+        <VBox spacing="8">
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10"/>
+            </padding>
             <children>
-                <Button text="Nueva Sucursal" onAction="#onNuevaSucursal" />
-                <Button text="Editar Seleccionada" onAction="#onEditarSeleccionada" />
-                <Button text="Eliminar Sucursal" onAction="#onEliminarSucursal" />
+                <Label text="Gestión de Sucursales"
+                       style="-fx-font-size: 22px; -fx-font-weight: bold;"/>
+
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <children>
+                        <Label text="Buscar:"/>
+                        <TextField fx:id="searchField" promptText="Nombre o ciudad" />
+                        <Button text="Buscar" onAction="#onBuscar"/>
+                        <Button text="Limpiar" onAction="#onLimpiar"/>
+                    </children>
+                    <!-- AQUÍ podrías haber tenido padding="0,10,0,0" -->
+                    <padding>
+                        <Insets top="0" right="10" bottom="0" left="0"/>
+                    </padding>
+                </HBox>
             </children>
         </VBox>
-    </left>
+    </top>
+
     <center>
-        <TableView fx:id="sucursalTable">
+        <TableView fx:id="branchTable">
             <columns>
-                <TableColumn text="Nombre" />
-                <TableColumn text="Dirección" />
-                <TableColumn text="Teléfono" />
-                <TableColumn text="Estado" />
+                <TableColumn fx:id="colId" text="ID" prefWidth="80"/>
+                <TableColumn fx:id="colNombre" text="Nombre" prefWidth="150"/>
+                <TableColumn fx:id="colDireccion" text="Dirección" prefWidth="200"/>
+                <TableColumn fx:id="colTelefono" text="Teléfono" prefWidth="120"/>
+                <TableColumn fx:id="colActivo" text="Activo" prefWidth="80"/>
             </columns>
         </TableView>
     </center>
+
+    <bottom>
+        <HBox spacing="10" alignment="CENTER_RIGHT">
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10"/>
+            </padding>
+            <children>
+                <Button text="Agregar" onAction="#onAgregar"/>
+                <Button text="Editar" onAction="#onEditar"/>
+                <Button text="Eliminar" onAction="#onEliminar"/>
+                <Button text="Cerrar" onAction="#onCerrar"/>
+            </children>
+        </HBox>
+    </bottom>
+
 </BorderPane>

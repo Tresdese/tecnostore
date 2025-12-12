@@ -39,7 +39,7 @@ public class FXMLSucursalModalController {
         if (sucursalActual != null) {
             setSucursalActual(sucursalActual);
         }
-    }
+    }//
 
     @FXML
     private void onConfirmar() {

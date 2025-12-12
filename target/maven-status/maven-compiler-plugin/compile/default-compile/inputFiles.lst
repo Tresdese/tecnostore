@@ -7,6 +7,7 @@ E:\Documentos\Escuela\5to Semestre\Aspectos de seguridad para el desarrollo de S
 E:\Documentos\Escuela\5to Semestre\Aspectos de seguridad para el desarrollo de Software\Proyecto\tecnostore\src\main\java\com\example\tecnostore\gui\controller\FXMLRegistroController.java
 E:\Documentos\Escuela\5to Semestre\Aspectos de seguridad para el desarrollo de Software\Proyecto\tecnostore\src\main\java\com\example\tecnostore\logic\servicios\ClienteService.java
 E:\Documentos\Escuela\5to Semestre\Aspectos de seguridad para el desarrollo de Software\Proyecto\tecnostore\src\main\java\com\example\JavaFXApplication3.java
+E:\Documentos\Escuela\5to Semestre\Aspectos de seguridad para el desarrollo de Software\Proyecto\tecnostore\src\main\java\com\example\tecnostore\gui\controller\FXMLTwoFactorController.java
 E:\Documentos\Escuela\5to Semestre\Aspectos de seguridad para el desarrollo de Software\Proyecto\tecnostore\src\main\java\com\example\tecnostore\logic\dao\VentaDAO.java
 E:\Documentos\Escuela\5to Semestre\Aspectos de seguridad para el desarrollo de Software\Proyecto\tecnostore\src\main\java\com\example\tecnostore\gui\controller\FXMLLoginViewController.java
 E:\Documentos\Escuela\5to Semestre\Aspectos de seguridad para el desarrollo de Software\Proyecto\tecnostore\src\main\java\com\example\tecnostore\gui\controller\FXMLAuditoriaViewController.java
@@ -14,6 +15,7 @@ E:\Documentos\Escuela\5to Semestre\Aspectos de seguridad para el desarrollo de S
 E:\Documentos\Escuela\5to Semestre\Aspectos de seguridad para el desarrollo de Software\Proyecto\tecnostore\src\main\java\com\example\tecnostore\gui\controller\FXMLConfirmacionModalController.java
 E:\Documentos\Escuela\5to Semestre\Aspectos de seguridad para el desarrollo de Software\Proyecto\tecnostore\src\main\java\com\example\tecnostore\logic\servicios\ServicioRoles.java
 E:\Documentos\Escuela\5to Semestre\Aspectos de seguridad para el desarrollo de Software\Proyecto\tecnostore\src\main\java\com\example\tecnostore\gui\controller\FXMLEdicionProductoController.java
+E:\Documentos\Escuela\5to Semestre\Aspectos de seguridad para el desarrollo de Software\Proyecto\tecnostore\src\main\java\com\example\tecnostore\gui\controller\FXMLConfigurar2FAController.java
 E:\Documentos\Escuela\5to Semestre\Aspectos de seguridad para el desarrollo de Software\Proyecto\tecnostore\src\main\java\com\example\tecnostore\gui\controller\FXMLProductoModalController.java
 E:\Documentos\Escuela\5to Semestre\Aspectos de seguridad para el desarrollo de Software\Proyecto\tecnostore\src\main\java\com\example\tecnostore\gui\controller\FXMLReportesViewController.java
 E:\Documentos\Escuela\5to Semestre\Aspectos de seguridad para el desarrollo de Software\Proyecto\tecnostore\src\main\java\com\example\tecnostore\logic\dao\ClienteDAO.java
@@ -34,6 +36,7 @@ E:\Documentos\Escuela\5to Semestre\Aspectos de seguridad para el desarrollo de S
 E:\Documentos\Escuela\5to Semestre\Aspectos de seguridad para el desarrollo de Software\Proyecto\tecnostore\src\main\java\com\example\tecnostore\logic\utils\Sesion.java
 E:\Documentos\Escuela\5to Semestre\Aspectos de seguridad para el desarrollo de Software\Proyecto\tecnostore\src\main\java\module-info.java
 E:\Documentos\Escuela\5to Semestre\Aspectos de seguridad para el desarrollo de Software\Proyecto\tecnostore\src\main\java\com\example\tecnostore\logic\dto\SucursalDTO.java
+E:\Documentos\Escuela\5to Semestre\Aspectos de seguridad para el desarrollo de Software\Proyecto\tecnostore\src\main\java\com\example\tecnostore\logic\servicios\TwoFactorService.java
 E:\Documentos\Escuela\5to Semestre\Aspectos de seguridad para el desarrollo de Software\Proyecto\tecnostore\src\main\java\com\example\tecnostore\gui\controller\FXMLInventarioViewController.java
 E:\Documentos\Escuela\5to Semestre\Aspectos de seguridad para el desarrollo de Software\Proyecto\tecnostore\src\main\java\com\example\tecnostore\logic\dto\UsuarioDTO.java
 E:\Documentos\Escuela\5to Semestre\Aspectos de seguridad para el desarrollo de Software\Proyecto\tecnostore\src\main\java\com\example\tecnostore\gui\controller\FXMLIngresoController.java

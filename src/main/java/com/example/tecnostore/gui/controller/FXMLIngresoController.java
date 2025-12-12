@@ -86,12 +86,20 @@ public class FXMLIngresoController implements Initializable {
                     return;
                 }
 
+<<<<<<< HEAD
                 if (usuario.isTwoFactorEnabled() && usuario.getTwoFactorSecret() != null
                         && !usuario.getTwoFactorSecret().isBlank()) {
                     abrirDialogo2FA(usuario, event);
                 } else {
                     completarLogin(usuario, event);
                 }
+=======
+                // Guardar usuario y rol en sesión para el resto de la aplicacion
+                Sesion.setUsuarioSesion(usuario);
+
+                WindowServices.showInformationDialog("Autenticación", "Inicio de sesión exitoso.");
+                windowServices.goToWindow("FXMLPrincipal.fxml", event, "Principal");
+>>>>>>> f15f7a87dc99d43009936d6c03b44a5c68bef764
             } else {
                 WindowServices.showErrorDialog("Autenticación", "Usuario o contraseña incorrectos.");
             }

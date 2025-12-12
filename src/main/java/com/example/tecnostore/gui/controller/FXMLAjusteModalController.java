@@ -40,7 +40,7 @@ public class FXMLAjusteModalController {
     private ProductoDAO productoDAO;
     private ToggleGroup tipoMovimientoGroup;
     private Window owner;
-
+//
     public void setOwner(Window owner) {
         this.owner = owner;
     }

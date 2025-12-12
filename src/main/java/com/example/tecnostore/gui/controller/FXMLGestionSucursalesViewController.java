@@ -136,7 +136,8 @@ public class FXMLGestionSucursalesViewController {
                 cargarSucursales();
             }
         } catch (IOException e) {
-            new Alert(Alert.AlertType.ERROR, "No se pudo abrir el modal de sucursal: " + e.getMessage()).showAndWait();
+            LOGGER.error("Error al abrir/cargar el modal de sucursal: {}", e.getMessage(), e);
+            WindowServices.showErrorDialog("Error", "No se pudo abrir el modal de sucursal: " + e.getMessage());
         }
     }
 

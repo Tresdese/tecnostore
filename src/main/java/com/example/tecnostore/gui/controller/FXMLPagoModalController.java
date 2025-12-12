@@ -31,8 +31,15 @@ public class FXMLPagoModalController {
 
     // --- MÉTODO 1: Permite al controlador de ventas enviar la lista de productos ---
     public void inicializarPago(double total, List<ProductoDTO> productos) {
-        this.totalPagar = total;
-        this.productosAVender = productos;
+        // Filtrar solo productos con cantidadVenta > 0
+        this.productosAVender = productos.stream()
+                .filter(p -> p.getCantidadVenta() > 0)
+                .toList();
+
+        // Recalcular total en base a las cantidades filtradas
+        this.totalPagar = this.productosAVender.stream()
+                .mapToDouble(p -> p.getPrecio() * p.getCantidadVenta())
+                .sum();
 
         if (totalValue != null) {
             totalValue.setText(String.format("$%,.2f", totalPagar));
@@ -89,6 +96,11 @@ public class FXMLPagoModalController {
             }
 
             // 3. Procesar la venta usando el servicio (Esto guarda en BD y resta Stock)
+            if (productosAVender == null || productosAVender.isEmpty()) {
+                WindowServices.showWarningDialog("Vacío", "Agregue productos con cantidad mayor a cero.");
+                return;
+            }
+
             VentaService servicio = new VentaService();
             // Asumimos Sucursal ID = 1
             servicio.procesarVenta(usuarioId, 1, productosAVender);

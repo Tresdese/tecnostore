@@ -8,6 +8,8 @@ public class ProductoDTO {
     private String descripcion;
     private double precio;
     private int stock;
+    // Cantidad solicitada en venta (no persiste en DB)
+    private int cantidadVenta;
     private int sucursal_id;
     private boolean activo;
     private Timestamp fecha_creacion;
@@ -67,6 +69,14 @@ public class ProductoDTO {
         this.stock = stock;
     }
 
+    public int getCantidadVenta() {
+        return cantidadVenta;
+    }
+
+    public void setCantidadVenta(int cantidadVenta) {
+        this.cantidadVenta = cantidadVenta;
+    }
+
     public int getSucursal_id() {
         return sucursal_id;
     }
@@ -99,6 +109,7 @@ public class ProductoDTO {
                 ", descripcion='" + descripcion + '\'' +
                 ", precio=" + precio +
                 ", stock=" + stock +
+                ", cantidadVenta=" + cantidadVenta +
                 ", sucursal_id=" + sucursal_id +
                 ", activo=" + activo +
                 ", fecha_creacion=" + fecha_creacion +

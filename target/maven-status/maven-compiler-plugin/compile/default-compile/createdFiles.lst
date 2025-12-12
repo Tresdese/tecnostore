@@ -38,6 +38,7 @@ com\example\tecnostore\gui\controller\FXMLReportesViewController.class
 com\example\tecnostore\logic\dto\VentaDTO.class
 com\example\tecnostore\logic\servicios\ServicioDeAutenticacion.class
 com\example\tecnostore\gui\controller\FXMLAjusteInventarioViewController.class
+com\example\tecnostore\gui\controller\FXMLRegistroVentaModalController$1.class
 com\example\tecnostore\logic\dao\RolDAO.class
 com\example\tecnostore\logic\dao\UsuarioDAO.class
 com\example\tecnostore\logic\servicios\ReporteSeguridadService.class

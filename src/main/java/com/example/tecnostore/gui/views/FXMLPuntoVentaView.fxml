@@ -17,12 +17,17 @@
 
         <HBox spacing="10" alignment="CENTER_LEFT">
             <Button text="Nueva Venta" onAction="#onHacerVenta" prefWidth="150" style="-fx-background-color: #4CAF50; -fx-text-fill: white;" />
+            <Button text="Refrescar" onAction="#onBuscarVentas" prefWidth="120" />
         </HBox>
 
         <TableView fx:id="salesTable" VBox.vgrow="ALWAYS" prefHeight="400.0">
             <columns>
-                <TableColumn fx:id="colUsuario" text="Usuario" />
-                <TableColumn fx:id="colMonto" text="Monto Total" />
+                <TableColumn fx:id="colVenta" text="Venta" prefWidth="80" />
+                <TableColumn fx:id="colProducto" text="Producto" prefWidth="90" />
+                <TableColumn fx:id="colNombre" text="Nombre" prefWidth="180" />
+                <TableColumn fx:id="colCantidad" text="Cantidad" prefWidth="90" />
+                <TableColumn fx:id="colPrecio" text="Precio" prefWidth="90" />
+                <TableColumn fx:id="colSubtotal" text="Subtotal" prefWidth="100" />
             </columns>
             <placeholder>
                 <Label text="No hay registros de ventas realizadas."/>

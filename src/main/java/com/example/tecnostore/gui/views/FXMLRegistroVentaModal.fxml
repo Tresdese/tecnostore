@@ -38,6 +38,7 @@
                 <TableColumn fx:id="colCodigo" text="Código" />
                 <TableColumn fx:id="colDescripcion" text="Descripción" />
                 <TableColumn fx:id="colPrecio" text="Precio" />
+                <TableColumn fx:id="colStock" text="Stock" />
                 <TableColumn fx:id="colCantidad" text="Cantidad" />
                 <TableColumn fx:id="colImporte" text="Importe" />
             </columns>
@@ -45,6 +46,14 @@
                 <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
             </columnResizePolicy>
         </TableView>
+
+        <HBox spacing="10" alignment="CENTER_RIGHT">
+            <children>
+                <Button fx:id="btnAumentar" text="Aumentar" onAction="#onAumentarCantidad" />
+                <Button fx:id="btnDisminuir" text="Disminuir" onAction="#onDisminuirCantidad" />
+                <Button fx:id="btnQuitar" text="Quitar" onAction="#onQuitarProducto" />
+            </children>
+        </HBox>
 
         <BorderPane>
             <padding>

@@ -12,7 +12,7 @@ import com.example.tecnostore.logic.dto.VentaResumenDTO;
 
 public class VentaDAO {
 
-    public void insertarVenta(Connection conn, String usuario, double monto) throws SQLException {
+    public int insertarVenta(Connection conn, String usuario, double monto) throws SQLException {
         String sql = "INSERT INTO ventas (total, usuario_id) VALUES (?, ?)";
         Integer usuarioId = null;
         try {
@@ -21,7 +21,7 @@ public class VentaDAO {
             // Si no es numérico, se inserta null y se registrará solo el total
         }
 
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (PreparedStatement stmt = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
             stmt.setDouble(1, monto);
             if (usuarioId != null) {
                 stmt.setInt(2, usuarioId);
@@ -29,7 +29,14 @@ public class VentaDAO {
                 stmt.setNull(2, java.sql.Types.INTEGER);
             }
             stmt.executeUpdate();
+
+            try (ResultSet rs = stmt.getGeneratedKeys()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            }
         }
+        return 0;
     }
 
     public List<VentaResumenDTO> obtenerVentas() throws Exception {

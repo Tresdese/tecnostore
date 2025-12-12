@@ -6,6 +6,7 @@ public class DetalleVentaDTO {
     private int productoId;
     private int cantidad;
     private double precioVenta;
+    private double subtotal;
     private String nombreProducto;
 
     public DetalleVentaDTO() {}
@@ -24,6 +25,9 @@ public class DetalleVentaDTO {
 
     public double getPrecioVenta() { return precioVenta; }
     public void setPrecioVenta(double precioVenta) { this.precioVenta = precioVenta; }
+
+    public double getSubtotal() { return subtotal; }
+    public void setSubtotal(double subtotal) { this.subtotal = subtotal; }
 
     public String getNombreProducto() { return nombreProducto; }
     public void setNombreProducto(String nombreProducto) { this.nombreProducto = nombreProducto; }

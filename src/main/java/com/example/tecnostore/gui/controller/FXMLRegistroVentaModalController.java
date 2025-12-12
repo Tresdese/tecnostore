@@ -17,6 +17,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable; // <--- IMPORTANTE: Importar esta interfaz
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -37,8 +38,12 @@ public class FXMLRegistroVentaModalController implements Initializable {
     @FXML private TableColumn<ProductoDTO, String> colCodigo;
     @FXML private TableColumn<ProductoDTO, String> colDescripcion;
     @FXML private TableColumn<ProductoDTO, Double> colPrecio;
+    @FXML private TableColumn<ProductoDTO, Integer> colStock;
     @FXML private TableColumn<ProductoDTO, Integer> colCantidad;
     @FXML private TableColumn<ProductoDTO, Double> colImporte;
+    @FXML private Button btnAumentar;
+    @FXML private Button btnDisminuir;
+    @FXML private Button btnQuitar;
 
     private ServicioProductos servicioProductos;
 
@@ -57,40 +62,150 @@ public class FXMLRegistroVentaModalController implements Initializable {
         colCodigo.setCellValueFactory(cell -> new SimpleStringProperty(String.valueOf(cell.getValue().getId())));
         colDescripcion.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getNombre()));
         colPrecio.setCellValueFactory(cell -> new SimpleDoubleProperty(cell.getValue().getPrecio()).asObject());
-        colCantidad.setCellValueFactory(cell -> new SimpleIntegerProperty(cell.getValue().getStock()).asObject());
+        colStock.setCellValueFactory(cell -> new SimpleIntegerProperty(cell.getValue().getStock()).asObject());
+        colCantidad.setCellValueFactory(cell -> new SimpleIntegerProperty(cell.getValue().getCantidadVenta()).asObject());
         colImporte.setCellValueFactory(cell ->
-                new SimpleDoubleProperty(cell.getValue().getPrecio() * cell.getValue().getStock()).asObject());
+            new SimpleDoubleProperty(cell.getValue().getPrecio() * cell.getValue().getCantidadVenta()).asObject());
+
+        // Permite disparar búsqueda con Enter
+        if (searchField != null) {
+            searchField.setOnAction(evt -> onBuscar());
+        }
+
+        // Carga inicial del catálogo para que la tabla no aparezca vacía
+        cargarCatalogoCompleto();
+
+        // Resaltar productos sin stock
+        productTable.setRowFactory(tv -> new javafx.scene.control.TableRow<>() {
+            @Override
+            protected void updateItem(ProductoDTO item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setStyle("");
+                } else if (item.getStock() <= 0) {
+                    setStyle("-fx-background-color: #ffcccc;");
+                } else {
+                    setStyle("");
+                }
+            }
+        });
     }
 
     @FXML
     private void onBuscar() {
         String texto = searchField.getText();
-        if (texto == null || texto.isBlank()) return;
 
         try {
-            boolean encontrado = false;
-            for (ProductoDTO p : servicioProductos.obtenerTodosProductos()) {
-                if (String.valueOf(p.getId()).equals(texto) || p.getNombre().toLowerCase().contains(texto.toLowerCase())) {
+            if (servicioProductos == null) {
+                WindowServices.showErrorDialog("Error", "El servicio de productos no está disponible.");
+                return;
+            }
 
-                    ProductoDTO item = new ProductoDTO();
-                    item.setId(p.getId());
-                    item.setNombre(p.getNombre());
-                    item.setPrecio(p.getPrecio());
-                    item.setStock(1);
+            var catalogo = servicioProductos.obtenerTodosProductos();
+            if (catalogo == null || catalogo.isEmpty()) {
+                WindowServices.showWarningDialog("Aviso", "No hay productos registrados.");
+                return;
+            }
 
-                    productTable.getItems().add(item);
-                    actualizarEtiquetas(); // Recalcula totales
-                    searchField.clear();
-                    encontrado = true;
-                    return; // Salimos al encontrar uno
+            // Si no se ingresó texto, agrega todo el catálogo con cantidad 1
+            if (texto == null || texto.isBlank()) {
+                cargarCatalogoCompleto();
+                return;
+            }
+
+            ProductoDTO encontrado = catalogo.stream()
+                    .filter(p -> String.valueOf(p.getId()).equalsIgnoreCase(texto)
+                            || p.getNombre().toLowerCase().contains(texto.toLowerCase()))
+                    .findFirst()
+                    .orElse(null);
+
+            if (encontrado == null) {
+                WindowServices.showWarningDialog("Aviso", "Producto no encontrado.");
+                return;
+            }
+
+            agregarOIncrementar(encontrado);
+            actualizarEtiquetas();
+            searchField.clear();
+
+        } catch (Exception e) {
+            WindowServices.showErrorDialog("Error", "No se pudo buscar el producto: " + e.getMessage());
+        }
+    }
+
+    private void cargarCatalogoCompleto() {
+        try {
+            if (servicioProductos == null) {
+                return;
+            }
+            var catalogo = servicioProductos.obtenerTodosProductos();
+            productTable.getItems().clear();
+            if (catalogo != null) {
+                for (ProductoDTO p : catalogo) {
+                    agregarOIncrementar(p, false);
                 }
             }
-            if (!encontrado) {
-                WindowServices.showWarningDialog("Aviso", "Producto no encontrado.");
-            }
+            actualizarEtiquetas();
         } catch (Exception e) {
-            e.printStackTrace();
+            WindowServices.showErrorDialog("Error", "No se pudo cargar el catálogo: " + e.getMessage());
         }
+    }
+
+    private void agregarOIncrementar(ProductoDTO base) {
+        agregarOIncrementar(base, true);
+    }
+
+    private void agregarOIncrementar(ProductoDTO base, boolean incrementar) {
+        if (base == null) return;
+        ProductoDTO existente = productTable.getItems().stream()
+                .filter(p -> p.getId() == base.getId())
+                .findFirst()
+                .orElse(null);
+
+        if (existente != null) {
+            if (incrementar && existente.getCantidadVenta() < existente.getStock()) {
+                existente.setCantidadVenta(existente.getCantidadVenta() + 1);
+            }
+            productTable.refresh();
+        } else {
+            ProductoDTO item = new ProductoDTO();
+            item.setId(base.getId());
+            item.setNombre(base.getNombre());
+            item.setPrecio(base.getPrecio());
+            item.setStock(base.getStock());
+            item.setCantidadVenta(incrementar ? 1 : 0);
+            productTable.getItems().add(item);
+        }
+    }
+
+    @FXML
+    private void onAumentarCantidad() {
+        ProductoDTO seleccionado = productTable.getSelectionModel().getSelectedItem();
+        if (seleccionado == null) return;
+        if (seleccionado.getCantidadVenta() < seleccionado.getStock()) {
+            seleccionado.setCantidadVenta(seleccionado.getCantidadVenta() + 1);
+        }
+        productTable.refresh();
+        actualizarEtiquetas();
+    }
+
+    @FXML
+    private void onDisminuirCantidad() {
+        ProductoDTO seleccionado = productTable.getSelectionModel().getSelectedItem();
+        if (seleccionado == null) return;
+        if (seleccionado.getCantidadVenta() > 0) { 
+            seleccionado.setCantidadVenta(seleccionado.getCantidadVenta() - 1);
+            productTable.refresh();
+            actualizarEtiquetas();
+        }
+    }
+
+    @FXML
+    private void onQuitarProducto() {
+        ProductoDTO seleccionado = productTable.getSelectionModel().getSelectedItem();
+        if (seleccionado == null) return;
+        seleccionado.setCantidadVenta(0);
+        actualizarEtiquetas();
     }
 
     @FXML
@@ -100,7 +215,8 @@ public class FXMLRegistroVentaModalController implements Initializable {
 
     @FXML
     private void onHacerPago() throws IOException {
-        if (productTable.getItems().isEmpty()) {
+        boolean hayCantidad = productTable.getItems().stream().anyMatch(p -> p.getCantidadVenta() > 0);
+        if (!hayCantidad) {
             WindowServices.showWarningDialog("Vacío", "Agregue productos antes de pagar.");
             return;
         }
@@ -143,7 +259,7 @@ public class FXMLRegistroVentaModalController implements Initializable {
         double suma = 0;
         if (productTable != null) {
             for (ProductoDTO p : productTable.getItems()) {
-                suma += p.getPrecio() * p.getStock();
+                suma += p.getPrecio() * p.getCantidadVenta();
             }
         }
         return suma;

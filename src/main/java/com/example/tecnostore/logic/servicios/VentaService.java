@@ -3,57 +3,99 @@ package com.example.tecnostore.logic.servicios;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.List;
 
 import com.example.tecnostore.logic.dao.LogDAO;
 import com.example.tecnostore.logic.dao.VentaDAO;
+import com.example.tecnostore.logic.dao.DetalleVentaDAO;
+import com.example.tecnostore.logic.dao.ProductoDAO;
+import com.example.tecnostore.logic.dto.VentaDTO;
+import com.example.tecnostore.logic.dto.VentaResumenDTO;
+import com.example.tecnostore.logic.dto.DetalleVentaDTO;
+import com.example.tecnostore.logic.utils.Sesion;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class VentaService {
+
+    private static final Logger LOGGER = LogManager.getLogger(VentaService.class);
 
     private final String DB_URL = "jdbc:mysql://localhost:3306/seguridad_ventas";
     private final String DB_USER = "root";
     private final String DB_PASS = "4422";
 
-    private final VentaDAO ventaDAO = new VentaDAO();
-    private final LogDAO logDAO;
+    private VentaDAO ventaDAO;
+    private LogDAO logDAO;
+    private DetalleVentaDAO detalleVentaDAO;
+    private ProductoDAO productoDAO;
 
     public VentaService() {
         try {
+            this.ventaDAO = new VentaDAO();
             this.logDAO = new LogDAO();
+            this.detalleVentaDAO = new DetalleVentaDAO();
+            this.productoDAO = new ProductoDAO();
         } catch (Exception e) {
-            throw new RuntimeException("Error al inicializar LogDAO: " + e.getMessage(), e);
+            LOGGER.error("Error al inicializar DAOs: {}", e.getMessage(), e);
+            throw new RuntimeException("Error al inicializar DAOs de Venta: " + e.getMessage(), e);
         }
     }
 
-    public void procesarVenta(String usuario, double monto) {
+    public List<VentaResumenDTO> obtenerTodasLasVentas() throws Exception {
+        return ventaDAO.obtenerVentas();
+    }
+
+    public void registrarVentaCompleta(VentaDTO venta) throws Exception {
+
+        String usuarioActual = Sesion.getUsuarioSesion() != null ? Sesion.getUsuarioSesion().getUsuario() : "Sistema";
+
+        if (venta.getTotal() <= 0 || venta.getDetalles().isEmpty()) {
+            throw new IllegalArgumentException("El monto debe ser positivo y la venta no debe estar vacía.");
+        }
+
         Connection conn = null;
+
         try {
             conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
             conn.setAutoCommit(false);
 
-            if (monto <= 0) {
-                throw new IllegalArgumentException("El monto debe ser positivo.");
+            int ventaId = ventaDAO.insertarVenta(conn, usuarioActual, venta.getTotal());
+
+            for (DetalleVentaDTO detalle : venta.getDetalles()) {
+                int cantidadVendida = detalle.getCantidad();
+                int productoId = detalle.getProductoId();
+
+                productoDAO.actualizarStock(productoId, 500 - cantidadVendida);
             }
 
-            ventaDAO.insertarVenta(conn, usuario, monto);
-            logDAO.registrarLog(conn, usuario, "REGISTRO_VENTA", "EXITO", "Monto: " + monto);
+            detalleVentaDAO.registrarDetalles(conn, ventaId, venta.getDetalles());
 
+            logDAO.registrarLog(conn, usuarioActual, "REGISTRO_VENTA", "EXITO", "Venta ID: " + ventaId + ", Total: " + venta.getTotal());
             conn.commit();
-            System.out.println("Venta procesada correctamente.");
+
+            LOGGER.info("Venta ID {} procesada correctamente por {}.", ventaId, usuarioActual);
 
         } catch (Exception e) {
             if (conn != null) {
                 try {
                     conn.rollback();
-                    conn.setAutoCommit(true);
-                    logDAO.registrarLog(conn, usuario, "REGISTRO_VENTA", "ERROR", e.getMessage());
+                    logDAO.registrarLog(conn, usuarioActual, "REGISTRO_VENTA", "ERROR", e.getMessage());
                 } catch (SQLException ex) {
-                    ex.printStackTrace();
+                    LOGGER.error("Error durante el rollback: {}", ex.getMessage());
                 }
             }
-            System.err.println("Error en transacción: " + e.getMessage());
+            LOGGER.error("Error en transacción de venta: {}", e.getMessage(), e);
+            throw new Exception("Error al registrar la venta: " + e.getMessage());
+
         } finally {
             if (conn != null) {
-                try { conn.close(); } catch (SQLException e) { e.printStackTrace(); }
+                try {
+                    conn.setAutoCommit(true);
+                    conn.close();
+                } catch (SQLException e) {
+                    LOGGER.error("Error al cerrar conexión: {}", e.getMessage());
+                }
             }
         }
     }

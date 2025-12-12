@@ -34,7 +34,6 @@ public class SucursalDAO extends ConexionBD {
     }
 
     //Inserta una nueva sucursal
-
     public int insertar(SucursalDTO sucursal) throws SQLException {
         Connection conn = null;
         int rows = 0;

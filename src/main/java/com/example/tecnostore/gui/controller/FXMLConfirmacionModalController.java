@@ -7,9 +7,13 @@ import javafx.stage.Window;
 public class FXMLConfirmacionModalController {
     @FXML private Label titleLabel;
     @FXML private Label messageLabel;
+
     private Window owner;
     private String title;
     private String message;
+
+    // Bandera para indicar si el usuario presionó 'Confirmar'
+    private boolean confirmed = false;
 
     public void setOwner(Window owner) { this.owner = owner; }
 
@@ -21,6 +25,11 @@ public class FXMLConfirmacionModalController {
     public void setMessage(String message) {
         this.message = message;
         updateTexts();
+    }
+
+    // Nuevo método para que el controlador padre obtenga el resultado
+    public boolean isConfirmed() {
+        return confirmed;
     }
 
     @FXML
@@ -37,6 +46,15 @@ public class FXMLConfirmacionModalController {
         }
     }
 
-    @FXML private void onConfirmar() { titleLabel.getScene().getWindow().hide(); }
-    @FXML private void onCancelar() { titleLabel.getScene().getWindow().hide(); }
+    // Al confirmar, se establece el flag y se cierra
+    @FXML private void onConfirmar() {
+        this.confirmed = true;
+        titleLabel.getScene().getWindow().hide();
+    }
+
+    // Al cancelar, el flag permanece en false (valor inicial) y se cierra
+    @FXML private void onCancelar() {
+        this.confirmed = false;
+        titleLabel.getScene().getWindow().hide();
+    }
 }

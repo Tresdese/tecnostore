@@ -198,7 +198,7 @@ public class FXMLPrincipalController implements Initializable {
             alert.setContentText("No se pudo abrir el formulario de registro: " + e.getMessage());
             alert.showAndWait();
         }
-    }
+    }//
 
     private void gestionarSucursales() {
         try {

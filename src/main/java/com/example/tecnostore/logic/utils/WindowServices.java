@@ -22,7 +22,6 @@ import javafx.stage.Stage;
 
 public class WindowServices {
     private static final Logger LOGGER = LogManager.getLogger(WindowServices.class);
-
     private static final String VIEW_PATH = "/com/example/tecnostore/gui/views/";
 
     public WindowServices() {

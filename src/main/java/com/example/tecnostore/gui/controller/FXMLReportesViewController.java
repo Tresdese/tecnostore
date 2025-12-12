@@ -47,7 +47,7 @@ public class FXMLReportesViewController {
 
     @FXML
     private Button btnExportar;
-
+//
     @FXML
     private Button btnCerrar;
 

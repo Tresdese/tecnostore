@@ -31,7 +31,7 @@ public class FXMLEdicionProductoController implements Initializable {
     private Button btnGuardar;
     @FXML
     private Button btnCancelar;
-
+//
     private ProductoDTO producto;
 
     private String originalNombre;

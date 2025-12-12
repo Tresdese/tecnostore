@@ -28,7 +28,7 @@ public class FXMLPagoModalController {
         metodoPago.setValue("Efectivo");
         updateTotals();
     }
-
+//
     private void updateTotals() {
         if (totalValue != null) {
             totalValue.setText(String.format("$%,.2f", totalPagar));
@@ -37,7 +37,7 @@ public class FXMLPagoModalController {
             changeValue.setText("$0.00");
         }
     }
-
+//
     @FXML
     private void onConfirmar() {
         changeValue.getScene().getWindow().hide();

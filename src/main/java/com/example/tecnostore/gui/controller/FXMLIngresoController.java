@@ -81,7 +81,7 @@ public class FXMLIngresoController implements Initializable {
                     return;
                 }
 
-                // Guardar usuario y rol en sesión para el resto de la aplicación
+                // Guardar usuario y rol en sesión para el resto de la aplicacion
                 Sesion.setUsuarioSesion(usuario);
 
                 WindowServices.showInformationDialog("Autenticación", "Inicio de sesión exitoso.");

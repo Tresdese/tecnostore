@@ -6,6 +6,7 @@ public class LogAuditoriaDTO {
 
     private int id;
     private Integer usuarioId;
+    private String nombreUsuario;
     private String accion;
     private String descripcion;
     private LocalDateTime fecha;
@@ -25,6 +26,9 @@ public class LogAuditoriaDTO {
     public void setUsuarioId(Integer usuarioId) {
         this.usuarioId = usuarioId;
     }
+
+    public String getNombreUsuario() { return nombreUsuario; }
+    public void setNombreUsuario(String nombreUsuario) { this.nombreUsuario = nombreUsuario; }
 
     public String getAccion() {
         return accion;

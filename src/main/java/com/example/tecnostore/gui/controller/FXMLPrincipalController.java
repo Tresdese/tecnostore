@@ -166,7 +166,7 @@ public class FXMLPrincipalController implements Initializable {
                 break;
 
             case "GERENTE DE INVENTARIO": // Gerente
-                setButtonVisibility(registerButton, true);
+                setButtonVisibility(registerButton, false);
                 setButtonVisibility(editButton, false);
                 setButtonVisibility(deleteButton, true);
                 setButtonVisibility(employeeListButton, true);
@@ -175,6 +175,7 @@ public class FXMLPrincipalController implements Initializable {
                 setButtonVisibility(puntoVentaButton, false);
                 setButtonVisibility(gestionarSucursalesButton, true);
                 setButtonVisibility(registrosAuditoriaButton, true);
+                setButtonVisibility(manageProductsButton, true);
                 break;
 
             default: // Cualquier otro rol o usuario no logueado

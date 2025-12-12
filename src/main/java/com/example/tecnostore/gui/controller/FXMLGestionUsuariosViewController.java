@@ -198,10 +198,6 @@ public class FXMLGestionUsuariosViewController {
             modalStage.setScene(new Scene(root));
             modalStage.showAndWait();
 
-            // Muestra y espera; la baja se ejecuta dentro del modal
-            modalStage.showAndWait();
-
-            // Refrescamos la tabla para reflejar el cambio de estado (Activo -> Inactivo)
             cargarUsuarios(textoBusqueda());
 
         } catch (Exception e) {
